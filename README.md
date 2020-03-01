@@ -13,15 +13,14 @@ will help realize my vision for this project.
 
 ## Planned Features
 
-- Home Tab
--- Add a new subscription
---- Contains fields for name, price, how often it's charged, notes, category, etc
--- List all subscriptions on the home page
--- Allow editing or deleting of subscriptions
--- Set notifications to display when payments are coming up
-- Calendar Tab
--- Show an interactive calendar of when each upcoming payment is
--- Allow syncing with other calendar apps
-- Analytics Tab
--- Display how much is being paid within a certain timespan
--- Allow sorting of costs by category, time, and others
+* Home Tab
+    * Add a new subscription (contains fields for name, price, how often it's charged, notes, category, etc)
+    * List all subscriptions on the home page
+    * Allow editing or deleting of subscriptions
+    * Set notifications to display when payments are coming up
+* Calendar Tab
+    * Show an interactive calendar of when each upcoming payment is
+    * Allow syncing with other calendar apps
+* Analytics Tab
+    * Display how much is being paid within a certain timespan
+    * Allow sorting of costs by category, time, and others
