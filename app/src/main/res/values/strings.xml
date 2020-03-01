@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MySubscriptions</string>
+    <string name="title_activity_home_tab">HomeTabActivity</string>
+    <string name="tab_text_calendar">Calendar</string>
+    <string name="tab_text_home">Home</string>
+    <string name="tab_text_analytics">Analytics</string>
+</resources>
