@@ -18,13 +18,14 @@ public class MainActivity extends AppCompatActivity {
     /**
      * When this activity is created, initialize it, then load any data we need, then
      * pass intent to HomeTabActivity.
-     * @param savedInstanceState
+     * @param savedInstanceState any saved state needed
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Temporary so we wait on the load-in screen for a little
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {

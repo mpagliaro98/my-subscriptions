@@ -17,8 +17,9 @@ import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 public class HomeTabActivity extends AppCompatActivity {
 
     /**
-     * When this activity is created,
-     * @param savedInstanceState
+     * When this activity is created, set-up the SectionsPagerAdapter and build the tab
+     * layout, as well as any items that should persist across all fragments.
+     * @param savedInstanceState any saved state needed
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

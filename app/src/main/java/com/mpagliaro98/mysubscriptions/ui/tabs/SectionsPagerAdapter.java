@@ -23,10 +23,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         mContext = context;
     }
 
+    /**
+     * Get a fragment for the given tab position.
+     * @param position the tab currently selected
+     * @return Calendar for position 0, Home for 1, Analytics for 2, or null otherwise
+     */
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
         switch (position) {
             case 0:
                 return new FragmentCalendar();

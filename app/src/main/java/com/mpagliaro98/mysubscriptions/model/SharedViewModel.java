@@ -6,18 +6,22 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
+/**
+ * The model shared between each fragment, keeping track of the data each page of
+ * the application needs.
+ */
 public class SharedViewModel extends ViewModel {
 
-    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
-    private LiveData<String> mText = Transformations.map(mIndex, new Function<Integer, String>() {
+    private MutableLiveData<String> mName = new MutableLiveData<>();
+    private LiveData<String> mText = Transformations.map(mName, new Function<String, String>() {
         @Override
-        public String apply(Integer input) {
-            return "Hello world from section: " + input;
+        public String apply(String input) {
+            return "Currently on tab: " + input;
         }
     });
 
-    public void setIndex(int index) {
-        mIndex.setValue(index);
+    public void setName(String index) {
+        mName.setValue(index);
     }
 
     public LiveData<String> getText() {

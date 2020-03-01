@@ -14,11 +14,9 @@ import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 
 /**
- * A placeholder fragment containing a simple view.
+ * A fragment containing the view for the calendar tab.
  */
 public class FragmentCalendar extends Fragment {
-
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private SharedViewModel model;
 
@@ -26,11 +24,7 @@ public class FragmentCalendar extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(this).get(SharedViewModel.class);
-        int index = 1;
-        if (getArguments() != null) {
-            index = getArguments().getInt(ARG_SECTION_NUMBER);
-        }
-        model.setIndex(index);
+        model.setName("Calendar Tab");
     }
 
     @Override
