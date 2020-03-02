@@ -16,6 +16,8 @@ import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.HomeTabActivity;
 
+import java.io.IOException;
+
 /**
  * A fragment containing the view for the home tab.
  */
@@ -28,6 +30,11 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(this).get(SharedViewModel.class);
         model.setName("Home Tab");
+        try {
+            model.loadFromFile(getContext());
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
 
         HomeTabActivity homeTabActivity = (HomeTabActivity)getActivity();
         homeTabActivity.setDataListener(this);
@@ -53,8 +60,6 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
 
     private void updateSubList(View view) {
         LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
-        //model.addSubscription("sub1", null, null, "note");
-        //model.addSubscription("sub2", null, null, "note");
         for (int i = 0; i < model.numSubscriptions(); i++) {
             final TextView textView = new TextView(getActivity());
             textView.setText(model.getSubscription(i).getName());
@@ -65,5 +70,10 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
     @Override
     public void onDataReceived(Subscription subscription) {
         model.addSubscription(subscription);
+        try {
+            model.saveToFile(getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

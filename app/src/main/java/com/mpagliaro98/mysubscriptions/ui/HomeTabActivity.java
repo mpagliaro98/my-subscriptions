@@ -2,23 +2,14 @@ package com.mpagliaro98.mysubscriptions.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.google.android.material.tabs.TabLayout;
-
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
-
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentHome;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Currency;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * The activity we'll be on for most of this application's runtime. This holds fragments
@@ -29,6 +20,7 @@ public class HomeTabActivity extends AppCompatActivity {
     public static final String SUBSCRIPTION_MESSAGE = "com.mpagliaro98.mysubscriptions.SUBSCRIPTION";
 
     private OnDataListenerReceived dataListener;
+    private Subscription incomingData;
 
     public interface OnDataListenerReceived {
         void onDataReceived(Subscription subscription);
@@ -51,16 +43,8 @@ public class HomeTabActivity extends AppCompatActivity {
         // start on the home tab, the one in the middle
         viewPager.setCurrentItem(1);
 
-
-        // example for getting an element from the view and adding a listener to it
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        Intent intent = getIntent();
+        incomingData = (Subscription)intent.getSerializableExtra(SUBSCRIPTION_MESSAGE);
     }
 
     public void createButton(View view) {
@@ -70,5 +54,8 @@ public class HomeTabActivity extends AppCompatActivity {
 
     public void setDataListener(OnDataListenerReceived listener) {
         dataListener = listener;
+        if (incomingData != null) {
+            dataListener.onDataReceived(incomingData);
+        }
     }
 }

@@ -1,20 +1,14 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
 
@@ -39,9 +33,13 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             e.printStackTrace();
             date = null;
         }
-        double cost = 0.00; //costText.getText().toString();
+        double cost = Double.parseDouble(costText.getText().toString());
         String note = noteText.getText().toString();
         Subscription subscription = new Subscription(name, cost, date, note);
         System.out.println(subscription.getName());
+
+        Intent intent = new Intent(this, HomeTabActivity.class);
+        intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
+        startActivity(intent);
     }
 }

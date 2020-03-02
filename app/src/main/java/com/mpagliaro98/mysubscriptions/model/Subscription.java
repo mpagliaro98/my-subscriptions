@@ -1,11 +1,12 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Subscription value object to store data on an individual subscription.
  */
-public class Subscription {
+public class Subscription implements Serializable {
 
     // TODO: add categories and time between charges
     private String name;
