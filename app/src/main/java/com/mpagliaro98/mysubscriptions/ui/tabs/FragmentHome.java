@@ -19,27 +19,44 @@ import com.mpagliaro98.mysubscriptions.ui.HomeTabActivity;
 import java.io.IOException;
 
 /**
- * A fragment containing the view for the home tab.
+ * A fragment containing the view for the home tab. Implements the OnDataListenerReceived
+ * interface so we can get data from the Create activity and properly send it to the
+ * model.
  */
 public class FragmentHome extends Fragment implements HomeTabActivity.OnDataListenerReceived {
 
+    // The model shared by the three main tabs
     private SharedViewModel model;
 
+    /**
+     * Initializes the model for the home tab.
+     * @param savedInstanceState any saved state needed
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(this).get(SharedViewModel.class);
         model.setName("Home Tab");
+
+        // Populate the model by loading subscriptions from the file
         try {
             model.loadFromFile(getContext());
         } catch(IOException e) {
             e.printStackTrace();
         }
 
+        // Set this fragment as the data listener for the tab activity
         HomeTabActivity homeTabActivity = (HomeTabActivity)getActivity();
         homeTabActivity.setDataListener(this);
     }
 
+    /**
+     * Creates the root view for this fragment.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState any saved state needed
+     * @return the view that displays this fragment
+     */
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
@@ -58,6 +75,10 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
         return root;
     }
 
+    /**
+     * Update the UI component that displays a list of every subscription.
+     * @param view the current view to display to
+     */
     private void updateSubList(View view) {
         LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
         for (int i = 0; i < model.numSubscriptions(); i++) {
@@ -67,6 +88,13 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
         }
     }
 
+    /**
+     * Receive data from another activity, passed to here through this fragment's
+     * parent activity. In this case, the data is a subscription object created in
+     * a separate activity, which we will add to the model and update the internal
+     * storage file.
+     * @param subscription the new subscription object
+     */
     @Override
     public void onDataReceived(Subscription subscription) {
         model.addSubscription(subscription);

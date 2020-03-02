@@ -19,8 +19,13 @@ import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
  */
 public class FragmentAnalytics extends Fragment {
 
+    // The model shared by the three main tabs
     private SharedViewModel model;
 
+    /**
+     * Initializes the model for the analytics tab.
+     * @param savedInstanceState any saved state needed
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +33,13 @@ public class FragmentAnalytics extends Fragment {
         model.setName("Analytics Tab");
     }
 
+    /**
+     * Creates the root view for this fragment.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState any saved state needed
+     * @return the view that displays this fragment
+     */
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
