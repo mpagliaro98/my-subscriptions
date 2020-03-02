@@ -3,9 +3,7 @@ package com.mpagliaro98.mysubscriptions.ui;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
 import com.mpagliaro98.mysubscriptions.R;
-
 import java.util.concurrent.TimeUnit;
 
 /**

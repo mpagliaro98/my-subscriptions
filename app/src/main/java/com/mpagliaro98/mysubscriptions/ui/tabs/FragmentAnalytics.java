@@ -1,6 +1,7 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -29,7 +30,7 @@ public class FragmentAnalytics extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = ViewModelProviders.of(this).get(SharedViewModel.class);
+        model = new ViewModelProvider(this).get(SharedViewModel.class);
         model.setName("Analytics Tab");
     }
 

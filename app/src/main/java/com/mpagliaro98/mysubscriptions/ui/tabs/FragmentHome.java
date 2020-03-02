@@ -10,12 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.HomeTabActivity;
-
 import java.io.IOException;
 
 /**
@@ -35,7 +34,7 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = ViewModelProviders.of(this).get(SharedViewModel.class);
+        model = new ViewModelProvider(this).get(SharedViewModel.class);
         model.setName("Home Tab");
 
         // Populate the model by loading subscriptions from the file
