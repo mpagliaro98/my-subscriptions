@@ -4,4 +4,9 @@
     <string name="tab_text_calendar">Calendar</string>
     <string name="tab_text_home">Home</string>
     <string name="tab_text_analytics">Analytics</string>
+    <string name="create_name">Name</string>
+    <string name="create_cost">Cost</string>
+    <string name="create_note">Any additional notes</string>
+    <string name="current_date">java.time.LocalTime.now()</string>
+    <string name="create_button">Create Subscription</string>
 </resources>

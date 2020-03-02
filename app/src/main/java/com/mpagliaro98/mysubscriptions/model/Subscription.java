@@ -1,6 +1,5 @@
 package com.mpagliaro98.mysubscriptions.model;
 
-import java.util.Currency;
 import java.util.Date;
 
 /**
@@ -10,11 +9,11 @@ public class Subscription {
 
     // TODO: add categories and time between charges
     private String name;
-    private Currency cost;
+    private double cost;
     private Date startDate;
     private String note;
 
-    public Subscription(String name, Currency cost, Date startDate, String note) {
+    public Subscription(String name, double cost, Date startDate, String note) {
         this.name = name;
         this.cost = cost;
         this.startDate = startDate;
@@ -25,15 +24,31 @@ public class Subscription {
         return name;
     }
 
-    public Currency getCost() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getCost() {
         return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     public Date getStartDate() {
         return startDate;
     }
 
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     public String getNote() {
         return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

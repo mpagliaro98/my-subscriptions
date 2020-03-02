@@ -1,14 +1,23 @@
 package com.mpagliaro98.mysubscriptions.model;
 
-import android.arch.core.util.Function;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
-import android.arch.lifecycle.ViewModel;
+import androidx.arch.core.util.Function;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
+import android.os.Environment;
+import android.util.JsonWriter;
 
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
+import java.util.Scanner;
 
 /**
  * The model shared between each fragment, keeping track of the data each page of
@@ -59,8 +68,11 @@ public class SharedViewModel extends ViewModel {
      * @param startDate the date the subscription was started
      * @param note an optional note for the subscription
      */
-    public void addSubscription(String name, Currency cost, Date startDate, String note) {
-        subscriptionList.add(new Subscription(name, cost, startDate, note));
+    public void addSubscription(String name, double cost, Date startDate, String note) {
+        addSubscription(new Subscription(name, cost, startDate, note));
+    }
+    public void addSubscription(Subscription subscription) {
+        subscriptionList.add(subscription);
     }
 
     /**
@@ -69,5 +81,47 @@ public class SharedViewModel extends ViewModel {
      */
     public int numSubscriptions() {
         return subscriptionList.size();
+    }
+
+    public void loadFromFile() throws IOException {
+        Gson gson = new Gson();
+        File dir = new File(Environment.getExternalStorageDirectory(), "Data");
+        if (!dir.exists()) {
+            boolean result = dir.mkdirs();
+            if (!result) {
+                throw new IOException();
+            }
+        }
+        File file = new File(dir, "subscriptions.dat");
+        if (!file.exists()) {
+            return;
+        }
+        Scanner sc = new Scanner(file);
+        while (!sc.hasNext()) {
+            String line = sc.nextLine();
+            Subscription subscription = gson.fromJson(line, Subscription.class);
+            subscriptionList.add(subscription);
+        }
+        sc.close();
+    }
+
+    public void saveToFile() throws IOException {
+        Gson gson = new Gson();
+        File dir = new File(Environment.getExternalStorageDirectory(), "Data");
+        if (!dir.exists()) {
+            boolean result = dir.mkdirs();
+            if (!result) {
+                throw new IOException();
+            }
+        }
+        File file = new File(dir, "subscriptions.dat");
+        FileWriter writer = new FileWriter(file);
+        writer.write("");
+        for (int i = 0; i < numSubscriptions(); i++) {
+            Subscription subscription = subscriptionList.get(i);
+            String line = gson.toJson(subscription);
+            writer.write(line + "\n");
+        }
+        writer.close();
     }
 }
