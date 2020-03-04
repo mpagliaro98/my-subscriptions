@@ -1,5 +1,6 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.HomeTabActivity;
 import java.io.IOException;
 
@@ -82,7 +84,19 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
         LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
         for (int i = 0; i < model.numSubscriptions(); i++) {
             final TextView textView = new TextView(getActivity());
-            textView.setText(model.getSubscription(i).getName());
+            final Subscription sub = model.getSubscription(i);
+            textView.setText(sub.getName());
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), CreateSubscriptionActivity.class);
+                    intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
+                            CreateSubscriptionActivity.PAGE_TYPE.VIEW);
+                    intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
+                                    sub);
+                    startActivity(intent);
+                }
+            });
             linearLayout.addView(textView);
         }
     }

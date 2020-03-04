@@ -23,6 +23,11 @@ import java.util.Locale;
 public class CreateSubscriptionActivity extends AppCompatActivity {
 
     private static final String dateFormat = "MM/dd/yyyy";
+    public static final String PAGE_TYPE_MESSAGE = "com.mpagliaro98.mysubscriptions.PAGE_TYPE";
+    public static final String VIEW_SUB_MESSAGE = "com.mpagliaro98.mysubscriptions.VIEW_SUB";
+
+    // Different versions this page can be, send this to this page each time it is accessed
+    public enum PAGE_TYPE {CREATE, EDIT, VIEW};
 
     /**
      * When this activity is created, initialize it and load any data we need.
@@ -31,11 +36,26 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_subscription);
 
-        // Auto-fill the date field with the current date, properly formatted
-        TextView date = findViewById(R.id.create_date);
-        date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
+        // Display a different version of this page depending on the parameter passed in
+        Intent intent = getIntent();
+        PAGE_TYPE pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
+        if (pageType == PAGE_TYPE.CREATE) {
+            setContentView(R.layout.activity_create_subscription);
+
+            // Auto-fill the date field with the current date, properly formatted
+            TextView date = findViewById(R.id.create_date);
+            date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
+        } else if (pageType == PAGE_TYPE.VIEW) {
+            setContentView(R.layout.activity_create_subscription);
+
+            // Temporary: demonstrates we can get a subscription from the list and view it
+            Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
+            TextView name = findViewById(R.id.create_name);
+            name.setText(sub.getName());
+        } else if (pageType == PAGE_TYPE.EDIT) {
+            setContentView(R.layout.activity_create_subscription);
+        }
     }
 
     /**

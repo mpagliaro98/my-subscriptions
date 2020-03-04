@@ -64,6 +64,8 @@ public class HomeTabActivity extends AppCompatActivity {
      */
     public void createButton(View view) {
         Intent intent = new Intent(this, CreateSubscriptionActivity.class);
+        intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
+                        CreateSubscriptionActivity.PAGE_TYPE.CREATE);
         startActivity(intent);
     }
 
