@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import java.text.ParseException;
@@ -19,6 +21,8 @@ import java.util.Locale;
  */
 public class CreateSubscriptionActivity extends AppCompatActivity {
 
+    private static final String dateFormat = "MM/dd/yyyy";
+
     /**
      * When this activity is created, initialize it and load any data we need.
      * @param savedInstanceState any saved state needed
@@ -27,6 +31,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_subscription);
+
+        // Auto-fill the date field with the current date, properly formatted
+        TextView date = findViewById(R.id.create_date);
+        date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
     }
 
     /**
@@ -47,7 +55,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         String name = nameText.getText().toString();
         Date date;
         try {
-            date = new SimpleDateFormat("MM/dd/yyyy", Locale.US).parse(dateText.getText().toString());
+            date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
             date = null;

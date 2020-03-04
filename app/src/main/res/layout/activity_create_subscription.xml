@@ -21,20 +21,20 @@
 
     <EditText
         android:id="@+id/create_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="128dp"
+        android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:ems="10"
+        android:hint="@string/current_date"
         android:inputType="date"
-        android:text="@string/current_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_name" />
 
     <EditText
         android:id="@+id/create_cost"
-        android:layout_width="87dp"
+        android:layout_width="0dp"
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
@@ -44,13 +44,14 @@
         android:ems="10"
         android:hint="@string/create_cost"
         android:inputType="numberDecimal"
+        app:layout_constraintBottom_toBottomOf="@+id/create_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/create_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/create_note"
-        android:layout_width="373dp"
+        android:layout_width="0dp"
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
