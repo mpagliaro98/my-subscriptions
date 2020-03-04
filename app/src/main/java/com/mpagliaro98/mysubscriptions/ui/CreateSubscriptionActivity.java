@@ -30,7 +30,9 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     public enum PAGE_TYPE {CREATE, EDIT, VIEW};
 
     /**
-     * When this activity is created, initialize it and load any data we need.
+     * When this activity is created, initialize it and load any data we need. Set the
+     * page mode to either create, edit, or view, and set the fields on the view to their
+     * starting values.
      * @param savedInstanceState any saved state needed
      */
     @Override
@@ -40,20 +42,30 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Display a different version of this page depending on the parameter passed in
         Intent intent = getIntent();
         PAGE_TYPE pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
+        // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             setContentView(R.layout.activity_create_subscription);
 
             // Auto-fill the date field with the current date, properly formatted
             TextView date = findViewById(R.id.create_date);
             date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
-        } else if (pageType == PAGE_TYPE.VIEW) {
-            setContentView(R.layout.activity_create_subscription);
+        }
+        // For view, populate the page with un-selectable text fields for each subscription field
+        else if (pageType == PAGE_TYPE.VIEW) {
+            setContentView(R.layout.activity_create_subscription_view);
 
-            // Temporary: demonstrates we can get a subscription from the list and view it
+            // Set each viewing field to be a field of the subscription
             Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
-            TextView name = findViewById(R.id.create_name);
+            TextView name = findViewById(R.id.create_name_view);
+            TextView cost = findViewById(R.id.create_cost_view);
+            TextView date = findViewById(R.id.create_date_view);
+            TextView note = findViewById(R.id.create_note_view);
             name.setText(sub.getName());
-        } else if (pageType == PAGE_TYPE.EDIT) {
+            cost.setText(String.format("$%.2f", sub.getCost()));
+            date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
+            note.setText(sub.getNote());
+        }
+        else if (pageType == PAGE_TYPE.EDIT) {
             setContentView(R.layout.activity_create_subscription);
         }
     }
@@ -103,6 +115,13 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Display a small bar on the bottom of the screen. Should be called when there is
+     * something to display regarding a recent action (like improperly formatted input
+     * when submitting something).
+     * @param view the current view of the application
+     * @param stringId the string to display, should be in strings.xml
+     */
     private void displayErrorBar(View view, int stringId) {
         Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
     }
