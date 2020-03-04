@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import java.text.ParseException;
@@ -44,23 +45,35 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
      * @param view the current application view
      */
     public void createSubscription(View view) {
-        // TODO add input validation
         // Get each input field from the view
         EditText nameText = findViewById(R.id.create_name);
         EditText dateText = findViewById(R.id.create_date);
         EditText costText = findViewById(R.id.create_cost);
         EditText noteText = findViewById(R.id.create_note);
 
-        // Extract the data from each field
+        // Extract the data from each field and verify each is formatted properly
         String name = nameText.getText().toString();
+        if (name.equals("")) {
+            displayErrorBar(view, R.string.create_error_name);
+            return;
+        }
+
         Date date;
         try {
             date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
-            e.printStackTrace();
-            date = null;
+            displayErrorBar(view, R.string.create_error_date);
+            return;
         }
-        double cost = Double.parseDouble(costText.getText().toString());
+
+        double cost;
+        try {
+            cost = Double.parseDouble(costText.getText().toString());
+        } catch (NumberFormatException e) {
+            displayErrorBar(view, R.string.create_error_cost);
+            return;
+        }
+
         String note = noteText.getText().toString();
 
         // Make the object, put it in the intent, and send it to the tab activity
@@ -68,5 +81,9 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         Intent intent = new Intent(this, HomeTabActivity.class);
         intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
         startActivity(intent);
+    }
+
+    private void displayErrorBar(View view, int stringId) {
+        Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
     }
 }
