@@ -3,6 +3,10 @@ package com.mpagliaro98.mysubscriptions.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +34,9 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     // Different versions this page can be, send this to this page each time it is accessed
     public enum PAGE_TYPE {CREATE, EDIT, VIEW};
 
+    // The current state of this page
+    private PAGE_TYPE pageType;
+
     /**
      * When this activity is created, initialize it and load any data we need. Set the
      * page mode to either create, edit, or view, and set the fields on the view to their
@@ -43,7 +50,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // Display a different version of this page depending on the parameter passed in
         Intent intent = getIntent();
-        PAGE_TYPE pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
+        pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             // Auto-fill the date field with the current date, properly formatted
@@ -78,7 +85,36 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             note.setText(sub.getNote());
         }
         else if (pageType == PAGE_TYPE.EDIT) {
+            // Fill every field with the values of the subscription to edit
+            Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
+            Button createButton = findViewById(R.id.create_button_finish);
+            createButton.setText(R.string.create_button_edit);
+            TextView name = findViewById(R.id.create_name);
+            TextView cost = findViewById(R.id.create_cost);
+            TextView date = findViewById(R.id.create_date);
+            TextView note = findViewById(R.id.create_note);
+            name.setText(sub.getName());
+            cost.setText(String.format("%.2f", sub.getCost()));
+            date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
+            note.setText(sub.getNote());
         }
+    }
+
+    /**
+     * Creates the action bar menu at the top of the page.
+     * @param menu the menu to create
+     * @return whether creation was successful or not
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_create_subscription, menu);
+
+        // If we aren't in view mode, set the edit button at the top to not display
+        if (pageType != PAGE_TYPE.VIEW) {
+            MenuItem item = menu.findItem(R.id.create_edit_button);
+            item.setVisible(false);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -88,42 +124,44 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
      * @param view the current application view
      */
     public void createSubscription(View view) {
-        // Get each input field from the view
-        EditText nameText = findViewById(R.id.create_name);
-        EditText dateText = findViewById(R.id.create_date);
-        EditText costText = findViewById(R.id.create_cost);
-        EditText noteText = findViewById(R.id.create_note);
+        if (pageType == PAGE_TYPE.CREATE) {
+            // Get a subscription from the data in all the input fields, halt if data is invalid
+            Subscription subscription = parseInputFields(view);
+            if (subscription == null) {
+                return;
+            }
 
-        // Extract the data from each field and verify each is formatted properly
-        String name = nameText.getText().toString();
-        if (name.equals("")) {
-            displayErrorBar(view, R.string.create_error_name);
-            return;
+            // Put the object in the intent and send it to the tab activity
+            Intent intent = new Intent(this, HomeTabActivity.class);
+            intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
+            startActivity(intent);
         }
-
-        Date date;
-        try {
-            date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
-        } catch (ParseException e) {
-            displayErrorBar(view, R.string.create_error_date);
-            return;
+        else if (pageType == PAGE_TYPE.EDIT) {
+            // TODO add functionality for edit mode
+            displayErrorBar(view, R.string.app_name);
         }
+    }
 
-        double cost;
-        try {
-            cost = Double.parseDouble(costText.getText().toString());
-        } catch (NumberFormatException e) {
-            displayErrorBar(view, R.string.create_error_cost);
-            return;
+    /**
+     * Called when a button on the action bar is pressed. When the edit button is pressed
+     * in this activity, we will reload the page in edit mode, sending the subscription
+     * currently being viewed through the intent.
+     * @param item the item on the action bar that was pressed
+     * @return whether it completed successfully or not
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.create_edit_button) {
+            Intent intent = new Intent(this, CreateSubscriptionActivity.class);
+            intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
+                            PAGE_TYPE.EDIT);
+            Subscription subscription = parseInputFields(null);
+            intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
+                            subscription);
+            startActivity(intent);
         }
-
-        String note = noteText.getText().toString();
-
-        // Make the object, put it in the intent, and send it to the tab activity
-        Subscription subscription = new Subscription(name, cost, date, note);
-        Intent intent = new Intent(this, HomeTabActivity.class);
-        intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
-        startActivity(intent);
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -135,5 +173,61 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
      */
     private void displayErrorBar(View view, int stringId) {
         Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Parse the input fields in the current view and build a subscription object from
+     * them. This will display an error message and return null if one of the fields is
+     * invalid.
+     * @param view the current application view, if null then error bars won't display
+     * @return a Subscription object if everything is valid, null otherwise
+     */
+    private Subscription parseInputFields(View view) {
+        // Get each input field from the view
+        EditText nameText = findViewById(R.id.create_name);
+        EditText dateText = findViewById(R.id.create_date);
+        EditText costText = findViewById(R.id.create_cost);
+        EditText noteText = findViewById(R.id.create_note);
+
+        // Extract the data from name and validate it
+        String name = nameText.getText().toString();
+        if (name.equals("")) {
+            if (view != null) {
+                displayErrorBar(view, R.string.create_error_name);
+            }
+            return null;
+        }
+
+        // Extract the data from date and validate it
+        Date date;
+        try {
+            date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
+        } catch (ParseException e) {
+            if (view != null) {
+                displayErrorBar(view, R.string.create_error_date);
+            }
+            return null;
+        }
+
+        // Extract the data from cost and validate it, remove the currency symbol if it's there
+        double cost;
+        String costTemp = costText.getText().toString();
+        if (costTemp.startsWith("$")) {
+            costTemp = costTemp.substring(1);
+        }
+        try {
+            cost = Double.parseDouble(costTemp);
+        } catch (NumberFormatException e) {
+            if (view != null) {
+                displayErrorBar(view, R.string.create_error_cost);
+            }
+            return null;
+        }
+
+        // Extract the data from note, no validation needed
+        String note = noteText.getText().toString();
+
+        // Build our subscription object and return it
+        return new Subscription(name, cost, date, note);
     }
 }

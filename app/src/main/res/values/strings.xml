@@ -12,4 +12,6 @@
     <string name="create_error_name">You must input a name.</string>
     <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
     <string name="create_error_cost">The cost must be a valid number.</string>
+    <string name="create_edit_button">Edit Subscription</string>
+    <string name="create_button_edit">Update Subscription</string>
 </resources>
