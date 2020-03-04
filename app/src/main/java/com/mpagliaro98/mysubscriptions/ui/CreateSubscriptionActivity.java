@@ -3,15 +3,12 @@ package com.mpagliaro98.mysubscriptions.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
@@ -48,37 +45,41 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_subscription);
 
+        // Pre-load each field from the page so we can easily modify them
+        TextView name = findViewById(R.id.create_name);
+        TextView cost = findViewById(R.id.create_cost);
+        TextView date = findViewById(R.id.create_date);
+        TextView note = findViewById(R.id.create_note);
+        Button createButton = findViewById(R.id.create_button_finish);
+        // This incoming subscription will be null when page type is CREATE
+        Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
+
         // Display a different version of this page depending on the parameter passed in
         Intent intent = getIntent();
         pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             // Auto-fill the date field with the current date, properly formatted
-            TextView date = findViewById(R.id.create_date);
             date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
         }
         // For view, populate the page with un-selectable text fields for each subscription field
         else if (pageType == PAGE_TYPE.VIEW) {
-            // A subscription should always be passed in when loading this in view mode
-            Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
-            TextView name = findViewById(R.id.create_name);
+            // Set each field to be non-editable
             name.setLinksClickable(false);
             name.setCursorVisible(false);
             name.setFocusableInTouchMode(false);
-            TextView cost = findViewById(R.id.create_cost);
             cost.setLinksClickable(false);
             cost.setCursorVisible(false);
             cost.setFocusableInTouchMode(false);
-            TextView date = findViewById(R.id.create_date);
             date.setLinksClickable(false);
             date.setCursorVisible(false);
             date.setFocusableInTouchMode(false);
-            TextView note = findViewById(R.id.create_note);
             note.setLinksClickable(false);
             note.setCursorVisible(false);
             note.setFocusableInTouchMode(false);
-            Button createButton = findViewById(R.id.create_button_finish);
             createButton.setVisibility(View.INVISIBLE);
+
+            // Fill every field with the values of the subscription to view
             name.setText(sub.getName());
             cost.setText(String.format("$%.2f", sub.getCost()));
             date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
@@ -86,13 +87,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         }
         else if (pageType == PAGE_TYPE.EDIT) {
             // Fill every field with the values of the subscription to edit
-            Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
-            Button createButton = findViewById(R.id.create_button_finish);
             createButton.setText(R.string.create_button_edit);
-            TextView name = findViewById(R.id.create_name);
-            TextView cost = findViewById(R.id.create_cost);
-            TextView date = findViewById(R.id.create_date);
-            TextView note = findViewById(R.id.create_note);
             name.setText(sub.getName());
             cost.setText(String.format("%.2f", sub.getCost()));
             date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
