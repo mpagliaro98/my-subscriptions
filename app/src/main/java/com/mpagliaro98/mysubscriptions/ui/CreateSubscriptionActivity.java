@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -38,35 +39,45 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_subscription);
 
         // Display a different version of this page depending on the parameter passed in
         Intent intent = getIntent();
         PAGE_TYPE pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
-            setContentView(R.layout.activity_create_subscription);
-
             // Auto-fill the date field with the current date, properly formatted
             TextView date = findViewById(R.id.create_date);
             date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
         }
         // For view, populate the page with un-selectable text fields for each subscription field
         else if (pageType == PAGE_TYPE.VIEW) {
-            setContentView(R.layout.activity_create_subscription_view);
-
-            // Set each viewing field to be a field of the subscription
+            // A subscription should always be passed in when loading this in view mode
             Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
-            TextView name = findViewById(R.id.create_name_view);
-            TextView cost = findViewById(R.id.create_cost_view);
-            TextView date = findViewById(R.id.create_date_view);
-            TextView note = findViewById(R.id.create_note_view);
+            TextView name = findViewById(R.id.create_name);
+            name.setLinksClickable(false);
+            name.setCursorVisible(false);
+            name.setFocusableInTouchMode(false);
+            TextView cost = findViewById(R.id.create_cost);
+            cost.setLinksClickable(false);
+            cost.setCursorVisible(false);
+            cost.setFocusableInTouchMode(false);
+            TextView date = findViewById(R.id.create_date);
+            date.setLinksClickable(false);
+            date.setCursorVisible(false);
+            date.setFocusableInTouchMode(false);
+            TextView note = findViewById(R.id.create_note);
+            note.setLinksClickable(false);
+            note.setCursorVisible(false);
+            note.setFocusableInTouchMode(false);
+            Button createButton = findViewById(R.id.create_button_finish);
+            createButton.setVisibility(View.INVISIBLE);
             name.setText(sub.getName());
             cost.setText(String.format("$%.2f", sub.getCost()));
             date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
             note.setText(sub.getNote());
         }
         else if (pageType == PAGE_TYPE.EDIT) {
-            setContentView(R.layout.activity_create_subscription);
         }
     }
 
