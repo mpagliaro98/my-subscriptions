@@ -23,6 +23,12 @@ import java.util.Locale;
  * An activity for gathering all the data on a new subscription to create, compiling
  * all the data into a subscription object, then sending it back to the tab activity
  * so it can be added to the model.
+ *
+ * Data can be passed in here through intents in order to change how the page displays
+ * data. A PAGE_TYPE must always be sent to specify the type of page. If it's CREATE,
+ * no additional data needs to be sent. If it's EDIT or VIEW, a Subscription object to
+ * view or modify must be passed in, as well as its index in the underlying model (this
+ * index acts like a unique ID).
  */
 public class CreateSubscriptionActivity extends AppCompatActivity {
 
@@ -56,12 +62,13 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         TextView date = findViewById(R.id.create_date);
         TextView note = findViewById(R.id.create_note);
         Button createButton = findViewById(R.id.create_button_finish);
-        // This incoming subscription will be null when page type is CREATE
-        Subscription sub = (Subscription)getIntent().getSerializableExtra(VIEW_SUB_MESSAGE);
 
-        // Display a different version of this page depending on the parameter passed in
         Intent intent = getIntent();
+        // This incoming subscription will be null when page type is CREATE
+        Subscription sub = (Subscription)intent.getSerializableExtra(VIEW_SUB_MESSAGE);
+        // Display a different version of this page depending on the parameter passed in
         pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
+        // Save the index of this subscription, if it's null it isn't needed and will be set to -1
         subIndex = intent.getIntExtra(SUB_ID_MESSAGE, -1);
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
@@ -137,10 +144,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             }
 
             // Put the object in the intent and send it to the tab activity
-            Intent intent = new Intent(this, HomeTabActivity.class);
-            intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
-            intent.putExtra(HomeTabActivity.INCOMING_TYPE_MESSAGE,
-                            HomeTabActivity.INCOMING_TYPE.CREATE);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.SUBSCRIPTION_MESSAGE, subscription);
+            intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
+                            MainActivity.INCOMING_TYPE.CREATE);
             startActivity(intent);
         }
         else if (pageType == PAGE_TYPE.EDIT) {
@@ -151,11 +158,11 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             }
 
             // Put the object and its index in the intent and send it to the tab activity
-            Intent intent = new Intent(this, HomeTabActivity.class);
-            intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
-            intent.putExtra(HomeTabActivity.INCOMING_TYPE_MESSAGE,
-                            HomeTabActivity.INCOMING_TYPE.EDIT);
-            intent.putExtra(HomeTabActivity.INCOMING_INDEX_MESSAGE,
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.SUBSCRIPTION_MESSAGE, subscription);
+            intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
+                            MainActivity.INCOMING_TYPE.EDIT);
+            intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE,
                             subIndex);
             startActivity(intent);
         }
@@ -194,10 +201,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(packageContext, HomeTabActivity.class);
-                            intent.putExtra(HomeTabActivity.INCOMING_TYPE_MESSAGE,
-                                    HomeTabActivity.INCOMING_TYPE.DELETE);
-                            intent.putExtra(HomeTabActivity.INCOMING_INDEX_MESSAGE,
+                            Intent intent = new Intent(packageContext, MainActivity.class);
+                            intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
+                                    MainActivity.INCOMING_TYPE.DELETE);
+                            intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE,
                                     subIndex);
                             startActivity(intent);
                         }

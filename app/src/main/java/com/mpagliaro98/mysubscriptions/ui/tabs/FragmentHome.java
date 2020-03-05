@@ -14,7 +14,7 @@ import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
-import com.mpagliaro98.mysubscriptions.ui.HomeTabActivity;
+import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import java.io.IOException;
 
 /**
@@ -22,7 +22,7 @@ import java.io.IOException;
  * interface so we can get data from the Create activity and properly send it to the
  * model.
  */
-public class FragmentHome extends Fragment implements HomeTabActivity.OnDataListenerReceived {
+public class FragmentHome extends Fragment implements MainActivity.OnDataListenerReceived {
 
     // The model shared by the three main tabs
     private SharedViewModel model;
@@ -44,8 +44,8 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
         }
 
         // Set this fragment as the data listener for the tab activity
-        HomeTabActivity homeTabActivity = (HomeTabActivity)getActivity();
-        homeTabActivity.checkIncomingData(this);
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.checkIncomingData(this);
     }
 
     /**
@@ -101,13 +101,13 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
      * @param subIndex if required, the index in the list of the item to modify
      */
     @Override
-    public void onDataReceived(Subscription subscription, HomeTabActivity.INCOMING_TYPE type,
+    public void onDataReceived(Subscription subscription, MainActivity.INCOMING_TYPE type,
                                Integer subIndex) {
-        if (type == HomeTabActivity.INCOMING_TYPE.CREATE) {
+        if (type == MainActivity.INCOMING_TYPE.CREATE) {
             model.addSubscription(subscription);
-        } else if (type == HomeTabActivity.INCOMING_TYPE.EDIT) {
+        } else if (type == MainActivity.INCOMING_TYPE.EDIT) {
             model.updateSubscription(subscription, subIndex);
-        } else if (type == HomeTabActivity.INCOMING_TYPE.DELETE) {
+        } else if (type == MainActivity.INCOMING_TYPE.DELETE) {
             model.deleteSubscription(subIndex);
         }
         try {
