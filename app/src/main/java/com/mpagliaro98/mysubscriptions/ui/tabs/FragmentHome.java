@@ -15,6 +15,8 @@ import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
+import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
+
 import java.io.IOException;
 
 /**
@@ -71,7 +73,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
         for (int i = 0; i < model.numSubscriptions(); i++) {
             final TextView textView = new TextView(getActivity());
+
             final Subscription sub = model.getSubscription(i);
+            final SubscriptionView subView = new SubscriptionView(getContext(), sub);
             final int subIndex = i;
             textView.setText(sub.getName());
             textView.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +91,8 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                     startActivity(intent);
                 }
             });
-            linearLayout.addView(textView);
+            //linearLayout.addView(textView);
+            linearLayout.addView(subView);
         }
     }
 
