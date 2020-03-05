@@ -1,7 +1,9 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -162,13 +164,16 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     /**
      * Called when a button on the action bar is pressed. When the edit button is pressed
      * in this activity, we will reload the page in edit mode, sending the subscription
-     * currently being viewed through the intent.
+     * currently being viewed through the intent. When the delete button is pressed, display
+     * a confirmation dialog, and if yes is chosen, return to the main tab page and delete
+     * the selected item.
      * @param item the item on the action bar that was pressed
      * @return whether it completed successfully or not
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        // When the edit button is pressed, reload this page in edit mode
         if (id == R.id.create_edit_button) {
             Intent intent = new Intent(this, CreateSubscriptionActivity.class);
             intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
@@ -179,8 +184,25 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
                             subIndex);
             startActivity(intent);
-        } else if (id == R.id.create_delete_button) {
-
+        }
+        // When the delete button is pressed, display a yes/no dialog
+        else if (id == R.id.create_delete_button) {
+            final CreateSubscriptionActivity packageContext = this;
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete")
+                    .setMessage("Would you like to delete this Subscription?")
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(packageContext, HomeTabActivity.class);
+                            intent.putExtra(HomeTabActivity.INCOMING_TYPE_MESSAGE,
+                                    HomeTabActivity.INCOMING_TYPE.DELETE);
+                            intent.putExtra(HomeTabActivity.INCOMING_INDEX_MESSAGE,
+                                    subIndex);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null).show();
         }
         return super.onOptionsItemSelected(item);
     }

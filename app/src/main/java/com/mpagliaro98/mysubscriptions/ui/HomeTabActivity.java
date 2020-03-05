@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
-import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentHome;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 
 /**
@@ -84,7 +83,7 @@ public class HomeTabActivity extends AppCompatActivity {
      * @param listener the class that should handle new incoming objects
      */
     public void checkIncomingData(OnDataListenerReceived listener) {
-        if (incomingData != null) {
+        if (incomingType != null) {
             listener.onDataReceived(incomingData, incomingType, incomingIndex);
         }
     }
