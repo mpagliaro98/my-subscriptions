@@ -14,4 +14,5 @@
     <string name="create_error_cost">The cost must be a valid number.</string>
     <string name="create_edit_button">Edit Subscription</string>
     <string name="create_button_edit">Update Subscription</string>
+    <string name="create_delete_button">Delete Subscription</string>
 </resources>

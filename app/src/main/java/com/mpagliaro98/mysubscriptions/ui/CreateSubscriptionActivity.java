@@ -27,12 +27,15 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     private static final String dateFormat = "MM/dd/yyyy";
     public static final String PAGE_TYPE_MESSAGE = "com.mpagliaro98.mysubscriptions.PAGE_TYPE";
     public static final String VIEW_SUB_MESSAGE = "com.mpagliaro98.mysubscriptions.VIEW_SUB";
+    public static final String SUB_ID_MESSAGE = "com.mpagliaro98.mysubscriptions.SUB_ID";
 
     // Different versions this page can be, send this to this page each time it is accessed
     public enum PAGE_TYPE {CREATE, EDIT, VIEW};
 
     // The current state of this page
     private PAGE_TYPE pageType;
+    // The index of the subscription we are currently looking at
+    private int subIndex;
 
     /**
      * When this activity is created, initialize it and load any data we need. Set the
@@ -57,6 +60,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Display a different version of this page depending on the parameter passed in
         Intent intent = getIntent();
         pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
+        subIndex = intent.getIntExtra(SUB_ID_MESSAGE, -1);
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             // Auto-fill the date field with the current date, properly formatted
@@ -106,8 +110,12 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // If we aren't in view mode, set the edit button at the top to not display
         if (pageType != PAGE_TYPE.VIEW) {
-            MenuItem item = menu.findItem(R.id.create_edit_button);
-            item.setVisible(false);
+            MenuItem editItem = menu.findItem(R.id.create_edit_button);
+            editItem.setVisible(false);
+        }
+        if (pageType == PAGE_TYPE.CREATE) {
+            MenuItem deleteItem = menu.findItem(R.id.create_delete_button);
+            deleteItem.setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -129,11 +137,25 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             // Put the object in the intent and send it to the tab activity
             Intent intent = new Intent(this, HomeTabActivity.class);
             intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
+            intent.putExtra(HomeTabActivity.INCOMING_TYPE_MESSAGE,
+                            HomeTabActivity.INCOMING_TYPE.CREATE);
             startActivity(intent);
         }
         else if (pageType == PAGE_TYPE.EDIT) {
-            // TODO add functionality for edit mode
-            displayErrorBar(view, R.string.app_name);
+            // Get a subscription from the data in all the input fields, halt if data is invalid
+            Subscription subscription = parseInputFields(view);
+            if (subscription == null) {
+                return;
+            }
+
+            // Put the object and its index in the intent and send it to the tab activity
+            Intent intent = new Intent(this, HomeTabActivity.class);
+            intent.putExtra(HomeTabActivity.SUBSCRIPTION_MESSAGE, subscription);
+            intent.putExtra(HomeTabActivity.INCOMING_TYPE_MESSAGE,
+                            HomeTabActivity.INCOMING_TYPE.EDIT);
+            intent.putExtra(HomeTabActivity.INCOMING_INDEX_MESSAGE,
+                            subIndex);
+            startActivity(intent);
         }
     }
 
@@ -154,7 +176,11 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             Subscription subscription = parseInputFields(null);
             intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
                             subscription);
+            intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
+                            subIndex);
             startActivity(intent);
+        } else if (id == R.id.create_delete_button) {
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,12 +188,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     /**
      * Display a small bar on the bottom of the screen. Should be called when there is
      * something to display regarding a recent action (like improperly formatted input
-     * when submitting something).
+     * when submitting something). If view is null, nothing will display.
      * @param view the current view of the application
      * @param stringId the string to display, should be in strings.xml
      */
     private void displayErrorBar(View view, int stringId) {
-        Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
+        if (view != null) {
+            Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -187,9 +215,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from name and validate it
         String name = nameText.getText().toString();
         if (name.equals("")) {
-            if (view != null) {
-                displayErrorBar(view, R.string.create_error_name);
-            }
+            displayErrorBar(view, R.string.create_error_name);
             return null;
         }
 
@@ -198,9 +224,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         try {
             date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
-            if (view != null) {
-                displayErrorBar(view, R.string.create_error_date);
-            }
+            displayErrorBar(view, R.string.create_error_date);
             return null;
         }
 
@@ -213,9 +237,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         try {
             cost = Double.parseDouble(costTemp);
         } catch (NumberFormatException e) {
-            if (view != null) {
-                displayErrorBar(view, R.string.create_error_cost);
-            }
+            displayErrorBar(view, R.string.create_error_cost);
             return null;
         }
 

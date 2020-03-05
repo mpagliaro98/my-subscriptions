@@ -19,10 +19,16 @@ public class HomeTabActivity extends AppCompatActivity {
 
     // The key that new Subscription objects will be under in an incoming intent
     public static final String SUBSCRIPTION_MESSAGE = "com.mpagliaro98.mysubscriptions.SUBSCRIPTION";
+    public static final String INCOMING_TYPE_MESSAGE = "com.mpagliaro98.mysubscriptions.INCOMING_TYPE";
+    public static final String INCOMING_INDEX_MESSAGE = "com.mpagliaro98.mysubscriptions.INCOMING_INDEX";
 
-    // The data listener and incoming data are for handling new Subscription objects
-    private OnDataListenerReceived dataListener;
+    // The type of action we want to do with the incoming data
+    public enum INCOMING_TYPE {CREATE, EDIT, DELETE}
+
+    // Incoming data for handling new or updated Subscription objects
     private Subscription incomingData;
+    private INCOMING_TYPE incomingType;
+    private Integer incomingIndex;
 
     /**
      * Fragments under this activity should implement this interface in order to be a
@@ -30,7 +36,7 @@ public class HomeTabActivity extends AppCompatActivity {
      * data listener each time a new Subscription object arrives.
      */
     public interface OnDataListenerReceived {
-        void onDataReceived(Subscription subscription);
+        void onDataReceived(Subscription subscription, INCOMING_TYPE type, Integer subIndex);
     }
 
     /**
@@ -52,9 +58,11 @@ public class HomeTabActivity extends AppCompatActivity {
         // Start on the home tab, the one in the middle
         viewPager.setCurrentItem(1);
 
-        // Check if any data was passed here (if we enter from the create activity)
+        // Check if any data was passed here, and save it to private fields
         Intent intent = getIntent();
         incomingData = (Subscription)intent.getSerializableExtra(SUBSCRIPTION_MESSAGE);
+        incomingType = (INCOMING_TYPE)intent.getSerializableExtra(INCOMING_TYPE_MESSAGE);
+        incomingIndex = intent.getIntExtra(INCOMING_INDEX_MESSAGE, -1);
     }
 
     /**
@@ -75,10 +83,9 @@ public class HomeTabActivity extends AppCompatActivity {
      * any incoming data exists, the listener will be called to handle it.
      * @param listener the class that should handle new incoming objects
      */
-    public void setDataListener(OnDataListenerReceived listener) {
-        dataListener = listener;
+    public void checkIncomingData(OnDataListenerReceived listener) {
         if (incomingData != null) {
-            dataListener.onDataReceived(incomingData);
+            listener.onDataReceived(incomingData, incomingType, incomingIndex);
         }
     }
 }

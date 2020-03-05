@@ -68,6 +68,23 @@ public class SharedViewModel extends ViewModel {
     }
 
     /**
+     * Update a subscription at a given index by replacing it with a new instance.
+     * @param subscription the new subscription to put in the list
+     * @param index the index of the subscription to replace
+     */
+    public void updateSubscription(Subscription subscription, int index) {
+        subscriptionList.set(index, subscription);
+    }
+
+    /**
+     * Remove a subscription from the list at a given index.
+     * @param index the index of the subscription to remove
+     */
+    public void deleteSubscription(int index) {
+        subscriptionList.remove(index);
+    }
+
+    /**
      * Get the number of subscriptions currently saved.
      * @return the number of subscriptions as an int
      */

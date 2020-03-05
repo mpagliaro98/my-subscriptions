@@ -48,7 +48,7 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
 
         // Set this fragment as the data listener for the tab activity
         HomeTabActivity homeTabActivity = (HomeTabActivity)getActivity();
-        homeTabActivity.setDataListener(this);
+        homeTabActivity.checkIncomingData(this);
     }
 
     /**
@@ -59,20 +59,10 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
      * @return the view that displays this fragment
      */
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home_tab, container, false);
-
         updateSubList(root);
-
-        final TextView textView = root.findViewById(R.id.section_label);
-        model.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
         return root;
     }
 
@@ -85,6 +75,7 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
         for (int i = 0; i < model.numSubscriptions(); i++) {
             final TextView textView = new TextView(getActivity());
             final Subscription sub = model.getSubscription(i);
+            final int subIndex = i;
             textView.setText(sub.getName());
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,6 +85,8 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
                             CreateSubscriptionActivity.PAGE_TYPE.VIEW);
                     intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
                                     sub);
+                    intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
+                                    subIndex);
                     startActivity(intent);
                 }
             });
@@ -103,14 +96,23 @@ public class FragmentHome extends Fragment implements HomeTabActivity.OnDataList
 
     /**
      * Receive data from another activity, passed to here through this fragment's
-     * parent activity. In this case, the data is a subscription object created in
-     * a separate activity, which we will add to the model and update the internal
-     * storage file.
+     * parent activity. In this case, the data is a subscription object modified in
+     * a separate activity, which we will perform an operation on depending on what
+     * action should be taken.
      * @param subscription the new subscription object
+     * @param type the action to take on the incoming data, either CREATE, EDIT, or DELETE
+     * @param subIndex if required, the index in the list of the item to modify
      */
     @Override
-    public void onDataReceived(Subscription subscription) {
-        model.addSubscription(subscription);
+    public void onDataReceived(Subscription subscription, HomeTabActivity.INCOMING_TYPE type,
+                               Integer subIndex) {
+        if (type == HomeTabActivity.INCOMING_TYPE.CREATE) {
+            model.addSubscription(subscription);
+        } else if (type == HomeTabActivity.INCOMING_TYPE.EDIT) {
+            model.updateSubscription(subscription, subIndex);
+        } else if (type == HomeTabActivity.INCOMING_TYPE.DELETE) {
+            model.deleteSubscription(subIndex);
+        }
         try {
             model.saveToFile(getContext());
         } catch (IOException e) {
