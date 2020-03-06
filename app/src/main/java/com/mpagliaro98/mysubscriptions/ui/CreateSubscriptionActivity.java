@@ -317,6 +317,6 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         }
 
         // Build our subscription object and return it
-        return new Subscription(name, cost, date, note, rechargeFrequency);
+        return new Subscription(name, cost, date, note, rechargeFrequency, getResources());
     }
 }

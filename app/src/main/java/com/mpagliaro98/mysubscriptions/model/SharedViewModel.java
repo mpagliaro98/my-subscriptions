@@ -117,6 +117,7 @@ public class SharedViewModel extends ViewModel {
         String line = reader.readLine();
         while (line != null) {
             Subscription subscription = gson.fromJson(line, Subscription.class);
+            subscription.generateNextPaymentDate(context.getResources());
             addSubscription(subscription);
             line = reader.readLine();
         }

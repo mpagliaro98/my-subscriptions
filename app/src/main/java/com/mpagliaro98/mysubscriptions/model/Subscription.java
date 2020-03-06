@@ -17,7 +17,7 @@ import java.util.Locale;
  */
 public class Subscription implements Serializable {
 
-    // TODO: add categories
+    // TODO: add categories and notification settings
     private String name;
     private double cost;
     private Date startDate;
@@ -32,7 +32,13 @@ public class Subscription implements Serializable {
      * @param startDate when the subscription first started
      * @param note any miscellaneous notes
      * @param rechargeFrequency the frequency at which this subscription is paid for
+     * @param resources the current application resources
      */
+    public Subscription(String name, double cost, Date startDate, String note,
+                        String rechargeFrequency, Resources resources) {
+        this(name, cost, startDate, note, rechargeFrequency);
+        generateNextPaymentDate(resources);
+    }
     public Subscription(String name, double cost, Date startDate, String note,
                         String rechargeFrequency) {
         this.name = name;
@@ -40,11 +46,14 @@ public class Subscription implements Serializable {
         this.startDate = startDate;
         this.note = note;
         this.rechargeFrequency = rechargeFrequency;
-
-        // Calculate what the next soonest payment date will be
-        Context context = ContextFetcher.getContext();
-        Resources resources = context.getResources();
         this.nextPaymentDate = startDate;
+    }
+
+    /**
+     * Calculate when the next soonest payment date will be from today.
+     * @param resources the current application resources
+     */
+    public void generateNextPaymentDate(Resources resources) {
         Calendar c = Calendar.getInstance();
         Date today = c.getTime();
         c.setTime(startDate);
