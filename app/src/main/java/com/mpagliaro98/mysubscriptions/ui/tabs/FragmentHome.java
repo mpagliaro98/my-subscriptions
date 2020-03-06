@@ -72,13 +72,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     private void updateSubList(View view) {
         LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
         for (int i = 0; i < model.numSubscriptions(); i++) {
-            final TextView textView = new TextView(getActivity());
-
             final Subscription sub = model.getSubscription(i);
             final SubscriptionView subView = new SubscriptionView(getContext(), sub);
             final int subIndex = i;
-            textView.setText(sub.getName());
-            textView.setOnClickListener(new View.OnClickListener() {
+            subView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), CreateSubscriptionActivity.class);
@@ -91,7 +88,6 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                     startActivity(intent);
                 }
             });
-            //linearLayout.addView(textView);
             linearLayout.addView(subView);
         }
     }
