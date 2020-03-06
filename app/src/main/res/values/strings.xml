@@ -17,11 +17,11 @@
     <string name="create_delete_button">Delete Subscription</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
-    <string name="array_freq_monthly">Once every Month</string>
-    <string name="array_freq_bimonthly">Once every Two Months</string>
-    <string name="array_freq_trimonthly">Once every Three Months</string>
-    <string name="array_freq_twiceyear">Twice every Year</string>
-    <string name="array_freq_yearly">Once every Year</string>
+    <string name="array_freq_monthly">Every Month</string>
+    <string name="array_freq_bimonthly">Every Two Months</string>
+    <string name="array_freq_trimonthly">Every Three Months</string>
+    <string name="array_freq_twiceyear">Twice a Year</string>
+    <string name="array_freq_yearly">Once a Year</string>
 
     <string-array name="array_freq_dropdown">
         <item>@string/array_freq_monthly</item>

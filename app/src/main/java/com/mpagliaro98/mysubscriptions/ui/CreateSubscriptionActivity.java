@@ -123,6 +123,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             cost.setText(String.format("%.2f", sub.getCost()));
             date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
             note.setText(sub.getNote());
+            // Set the dropdown to this subscription's value
+            String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
+            for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
+                if (sub.getRechargeFrequency().equals(dropdownStrings[strIndex])) {
+                    frequency.setSelection(strIndex);
+                }
+            }
+            // Make sure the next date field can't be seen when editing
             nextDate.setVisibility(View.INVISIBLE);
         }
     }
