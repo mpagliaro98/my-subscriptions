@@ -1,7 +1,14 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import android.content.Context;
+import android.content.res.Resources;
+
+import com.mpagliaro98.mysubscriptions.R;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Subscription value object to store data on an individual subscription.
@@ -10,11 +17,13 @@ import java.util.Date;
  */
 public class Subscription implements Serializable {
 
-    // TODO: add categories and time between charges
+    // TODO: add categories
     private String name;
     private double cost;
     private Date startDate;
     private String note;
+    private String rechargeFrequency;
+    private Date nextPaymentDate;
 
     /**
      * Create and initialize all the values of this subscription.
@@ -22,12 +31,37 @@ public class Subscription implements Serializable {
      * @param cost how much it costs
      * @param startDate when the subscription first started
      * @param note any miscellaneous notes
+     * @param rechargeFrequency the frequency at which this subscription is paid for
      */
-    public Subscription(String name, double cost, Date startDate, String note) {
+    public Subscription(String name, double cost, Date startDate, String note,
+                        String rechargeFrequency) {
         this.name = name;
         this.cost = cost;
         this.startDate = startDate;
         this.note = note;
+        this.rechargeFrequency = rechargeFrequency;
+
+        // Calculate what the next soonest payment date will be
+        Context context = ContextFetcher.getContext();
+        Resources resources = context.getResources();
+        this.nextPaymentDate = startDate;
+        Calendar c = Calendar.getInstance();
+        Date today = c.getTime();
+        c.setTime(startDate);
+        while (!nextPaymentDate.after(today)) {
+            if (rechargeFrequency.equals(resources.getString(R.string.array_freq_monthly))) {
+                c.add(Calendar.MONTH, 1);
+            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_bimonthly))) {
+                c.add(Calendar.MONTH, 2);
+            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_trimonthly))) {
+                c.add(Calendar.MONTH, 3);
+            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_twiceyear))) {
+                c.add(Calendar.MONTH, 6);
+            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_yearly))) {
+                c.add(Calendar.YEAR, 1);
+            }
+            nextPaymentDate = c.getTime();
+        }
     }
 
     /**
@@ -92,5 +126,21 @@ public class Subscription implements Serializable {
      */
     public void setNote(String note) {
         this.note = note;
+    }
+
+    /**
+     * Get the frequency at which this subscription is paid for.
+     * @return the frequency as a string
+     */
+    public String getRechargeFrequency() {
+        return rechargeFrequency;
+    }
+
+    /**
+     * Set the frequency of this subscription.
+     * @param rechargeFrequency the frequency as a string
+     */
+    public void setRechargeFrequency(String rechargeFrequency) {
+        this.rechargeFrequency = rechargeFrequency;
     }
 }

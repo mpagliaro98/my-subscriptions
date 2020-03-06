@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
@@ -61,6 +62,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         TextView cost = findViewById(R.id.create_cost);
         TextView date = findViewById(R.id.create_date);
         TextView note = findViewById(R.id.create_note);
+        Spinner frequency = findViewById(R.id.create_freq_dropdown);
         Button createButton = findViewById(R.id.create_button_finish);
 
         Intent intent = getIntent();
@@ -90,6 +92,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             note.setLinksClickable(false);
             note.setCursorVisible(false);
             note.setFocusableInTouchMode(false);
+            // Set the dropdown to this subscription's value
+            frequency.setEnabled(false);
+            String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
+            for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
+                if (sub.getRechargeFrequency().equals(dropdownStrings[strIndex])) {
+                    frequency.setSelection(strIndex);
+                }
+            }
             createButton.setVisibility(View.INVISIBLE);
 
             // Fill every field with the values of the subscription to view
@@ -240,6 +250,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         EditText dateText = findViewById(R.id.create_date);
         EditText costText = findViewById(R.id.create_cost);
         EditText noteText = findViewById(R.id.create_note);
+        Spinner freqDropdown = findViewById(R.id.create_freq_dropdown);
 
         // Extract the data from name and validate it
         String name = nameText.getText().toString();
@@ -273,7 +284,22 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from note, no validation needed
         String note = noteText.getText().toString();
 
+        // Extract the string from the dropdown, make sure it's a valid string from the list
+        String rechargeFrequency = freqDropdown.getSelectedItem().toString();
+        String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
+        boolean errorInDropdown = true;
+        for (String dropdownStr : dropdownStrings) {
+            if (rechargeFrequency.equals(dropdownStr)) {
+                errorInDropdown = false;
+                break;
+            }
+        }
+        if (errorInDropdown) {
+            displayErrorBar(view, R.string.create_error_frequency);
+            return null;
+        }
+
         // Build our subscription object and return it
-        return new Subscription(name, cost, date, note);
+        return new Subscription(name, cost, date, note, rechargeFrequency);
     }
 }
