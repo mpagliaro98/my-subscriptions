@@ -63,6 +63,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         TextView date = findViewById(R.id.create_date);
         TextView note = findViewById(R.id.create_note);
         Spinner frequency = findViewById(R.id.create_freq_dropdown);
+        TextView nextDate = findViewById(R.id.create_next_date);
         Button createButton = findViewById(R.id.create_button_finish);
 
         Intent intent = getIntent();
@@ -72,10 +73,13 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
         // Save the index of this subscription, if it's null it isn't needed and will be set to -1
         subIndex = intent.getIntExtra(SUB_ID_MESSAGE, -1);
+
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             // Auto-fill the date field with the current date, properly formatted
             date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
+            // Make sure the next date field can't be seen when creating
+            nextDate.setVisibility(View.INVISIBLE);
         }
         // For view, populate the page with un-selectable text fields for each subscription field
         else if (pageType == PAGE_TYPE.VIEW) {
@@ -100,6 +104,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     frequency.setSelection(strIndex);
                 }
             }
+            // Write the next payment date to the screen
+            String nextDateStr = "Next Payment Date: " +
+                    new SimpleDateFormat(dateFormat, Locale.US).format(sub.getNextPaymentDate());
+            nextDate.setText(nextDateStr);
             createButton.setVisibility(View.INVISIBLE);
 
             // Fill every field with the values of the subscription to view
@@ -115,6 +123,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             cost.setText(String.format("%.2f", sub.getCost()));
             date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
             note.setText(sub.getNote());
+            nextDate.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -143,4 +143,12 @@ public class Subscription implements Serializable {
     public void setRechargeFrequency(String rechargeFrequency) {
         this.rechargeFrequency = rechargeFrequency;
     }
+
+    /**
+     * Get the next immediate date this Subscription will be charged.
+     * @return the next payment date
+     */
+    public Date getNextPaymentDate() {
+        return nextPaymentDate;
+    }
 }
