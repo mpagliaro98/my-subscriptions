@@ -5,7 +5,7 @@
     <string name="tab_text_home">Home</string>
     <string name="tab_text_analytics">Analytics</string>
     <string name="create_name">Name</string>
-    <string name="create_cost">Cost</string>
+    <string name="create_cost">XX.XX</string>
     <string name="create_note">Any additional notes</string>
     <string name="current_date">MM/DD/YYYY</string>
     <string name="create_button">Create Subscription</string>
@@ -31,4 +31,7 @@
         <item>@string/array_freq_yearly</item>
     </string-array>
     <string name="create_error_frequency">The frequency value is invalid.</string>
+    <string name="create_text_cost">Cost ($):</string>
+    <string name="create_text_date">Start Date:</string>
+    <string name="create_text_freq">You get charged</string>
 </resources>
