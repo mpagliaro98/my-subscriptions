@@ -44,7 +44,7 @@ public class SubscriptionView extends LinearLayout {
         textStartDate = findViewById(R.id.subview_startdate);
 
         textName.setText(subscription.getName());
-        textCost.setText("Cost: $" + subscription.getCost());
+        textCost.setText("Cost: $" + String.format("%.2f", subscription.getCost()));
         textStartDate.setText(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(subscription.getStartDate()));
     }
 }
