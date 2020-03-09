@@ -30,8 +30,21 @@
         <item>@string/array_freq_twiceyear</item>
         <item>@string/array_freq_yearly</item>
     </string-array>
+
     <string name="create_error_frequency">The frequency value is invalid.</string>
     <string name="create_text_cost">Cost ($):</string>
     <string name="create_text_date">Start Date:</string>
     <string name="create_text_freq">You get charged</string>
+    <string name="home_search">Search</string>
+    <string name="array_sort_name">By Name</string>
+    <string name="array_sort_next">By Next Date</string>
+    <string name="array_sort_category">By Category</string>
+    <string name="array_sort_cost">By Cost</string>
+
+    <string-array name="array_sort_dropdown">
+        <item>@string/array_sort_name</item>
+        <item>@string/array_sort_next</item>
+        <item>@string/array_sort_category</item>
+        <item>@string/array_sort_cost</item>
+    </string-array>
 </resources>
