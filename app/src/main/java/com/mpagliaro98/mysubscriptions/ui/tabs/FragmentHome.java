@@ -2,6 +2,8 @@ package com.mpagliaro98.mysubscriptions.ui.tabs;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,6 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
-
 import java.io.IOException;
 
 /**
@@ -60,8 +61,25 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_home_tab, container, false);
+        final View root = inflater.inflate(R.layout.fragment_home_tab, container, false);
         updateSubList(root);
+
+        // Add a listener to the search bar that will filter the list each time it's used
+        TextView searchBar = root.findViewById(R.id.home_search);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                model.filterList(s);
+                updateSubList(root);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         return root;
     }
 
@@ -71,10 +89,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
      */
     private void updateSubList(View view) {
         LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
-        for (int i = 0; i < model.numSubscriptions(); i++) {
+        linearLayout.removeAllViewsInLayout();
+        for (int i = 0; i < model.numSubscriptionsVisible(); i++) {
             final Subscription sub = model.getSubscription(i);
             final SubscriptionView subView = new SubscriptionView(getContext(), sub);
-            final int subIndex = i;
             subView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -84,7 +102,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                     intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
                                     sub);
                     intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
-                                    subIndex);
+                                    sub.getId());
                     startActivity(intent);
                 }
             });

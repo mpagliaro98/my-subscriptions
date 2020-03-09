@@ -18,6 +18,7 @@ import java.util.Locale;
 public class Subscription implements Serializable {
 
     // TODO: add categories and notification settings
+    private int id;
     private String name;
     private double cost;
     private Date startDate;
@@ -27,6 +28,7 @@ public class Subscription implements Serializable {
 
     /**
      * Create and initialize all the values of this subscription.
+     * @param id the unique id of this subscription
      * @param name the name of the subscription
      * @param cost how much it costs
      * @param startDate when the subscription first started
@@ -34,13 +36,14 @@ public class Subscription implements Serializable {
      * @param rechargeFrequency the frequency at which this subscription is paid for
      * @param resources the current application resources
      */
-    public Subscription(String name, double cost, Date startDate, String note,
+    public Subscription(int id, String name, double cost, Date startDate, String note,
                         String rechargeFrequency, Resources resources) {
-        this(name, cost, startDate, note, rechargeFrequency);
+        this(id, name, cost, startDate, note, rechargeFrequency);
         generateNextPaymentDate(resources);
     }
-    public Subscription(String name, double cost, Date startDate, String note,
+    public Subscription(int id, String name, double cost, Date startDate, String note,
                         String rechargeFrequency) {
+        this.id = id;
         this.name = name;
         this.cost = cost;
         this.startDate = startDate;
@@ -71,6 +74,22 @@ public class Subscription implements Serializable {
             }
             nextPaymentDate = c.getTime();
         }
+    }
+
+    /**
+     * Get the unique ID of this subscription.
+     * @return the ID as an int
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Set the unique ID of this subscription.
+     * @param id the ID as an int
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**

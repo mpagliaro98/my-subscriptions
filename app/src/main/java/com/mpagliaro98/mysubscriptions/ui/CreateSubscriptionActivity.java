@@ -316,7 +316,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             return null;
         }
 
-        // Build our subscription object and return it
-        return new Subscription(name, cost, date, note, rechargeFrequency, getResources());
+        // Build our subscription object and return it, set the unique ID as -1 as we will
+        // give it its proper value in the model
+        return new Subscription(-1, name, cost, date, note, rechargeFrequency, getResources());
     }
 }

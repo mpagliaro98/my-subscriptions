@@ -29,8 +29,9 @@ public class SharedViewModel extends ViewModel {
             return "Currently on tab: " + input;
         }
     });
-    // The list where subscriptions are stored
-    private ArrayList<Subscription> subscriptionList = new ArrayList<>();
+    // The list where subscriptions are stored, viewable is what will be sent to the view
+    private ArrayList<Subscription> viewableSubscriptionList = new ArrayList<>();
+    private ArrayList<Subscription> fullSubscriptionList = new ArrayList<>();
     // The filename the data is kept in
     private static final String filename = "subscriptions.dat";
 
@@ -51,12 +52,13 @@ public class SharedViewModel extends ViewModel {
     }
 
     /**
-     * Get a subscription object from the list.
+     * Get a subscription object from the list. This will fetch from the list of
+     * subscriptions currently viewable (if the list is filtered by search or sort).
      * @param index index of the subscription to get
      * @return a subscription object
      */
     public Subscription getSubscription(int index) {
-        return subscriptionList.get(index);
+        return viewableSubscriptionList.get(index);
     }
 
     /**
@@ -64,7 +66,9 @@ public class SharedViewModel extends ViewModel {
      * @param subscription a subscription object to add to the list
      */
     public void addSubscription(Subscription subscription) {
-        subscriptionList.add(subscription);
+        // For each new sub, set its ID to the next available ID.
+        subscription.setId(fullSubscriptionList.size());
+        fullSubscriptionList.add(subscription);
     }
 
     /**
@@ -73,7 +77,7 @@ public class SharedViewModel extends ViewModel {
      * @param index the index of the subscription to replace
      */
     public void updateSubscription(Subscription subscription, int index) {
-        subscriptionList.set(index, subscription);
+        fullSubscriptionList.set(index, subscription);
     }
 
     /**
@@ -81,15 +85,52 @@ public class SharedViewModel extends ViewModel {
      * @param index the index of the subscription to remove
      */
     public void deleteSubscription(int index) {
-        subscriptionList.remove(index);
+        fullSubscriptionList.remove(index);
+        updateAllSubIds();
     }
 
     /**
-     * Get the number of subscriptions currently saved.
+     * Re-distribute IDs for every subscription, sequentially from 0 in the order of
+     * the full subscription list. This should be done if a subscription is removed,
+     * leaving a gap in the subscription IDs.
+     */
+    private void updateAllSubIds() {
+        for (int i = 0; i < numSubscriptionsTotal(); i++) {
+            Subscription sub = fullSubscriptionList.get(i);
+            sub.setId(i);
+        }
+    }
+
+    /**
+     * Get the number of subscriptions currently viewable on the page.
      * @return the number of subscriptions as an int
      */
-    public int numSubscriptions() {
-        return subscriptionList.size();
+    public int numSubscriptionsVisible() {
+        return viewableSubscriptionList.size();
+    }
+
+    /**
+     * Get the total number of subscriptions, regardless of what is visible.
+     * @return the total number of subscriptions as an int
+     */
+    public int numSubscriptionsTotal() {
+        return fullSubscriptionList.size();
+    }
+
+    /**
+     * Filter the viewable list of subscriptions based on some string input. The given
+     * string will filter the list to include only subscriptions that contain that
+     * string in their name.
+     * @param searchText What text should be included in each subscription's name
+     */
+    public void filterList(CharSequence searchText) {
+        ArrayList<Subscription> filteredList = new ArrayList<>();
+        for (Subscription sub : fullSubscriptionList) {
+            if (sub.getName().contains(searchText)) {
+                filteredList.add(sub);
+            }
+        }
+        viewableSubscriptionList = filteredList;
     }
 
     /**
@@ -107,7 +148,7 @@ public class SharedViewModel extends ViewModel {
         }
 
         // Clear the subscriptions so we can populate the list, then make the reader
-        subscriptionList.clear();
+        fullSubscriptionList.clear();
         Gson gson = new Gson();
         FileInputStream fis = context.openFileInput(filename);
         InputStreamReader inputStreamReader = new InputStreamReader(fis);
@@ -115,13 +156,17 @@ public class SharedViewModel extends ViewModel {
 
         // Read each line, convert it to a subscription object from json, then put it in the list
         String line = reader.readLine();
+        int id = 0;
         while (line != null) {
             Subscription subscription = gson.fromJson(line, Subscription.class);
             subscription.generateNextPaymentDate(context.getResources());
-            addSubscription(subscription);
+            subscription.setId(id);
+            fullSubscriptionList.add(subscription);
             line = reader.readLine();
+            id++;
         }
         reader.close();
+        viewableSubscriptionList = fullSubscriptionList;
     }
 
     /**
@@ -144,8 +189,8 @@ public class SharedViewModel extends ViewModel {
 
         // Convert each subscription to json, then add it to the file line by line
         FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
-        for (int i = 0; i < numSubscriptions(); i++) {
-            Subscription subscription = getSubscription(i);
+        for (int i = 0; i < fullSubscriptionList.size(); i++) {
+            Subscription subscription = fullSubscriptionList.get(i);
             String line = gson.toJson(subscription) + "\n";
             fos.write(line.getBytes());
         }
