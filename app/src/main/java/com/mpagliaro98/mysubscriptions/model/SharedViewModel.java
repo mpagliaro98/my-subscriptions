@@ -132,9 +132,10 @@ public class SharedViewModel extends ViewModel {
      * @param searchText What text should be included in each subscription's name
      */
     public void filterList(CharSequence searchText) {
+        String search = searchText.toString();
         ArrayList<Subscription> filteredList = new ArrayList<>();
         for (Subscription sub : reorderableFullSubscriptionList) {
-            if (sub.getName().contains(searchText)) {
+            if (sub.getName().toLowerCase().contains(search.toLowerCase())) {
                 filteredList.add(sub);
             }
         }
