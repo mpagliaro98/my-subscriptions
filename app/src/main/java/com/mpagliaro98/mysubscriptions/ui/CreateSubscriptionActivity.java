@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,8 +16,10 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.model.Category;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -46,6 +49,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     // The index of the subscription we are currently looking at
     private int subIndex;
 
+    // List of every valid category, used to populate input fields
+    private ArrayList<Category> categoryList = new ArrayList<Category>() {
+        {
+            add(new Category(R.color.colorCategoryStreaming, "Streaming"));
+            add(new Category(R.color.colorCategoryGaming, "Gaming"));
+            add(new Category(R.color.colorCategoryShopping, "Online Shopping"));
+        }};
+
     /**
      * When this activity is created, initialize it and load any data we need. Set the
      * page mode to either create, edit, or view, and set the fields on the view to their
@@ -65,6 +76,13 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         Spinner frequency = findViewById(R.id.create_freq_dropdown);
         TextView nextDate = findViewById(R.id.create_next_date);
         Button createButton = findViewById(R.id.create_button_finish);
+        Spinner category = findViewById(R.id.create_category_dropdown);
+
+        // Set the list of items in the category dropdown
+        ArrayAdapter<Category> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, categoryList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(adapter);
 
         Intent intent = getIntent();
         // This incoming subscription will be null when page type is CREATE
@@ -108,6 +126,13 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             String nextDateStr = "Next Payment Date: " +
                     new SimpleDateFormat(dateFormat, Locale.US).format(sub.getNextPaymentDate());
             nextDate.setText(nextDateStr);
+            // Set the category dropdown to this subscription's category
+            category.setEnabled(false);
+            for (int catIndex = 0; catIndex < categoryList.size(); catIndex++) {
+                if (sub.getCategory().equals(categoryList.get(catIndex))) {
+                    category.setSelection(catIndex);
+                }
+            }
             createButton.setVisibility(View.INVISIBLE);
 
             // Fill every field with the values of the subscription to view
@@ -128,6 +153,12 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
                 if (sub.getRechargeFrequency().equals(dropdownStrings[strIndex])) {
                     frequency.setSelection(strIndex);
+                }
+            }
+            // Set the category dropdown to this subscription's category
+            for (int catIndex = 0; catIndex < categoryList.size(); catIndex++) {
+                if (sub.getCategory().equals(categoryList.get(catIndex))) {
+                    category.setSelection(catIndex);
                 }
             }
             // Make sure the next date field can't be seen when editing
@@ -316,8 +347,12 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             return null;
         }
 
+        // Set the selected category as this subscription's category
+        Spinner categoryDropdown = findViewById(R.id.create_category_dropdown);
+        Category category = (Category)categoryDropdown.getSelectedItem();
+
         // Build our subscription object and return it, set the unique ID as -1 as we will
         // give it its proper value in the model
-        return new Subscription(-1, name, cost, date, note, rechargeFrequency, getResources());
+        return new Subscription(-1, name, cost, date, note, rechargeFrequency, category, getResources());
     }
 }

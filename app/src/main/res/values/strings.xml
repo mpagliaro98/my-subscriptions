@@ -50,4 +50,5 @@
         <item>@string/array_sort_cost</item>
     </string-array>
     <string name="unimplemented">That feature is not yet implemented.</string>
+    <string name="create_text_category">Category:</string>
 </resources>

@@ -85,7 +85,6 @@ public class SharedViewModel extends ViewModel {
      */
     public void updateSubscription(Subscription subscription, int index) {
         subscription.setId(index);
-        System.out.println("UPDATING INDEX " + subscription.getId() + " AT INDEX " + index);
         fullSubscriptionList.set(index, subscription);
     }
 

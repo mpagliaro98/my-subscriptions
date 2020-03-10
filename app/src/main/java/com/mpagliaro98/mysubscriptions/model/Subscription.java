@@ -1,14 +1,10 @@
 package com.mpagliaro98.mysubscriptions.model;
 
-import android.content.Context;
 import android.content.res.Resources;
-
 import com.mpagliaro98.mysubscriptions.R;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Subscription value object to store data on an individual subscription.
@@ -25,6 +21,7 @@ public class Subscription implements Serializable {
     private String note;
     private String rechargeFrequency;
     private Date nextPaymentDate;
+    private Category category;
 
     /**
      * Create and initialize all the values of this subscription.
@@ -35,14 +32,15 @@ public class Subscription implements Serializable {
      * @param note any miscellaneous notes
      * @param rechargeFrequency the frequency at which this subscription is paid for
      * @param resources the current application resources
+     * @param category the category this subscription falls into
      */
     public Subscription(int id, String name, double cost, Date startDate, String note,
-                        String rechargeFrequency, Resources resources) {
-        this(id, name, cost, startDate, note, rechargeFrequency);
+                        String rechargeFrequency, Category category, Resources resources) {
+        this(id, name, cost, startDate, note, rechargeFrequency, category);
         generateNextPaymentDate(resources);
     }
     public Subscription(int id, String name, double cost, Date startDate, String note,
-                        String rechargeFrequency) {
+                        String rechargeFrequency, Category category) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -50,6 +48,7 @@ public class Subscription implements Serializable {
         this.note = note;
         this.rechargeFrequency = rechargeFrequency;
         this.nextPaymentDate = startDate;
+        this.category = category;
     }
 
     /**
@@ -178,5 +177,21 @@ public class Subscription implements Serializable {
      */
     public Date getNextPaymentDate() {
         return nextPaymentDate;
+    }
+
+    /**
+     * Get the category of this subscription.
+     * @return the category object
+     */
+    public Category getCategory() {
+        return category;
+    }
+
+    /**
+     * Set the category of this subscription.
+     * @param category the category object
+     */
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
