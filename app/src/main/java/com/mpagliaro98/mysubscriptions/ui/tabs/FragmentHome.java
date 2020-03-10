@@ -132,10 +132,18 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                         }
                     }, searchText);
                 }
-                // Sort by category
+                // Sort by category, which sorts by category name, then subscription name
                 else if (sortOption.equals(getString(R.string.array_sort_category))) {
-                    // TODO implement when categories are added
-                    Snackbar.make(root, R.string.unimplemented, Snackbar.LENGTH_SHORT).show();
+                    model.sortList(new Comparator<Subscription>() {
+                        @Override
+                        public int compare(Subscription o1, Subscription o2) {
+                            if (o1.getCategory().getName().equals(o2.getCategory().getName())) {
+                                return o1.getName().compareToIgnoreCase(o2.getName());
+                            } else {
+                                return o1.getCategory().getName().compareToIgnoreCase(o2.getCategory().getName());
+                            }
+                        }
+                    }, searchText);
                 }
                 updateSubList(root);
             }
