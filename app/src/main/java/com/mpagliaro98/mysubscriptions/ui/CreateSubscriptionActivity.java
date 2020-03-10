@@ -2,15 +2,19 @@ package com.mpagliaro98.mysubscriptions.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.media.Image;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
@@ -76,13 +80,26 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         Spinner frequency = findViewById(R.id.create_freq_dropdown);
         TextView nextDate = findViewById(R.id.create_next_date);
         Button createButton = findViewById(R.id.create_button_finish);
-        Spinner category = findViewById(R.id.create_category_dropdown);
+        final ImageView catColor = findViewById(R.id.create_category_color);
+        final Spinner category = findViewById(R.id.create_category_dropdown);
 
         // Set the list of items in the category dropdown
         ArrayAdapter<Category> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(adapter);
+
+        // Create a listener that sets the category's color beside the dropdown
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                catColor.setColorFilter(getResources().getColor(((Category)category.getSelectedItem()).getColor()),
+                        PorterDuff.Mode.SRC_IN);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         Intent intent = getIntent();
         // This incoming subscription will be null when page type is CREATE

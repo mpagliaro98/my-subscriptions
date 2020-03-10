@@ -173,8 +173,19 @@
                     android:layout_marginBottom="4dp"
                     android:text="@string/create_text_category"
                     app:layout_constraintBottom_toBottomOf="@+id/create_category_dropdown"
-                    app:layout_constraintEnd_toStartOf="@+id/create_category_dropdown"
+                    app:layout_constraintEnd_toStartOf="@+id/create_category_color"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/create_category_color"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="2dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/create_category_dropdown"
+                    app:layout_constraintEnd_toStartOf="@+id/create_category_dropdown"
+                    app:srcCompat="@drawable/circle_element" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
