@@ -40,11 +40,14 @@
     <string name="array_sort_next">By Next Date</string>
     <string name="array_sort_category">By Category</string>
     <string name="array_sort_cost">By Cost</string>
+    <string name="array_sort_default">No Sorting</string>
 
     <string-array name="array_sort_dropdown">
+        <item>@string/array_sort_default</item>
         <item>@string/array_sort_name</item>
         <item>@string/array_sort_next</item>
         <item>@string/array_sort_category</item>
         <item>@string/array_sort_cost</item>
     </string-array>
+    <string name="unimplemented">That feature is not yet implemented.</string>
 </resources>

@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * The model shared between each fragment, keeping track of the data each page of
@@ -29,8 +31,13 @@ public class SharedViewModel extends ViewModel {
             return "Currently on tab: " + input;
         }
     });
-    // The list where subscriptions are stored, viewable is what will be sent to the view
+    // An underlying hierarchy of lists is kept to handle the subscription list
+    // The viewable list is the top level list, its contents are shown in the UI
     private ArrayList<Subscription> viewableSubscriptionList = new ArrayList<>();
+    // Re-orderable list always has all the elements the full list has, but can be re-ordered
+    // The viewable list takes what re-orderable list has and filters it before displaying
+    private ArrayList<Subscription> reorderableFullSubscriptionList = new ArrayList<>();
+    // The full list has all subscriptions in it, always ordered by ID
     private ArrayList<Subscription> fullSubscriptionList = new ArrayList<>();
     // The filename the data is kept in
     private static final String filename = "subscriptions.dat";
@@ -77,6 +84,8 @@ public class SharedViewModel extends ViewModel {
      * @param index the index of the subscription to replace
      */
     public void updateSubscription(Subscription subscription, int index) {
+        subscription.setId(index);
+        System.out.println("UPDATING INDEX " + subscription.getId() + " AT INDEX " + index);
         fullSubscriptionList.set(index, subscription);
     }
 
@@ -125,12 +134,24 @@ public class SharedViewModel extends ViewModel {
      */
     public void filterList(CharSequence searchText) {
         ArrayList<Subscription> filteredList = new ArrayList<>();
-        for (Subscription sub : fullSubscriptionList) {
+        for (Subscription sub : reorderableFullSubscriptionList) {
             if (sub.getName().contains(searchText)) {
                 filteredList.add(sub);
             }
         }
         viewableSubscriptionList = filteredList;
+    }
+
+    /**
+     * Sort the underlying re-orderable list. This also requires the search text to be passed
+     * in so we can update the viewable list with any search conditions as well.
+     * @param comparator A comparator function that takes two subscriptions and returns -1 if
+     *                   sub1 < sub2, 1 if sub1 > sub2, or 0 if they are equal
+     * @param searchText The next in the search box
+     */
+    public void sortList(Comparator<Subscription> comparator, CharSequence searchText) {
+        Collections.sort(reorderableFullSubscriptionList, comparator);
+        filterList(searchText);
     }
 
     /**
@@ -167,6 +188,7 @@ public class SharedViewModel extends ViewModel {
         }
         reader.close();
         viewableSubscriptionList = fullSubscriptionList;
+        reorderableFullSubscriptionList = fullSubscriptionList;
     }
 
     /**
