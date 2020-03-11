@@ -132,38 +132,19 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             note.setLinksClickable(false);
             note.setCursorVisible(false);
             note.setFocusableInTouchMode(false);
-            // Set the dropdown to this subscription's value
+            // Set the recharge dropdown to this subscription's value
             frequency.setEnabled(false);
-            String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
-            for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
-                if (sub.getRechargeFrequency().equals(dropdownStrings[strIndex])) {
-                    frequency.setSelection(strIndex);
-                }
-            }
+            frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
             // Write the next payment date to the screen
             String nextDateStr = "Next Payment Date: " +
                     new SimpleDateFormat(dateFormat, Locale.US).format(sub.getNextPaymentDate());
             nextDate.setText(nextDateStr);
             // Set the category dropdown to this subscription's category
             category.setEnabled(false);
-            for (int catIndex = 0; catIndex < categoryList.size(); catIndex++) {
-                if (sub.getCategory().equals(categoryList.get(catIndex))) {
-                    category.setSelection(catIndex);
-                }
-            }
+            category.setSelection(getCategoryDropdownSelection(sub.getCategory()));
             // Set the notifications dropdown to the proper value
             notifications.setEnabled(false);
-            if (sub.getNotifDays() == 0) {
-                notifications.setSelection(1);
-            } else if (sub.getNotifDays() == 1) {
-                notifications.setSelection(2);
-            } else if (sub.getNotifDays() == 2) {
-                notifications.setSelection(3);
-            } else if (sub.getNotifDays() == 3) {
-                notifications.setSelection(4);
-            } else if (sub.getNotifDays() == 7) {
-                notifications.setSelection(5);
-            }
+            notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
             createButton.setVisibility(View.INVISIBLE);
 
             // Fill every field with the values of the subscription to view
@@ -179,31 +160,12 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             cost.setText(String.format("%.2f", sub.getCost()));
             date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
             note.setText(sub.getNote());
-            // Set the dropdown to this subscription's value
-            String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
-            for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
-                if (sub.getRechargeFrequency().equals(dropdownStrings[strIndex])) {
-                    frequency.setSelection(strIndex);
-                }
-            }
+            // Set the recharge dropdown to this subscription's value
+            frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
             // Set the category dropdown to this subscription's category
-            for (int catIndex = 0; catIndex < categoryList.size(); catIndex++) {
-                if (sub.getCategory().equals(categoryList.get(catIndex))) {
-                    category.setSelection(catIndex);
-                }
-            }
+            category.setSelection(getCategoryDropdownSelection(sub.getCategory()));
             // Set the notifications dropdown to the proper value
-            if (sub.getNotifDays() == 0) {
-                notifications.setSelection(1);
-            } else if (sub.getNotifDays() == 1) {
-                notifications.setSelection(2);
-            } else if (sub.getNotifDays() == 2) {
-                notifications.setSelection(3);
-            } else if (sub.getNotifDays() == 3) {
-                notifications.setSelection(4);
-            } else if (sub.getNotifDays() == 7) {
-                notifications.setSelection(5);
-            }
+            notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
             // Make sure the next date field can't be seen when editing
             nextDate.setVisibility(View.INVISIBLE);
         }
@@ -316,19 +278,6 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     }
 
     /**
-     * Display a small bar on the bottom of the screen. Should be called when there is
-     * something to display regarding a recent action (like improperly formatted input
-     * when submitting something). If view is null, nothing will display.
-     * @param view the current view of the application
-     * @param stringId the string to display, should be in strings.xml
-     */
-    private void displayErrorBar(View view, int stringId) {
-        if (view != null) {
-            Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
      * Parse the input fields in the current view and build a subscription object from
      * them. This will display an error message and return null if one of the fields is
      * invalid.
@@ -412,5 +361,71 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Build our subscription object and return it, set the unique ID as -1 as we will
         // give it its proper value in the model
         return new Subscription(-1, name, cost, date, note, rechargeFrequency, category, notifDays, getResources());
+    }
+
+    /**
+     * Display a small bar on the bottom of the screen. Should be called when there is
+     * something to display regarding a recent action (like improperly formatted input
+     * when submitting something). If view is null, nothing will display.
+     * @param view the current view of the application
+     * @param stringId the string to display, should be in strings.xml
+     */
+    private void displayErrorBar(View view, int stringId) {
+        if (view != null) {
+            Snackbar.make(view, stringId, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Get what position the notification dropdown should be in based on what that
+     * field is set to in the Subscription.
+     * @param notifDays the number of days before the notification should go off
+     * @return the position the dropdown should be in, default is 0
+     */
+    private int getNotifDropdownSelection(int notifDays) {
+        if (notifDays == 0) {
+            return 1;
+        } else if (notifDays == 1) {
+            return 2;
+        } else if (notifDays == 2) {
+            return 3;
+        } else if (notifDays == 3) {
+            return 4;
+        } else if (notifDays == 7) {
+            return 5;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Get what position the recharge frequency dropdown should be in based on what that
+     * field is set to in the Subscription.
+     * @param rechargeFreq the ID of the string representing how long between charges
+     * @return the position the dropdown should be in, default is 0
+     */
+    private int getRechargeDropdownSelection(String rechargeFreq) {
+        String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
+        for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
+            if (rechargeFreq.equals(dropdownStrings[strIndex])) {
+                return strIndex;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Get what position the category dropdown should be in based on what that
+     * field is set to in the Subscription.
+     * @param category the object representing the category of the subscription
+     * @return the position the dropdown should be in, default is 0
+     */
+    private int getCategoryDropdownSelection(Category category) {
+        for (int catIndex = 0; catIndex < categoryList.size(); catIndex++) {
+            if (category.equals(categoryList.get(catIndex))) {
+                return catIndex;
+            }
+        }
+        return 0;
     }
 }
