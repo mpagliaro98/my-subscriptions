@@ -151,7 +151,19 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     category.setSelection(catIndex);
                 }
             }
+            // Set the notifications dropdown to the proper value
             notifications.setEnabled(false);
+            if (sub.getNotifDays() == 0) {
+                notifications.setSelection(1);
+            } else if (sub.getNotifDays() == 1) {
+                notifications.setSelection(2);
+            } else if (sub.getNotifDays() == 2) {
+                notifications.setSelection(3);
+            } else if (sub.getNotifDays() == 3) {
+                notifications.setSelection(4);
+            } else if (sub.getNotifDays() == 7) {
+                notifications.setSelection(5);
+            }
             createButton.setVisibility(View.INVISIBLE);
 
             // Fill every field with the values of the subscription to view
@@ -179,6 +191,18 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                 if (sub.getCategory().equals(categoryList.get(catIndex))) {
                     category.setSelection(catIndex);
                 }
+            }
+            // Set the notifications dropdown to the proper value
+            if (sub.getNotifDays() == 0) {
+                notifications.setSelection(1);
+            } else if (sub.getNotifDays() == 1) {
+                notifications.setSelection(2);
+            } else if (sub.getNotifDays() == 2) {
+                notifications.setSelection(3);
+            } else if (sub.getNotifDays() == 3) {
+                notifications.setSelection(4);
+            } else if (sub.getNotifDays() == 7) {
+                notifications.setSelection(5);
             }
             // Make sure the next date field can't be seen when editing
             nextDate.setVisibility(View.INVISIBLE);
@@ -370,8 +394,23 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         Spinner categoryDropdown = findViewById(R.id.create_category_dropdown);
         Category category = (Category)categoryDropdown.getSelectedItem();
 
+        // Set the number of days before the next payment date the notification is triggered
+        Spinner notifDropdown = findViewById(R.id.create_notif_dropdown);
+        int notifDays = -1;
+        if (notifDropdown.getSelectedItem().equals(getString(R.string.array_notif_day_of))) {
+            notifDays = 0;
+        } else if (notifDropdown.getSelectedItem().equals(getString(R.string.array_notif_day_before))) {
+            notifDays = 1;
+        } else if (notifDropdown.getSelectedItem().equals(getString(R.string.array_notif_two_days))) {
+            notifDays = 2;
+        } else if (notifDropdown.getSelectedItem().equals(getString(R.string.array_notif_three_days))) {
+            notifDays = 3;
+        } else if (notifDropdown.getSelectedItem().equals(getString(R.string.array_notif_week))) {
+            notifDays = 7;
+        }
+
         // Build our subscription object and return it, set the unique ID as -1 as we will
         // give it its proper value in the model
-        return new Subscription(-1, name, cost, date, note, rechargeFrequency, category, getResources());
+        return new Subscription(-1, name, cost, date, note, rechargeFrequency, category, notifDays, getResources());
     }
 }

@@ -13,7 +13,6 @@ import java.util.Date;
  */
 public class Subscription implements Serializable {
 
-    // TODO: add categories and notification settings
     private int id;
     private String name;
     private double cost;
@@ -22,6 +21,7 @@ public class Subscription implements Serializable {
     private String rechargeFrequency;
     private Date nextPaymentDate;
     private Category category;
+    private int notifDays;
 
     /**
      * Create and initialize all the values of this subscription.
@@ -33,14 +33,15 @@ public class Subscription implements Serializable {
      * @param rechargeFrequency the frequency at which this subscription is paid for
      * @param resources the current application resources
      * @param category the category this subscription falls into
+     * @param notifDays the number of days before the next payment date a notification will happen
      */
     public Subscription(int id, String name, double cost, Date startDate, String note,
-                        String rechargeFrequency, Category category, Resources resources) {
-        this(id, name, cost, startDate, note, rechargeFrequency, category);
+                        String rechargeFrequency, Category category, int notifDays, Resources resources) {
+        this(id, name, cost, startDate, note, rechargeFrequency, category, notifDays);
         generateNextPaymentDate(resources);
     }
     public Subscription(int id, String name, double cost, Date startDate, String note,
-                        String rechargeFrequency, Category category) {
+                        String rechargeFrequency, Category category, int notifDays) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -49,6 +50,7 @@ public class Subscription implements Serializable {
         this.rechargeFrequency = rechargeFrequency;
         this.nextPaymentDate = startDate;
         this.category = category;
+        this.notifDays = notifDays;
     }
 
     /**
@@ -193,5 +195,21 @@ public class Subscription implements Serializable {
      */
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    /**
+     * Get the number of days before the next payment date to get a notification.
+     * @return the number of days as an int
+     */
+    public int getNotifDays() {
+        return notifDays;
+    }
+
+    /**
+     * Set the number of days before the next payment date to get a notification.
+     * @param notifDays the number of days as an int
+     */
+    public void setNotifDays(int notifDays) {
+        this.notifDays = notifDays;
     }
 }
