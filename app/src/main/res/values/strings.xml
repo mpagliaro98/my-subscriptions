@@ -51,4 +51,20 @@
     </string-array>
     <string name="unimplemented">That feature is not yet implemented.</string>
     <string name="create_text_category">Category:</string>
+    <string name="array_notif_none">No Notifications</string>
+    <string name="array_notif_day_of">The Day Of</string>
+    <string name="array_notif_day_before">The Day Before</string>
+    <string name="array_notif_two_days">Two Days Before</string>
+    <string name="array_notif_three_days">Three Days Before</string>
+    <string name="array_notif_week">One Week Before</string>
+
+    <string-array name="array_notif_dropdown">
+        <item>@string/array_notif_none</item>
+        <item>@string/array_notif_day_of</item>
+        <item>@string/array_notif_day_before</item>
+        <item>@string/array_notif_two_days</item>
+        <item>@string/array_notif_three_days</item>
+        <item>@string/array_notif_week</item>
+    </string-array>
+    <string name="create_text_notif">Notifications:</string>
 </resources>

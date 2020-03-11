@@ -82,6 +82,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         Button createButton = findViewById(R.id.create_button_finish);
         final ImageView catColor = findViewById(R.id.create_category_color);
         final Spinner category = findViewById(R.id.create_category_dropdown);
+        Spinner notifications = findViewById(R.id.create_notif_dropdown);
 
         // Set the list of items in the category dropdown
         ArrayAdapter<Category> adapter = new ArrayAdapter<>(
@@ -150,6 +151,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     category.setSelection(catIndex);
                 }
             }
+            notifications.setEnabled(false);
             createButton.setVisibility(View.INVISIBLE);
 
             // Fill every field with the values of the subscription to view
