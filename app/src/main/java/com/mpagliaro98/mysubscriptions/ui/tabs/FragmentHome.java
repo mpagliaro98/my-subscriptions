@@ -1,5 +1,8 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,15 +17,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.services.AlarmReceiver;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.TimeZone;
 
 /**
  * A fragment containing the view for the home tab. Implements the OnDataListenerReceived
@@ -53,6 +58,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         // Set this fragment as the data listener for the tab activity
         MainActivity mainActivity = (MainActivity)getActivity();
         mainActivity.checkIncomingData(this);
+
+        // Set the time notifications will be checked
+        setRecurringAlarm(getContext());
     }
 
     /**
@@ -206,5 +214,25 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Set up the alarm, which at a certain time each day will run the notification service.
+     * @param context The current application context
+     */
+    private void setRecurringAlarm(Context context) {
+        // Set this to run the notification service at 6am
+        Calendar updateTime = Calendar.getInstance();
+        updateTime.setTimeZone(TimeZone.getDefault());
+        updateTime.set(Calendar.HOUR_OF_DAY, 6);
+        updateTime.set(Calendar.MINUTE, 0);
+
+        // Build the pending intent and set the alarm
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent recurringIntent = PendingIntent.getBroadcast(context,
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, recurringIntent);
     }
 }
