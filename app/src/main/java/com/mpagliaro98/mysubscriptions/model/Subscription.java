@@ -22,6 +22,7 @@ public class Subscription implements Serializable {
     private Date nextPaymentDate;
     private Category category;
     private int notifDays;
+    private Date nextNotifDate;
 
     /**
      * Create and initialize all the values of this subscription.
@@ -74,6 +75,23 @@ public class Subscription implements Serializable {
                 c.add(Calendar.YEAR, 1);
             }
             nextPaymentDate = c.getTime();
+        }
+        generateNextNotifDate();
+    }
+
+    /**
+     * Generate the next date a notification should occur for this subscription. This should
+     * be run after the next payment date is generated. If notifications are set to off for
+     * this subscription, the next notification date will be set to null.
+     */
+    public void generateNextNotifDate() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(nextPaymentDate);
+        if (notifDays == -1) {
+            nextNotifDate = null;
+        } else {
+            c.add(Calendar.DATE, notifDays * -1);
+            nextNotifDate = c.getTime();
         }
     }
 
