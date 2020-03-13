@@ -230,4 +230,12 @@ public class Subscription implements Serializable {
     public void setNotifDays(int notifDays) {
         this.notifDays = notifDays;
     }
+
+    /**
+     * Get the next date this subscription should be notified.
+     * @return the next notification date as a Date object
+     */
+    public Date getNextNotifDate() {
+        return nextNotifDate;
+    }
 }
