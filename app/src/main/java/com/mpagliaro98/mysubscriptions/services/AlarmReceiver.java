@@ -3,7 +3,6 @@ package com.mpagliaro98.mysubscriptions.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 /**
  * This class receives a broadcast that will be made from the AlarmManager each day,
@@ -21,7 +20,6 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Receiver called", Toast.LENGTH_SHORT).show();
         context.startService(new Intent(context, NotificationService.class));
     }
 }

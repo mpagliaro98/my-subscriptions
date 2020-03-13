@@ -226,6 +226,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         updateTime.setTimeZone(TimeZone.getDefault());
         updateTime.set(Calendar.HOUR_OF_DAY, 6);
         updateTime.set(Calendar.MINUTE, 0);
+        updateTime.set(Calendar.SECOND, 0);
 
         // Build the pending intent and set the alarm
         Intent intent = new Intent(context, AlarmReceiver.class);

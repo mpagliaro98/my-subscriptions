@@ -67,6 +67,8 @@
         <item>@string/array_notif_week</item>
     </string-array>
     <string name="create_text_notif">Notifications:</string>
-    <string name="notification_channel_name">com.mpagliaro98.mysubscriptions.notif</string>
+    <string name="notification_channel_name">Subscription Notifications</string>
     <string name="notification_channel_description">Notifications related to when upcoming subscription payments will occur.</string>
+    <string name="notification_ioexception_title">Something went wrong with MySubscriptions</string>
+    <string name="notification_ioexception_desc">An error occurred while getting your notifications. Check the app for more details.</string>
 </resources>

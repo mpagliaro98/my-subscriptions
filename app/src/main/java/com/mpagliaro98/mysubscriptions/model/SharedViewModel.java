@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * The model shared between each fragment, keeping track of the data each page of
@@ -66,6 +67,14 @@ public class SharedViewModel extends ViewModel {
      */
     public Subscription getSubscription(int index) {
         return viewableSubscriptionList.get(index);
+    }
+
+    /**
+     * Get the entire subscription list regardless of sorting or filtering.
+     * @return a list of every subscription in ID order
+     */
+    public List<Subscription> getFullSubscriptionList() {
+        return fullSubscriptionList;
     }
 
     /**
