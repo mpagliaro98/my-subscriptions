@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mpagliaro98.mysubscriptions">
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -24,14 +25,14 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".services.NotificationService"
-            android:enabled="true">
-        </service>
-
         <receiver
-            android:name=".services.AlarmReceiver">
+            android:name=".notifications.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.mpagliaro98.action.NOTIFICATIONS" />
+            </intent-filter>
         </receiver>
     </application>
-
 </manifest>

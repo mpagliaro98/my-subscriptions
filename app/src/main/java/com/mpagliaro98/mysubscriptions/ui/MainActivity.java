@@ -1,5 +1,8 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
@@ -8,7 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * The activity we'll be on for most of this application's runtime. This holds fragments
@@ -68,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         incomingData = (Subscription)intent.getSerializableExtra(SUBSCRIPTION_MESSAGE);
         incomingType = (INCOMING_TYPE)intent.getSerializableExtra(INCOMING_TYPE_MESSAGE);
         incomingIndex = intent.getIntExtra(INCOMING_INDEX_MESSAGE, -1);
+
+        // Set the time notifications will be checked
+        setRecurringAlarm(getApplicationContext());
     }
 
     /**
@@ -92,5 +101,27 @@ public class MainActivity extends AppCompatActivity {
         if (incomingType != null) {
             listener.onDataReceived(incomingData, incomingType, incomingIndex);
         }
+    }
+
+    /**
+     * Set up the alarm, which at a certain time each day will run the notification service.
+     * @param context the context to create the intent with
+     */
+    public static void setRecurringAlarm(Context context) {
+        // Set this to run the notification service at 6am
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.setTimeZone(TimeZone.getDefault());
+        alarmTime.set(Calendar.HOUR_OF_DAY, 6);
+        alarmTime.set(Calendar.MINUTE, 0);
+        alarmTime.set(Calendar.SECOND, 0);
+        alarmTime.set(Calendar.MILLISECOND, 0);
+
+        // Build the pending intent and set the alarm
+        Intent i = new Intent(AlarmReceiver.intentAction);
+        PendingIntent pi = PendingIntent.getBroadcast(context,
+                0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager am = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        assert am != null;
+        am.setRepeating(AlarmManager.RTC, alarmTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
     }
 }

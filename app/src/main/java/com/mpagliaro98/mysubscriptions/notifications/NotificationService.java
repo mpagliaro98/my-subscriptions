@@ -1,11 +1,9 @@
-package com.mpagliaro98.mysubscriptions.services;
+package com.mpagliaro98.mysubscriptions.notifications;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.Service;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Build;
-import android.os.IBinder;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
@@ -21,29 +19,17 @@ import java.util.List;
  * out if today is the user-specified number of days before the next payment date of any
  * given subscription. Future subscription payment dates are also updated here.
  */
-public class NotificationService extends Service {
+public class NotificationService {
+
+    private Context context;
 
     /**
-     * Since this service doesn't communicate with any other components, this
-     * can just return null.
-     * @param intent A passed in intent
-     * @return null
+     * Create this class and give it the context to use later when creating
+     * notifications and accessing the subscription file.
+     * @param context the current application context
      */
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    /**
-     * Called when the service is created, as long as the API level is above
-     * 26 (due to certain notification features) control will be passed to the
-     * method that creates notifications.
-     */
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
-            processBackgroundTasks();
+    public NotificationService(Context context) {
+        this.context = context;
     }
 
     /**
@@ -51,9 +37,9 @@ public class NotificationService extends Service {
      * on any given day and update any subscription dates.
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    private void processBackgroundTasks() {
+    public void processBackgroundTasks() {
         // Get the notification manager, which will allow us to send notifications
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         assert notificationManager != null;
 
         // Create the notification channel so we can post to it
@@ -62,7 +48,7 @@ public class NotificationService extends Service {
         // Get the subscriptions from the file
         SharedViewModel model = new SharedViewModel();
         try {
-            model.loadFromFile(getApplicationContext());
+            model.loadFromFile(context);
         } catch (IOException e) {
             sendIOExceptionNotif(notificationManager);
             return;
@@ -104,14 +90,14 @@ public class NotificationService extends Service {
     @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
         // Create the channel with a name, description, and importance
-        CharSequence name = getString(R.string.notification_channel_name);
-        String description = getString(R.string.notification_channel_description);
+        CharSequence name = context.getString(R.string.notification_channel_name);
+        String description = context.getString(R.string.notification_channel_description);
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
         NotificationChannel channel = new NotificationChannel(name.toString(), name, importance);
         channel.setDescription(description);
 
         // Register the channel with the system
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         assert notificationManager != null;
         notificationManager.createNotificationChannel(channel);
     }
@@ -123,10 +109,10 @@ public class NotificationService extends Service {
      */
     private void sendIOExceptionNotif(NotificationManager notificationManager) {
         NotificationCompat.Builder notification =
-                new NotificationCompat.Builder(getApplicationContext(), getString(R.string.notification_channel_name))
+                new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
                         .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle(getString(R.string.notification_ioexception_title))
-                        .setContentText(getString(R.string.notification_ioexception_desc))
+                        .setContentTitle(context.getString(R.string.notification_ioexception_title))
+                        .setContentText(context.getString(R.string.notification_ioexception_desc))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setStyle(new NotificationCompat.BigTextStyle());
         notificationManager.notify(1, notification.build());
@@ -142,7 +128,7 @@ public class NotificationService extends Service {
     private void createSubNotification(NotificationManager notificationManager,
                                        Subscription sub, int notifCounter) {
         NotificationCompat.Builder notification =
-                new NotificationCompat.Builder(getApplicationContext(), getString(R.string.notification_channel_name))
+                new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
                         .setSmallIcon(R.drawable.ic_launcher_background)
                         .setContentTitle(sub.getName() + " is being charged soon")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -175,9 +161,9 @@ public class NotificationService extends Service {
      * @throws IOException thrown if something goes wrong while saving the file
      */
     private void updateSubDates(SharedViewModel model, Subscription sub) throws IOException {
-        sub.generateNextPaymentDate(getResources());
+        sub.generateNextPaymentDate(context.getResources());
         sub.generateNextNotifDate();
         model.updateSubscription(sub, sub.getId());
-        model.saveToFile(getApplicationContext());
+        model.saveToFile(context);
     }
 }
