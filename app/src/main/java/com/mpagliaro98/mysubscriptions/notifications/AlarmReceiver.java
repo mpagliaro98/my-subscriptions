@@ -26,14 +26,16 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     @RequiresApi(Build.VERSION_CODES.O)
     public void onReceive(Context context, Intent intent) {
-        // If the intent is from this application, create notifications
-        if (intent.getAction().equals(intentAction)) {
-            NotificationService notificationService = new NotificationService(context);
-            notificationService.processBackgroundTasks();
-        }
-        // If the intent signals the phone was turned on, re-activate the notification alarm
-        else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            MainActivity.setRecurringAlarm(context);
+        if (intent.getAction() != null) {
+            // If the intent is from this application, create notifications
+            if (intent.getAction().equals(intentAction)) {
+                NotificationService notificationService = new NotificationService(context);
+                notificationService.processBackgroundTasks();
+            }
+            // If the intent signals the phone was turned on, re-activate the notification alarm
+            else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+                MainActivity.setRecurringAlarm(context);
+            }
         }
     }
 }
