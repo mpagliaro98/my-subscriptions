@@ -8,13 +8,14 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.SystemClock;
 import android.view.View;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.Date;
 
 /**
  * The activity we'll be on for most of this application's runtime. This holds fragments
@@ -108,20 +109,26 @@ public class MainActivity extends AppCompatActivity {
      * @param context the context to create the intent with
      */
     public static void setRecurringAlarm(Context context) {
-        // Set this to run the notification service at 6am
+        // Get how long it will be from now until the time notifications will go off
         Calendar alarmTime = Calendar.getInstance();
-        alarmTime.setTimeZone(TimeZone.getDefault());
+        Date now = alarmTime.getTime();
         alarmTime.set(Calendar.HOUR_OF_DAY, 6);
         alarmTime.set(Calendar.MINUTE, 0);
         alarmTime.set(Calendar.SECOND, 0);
         alarmTime.set(Calendar.MILLISECOND, 0);
+        if (now.after(alarmTime.getTime())) {
+            alarmTime.add(Calendar.DATE, 1);
+        }
+        long timeUntilAlarm = alarmTime.getTime().getTime() - now.getTime();
 
         // Build the pending intent and set the alarm
-        Intent i = new Intent(AlarmReceiver.intentAction);
-        PendingIntent pi = PendingIntent.getBroadcast(context,
-                0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager am = (AlarmManager)context.getSystemService(ALARM_SERVICE);
-        assert am != null;
-        am.setRepeating(AlarmManager.RTC, alarmTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction(AlarmReceiver.intentAction);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + timeUntilAlarm, AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 }
