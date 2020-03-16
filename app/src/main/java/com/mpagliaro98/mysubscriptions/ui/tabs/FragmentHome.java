@@ -1,5 +1,7 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
@@ -47,6 +50,8 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             model.loadFromFile(getContext());
         } catch(IOException e) {
             e.printStackTrace();
+        } catch(Exception e) {
+            deleteDataDialog();
         }
 
         // Set this fragment as the data listener for the tab activity
@@ -179,6 +184,27 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             });
             linearLayout.addView(subView);
         }
+    }
+
+    /**
+     * Display a dialog box informing the user their data is corrupt and saying that
+     * it needs to be reset, which when agreed to resets the application data.
+     */
+    private void deleteDataDialog() {
+        final Context context = getContext();
+        new AlertDialog.Builder(context)
+                .setTitle("Something went wrong loading your data")
+                .setMessage("Your subscription data is corrupted, and will need to be erased to continue using this app.")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            model.deleteData(context);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).show();
     }
 
     /**

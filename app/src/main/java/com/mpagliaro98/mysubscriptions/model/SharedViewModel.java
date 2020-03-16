@@ -226,4 +226,17 @@ public class SharedViewModel extends ViewModel {
         }
         fos.close();
     }
+
+    /**
+     * Reset this application's data by clearing the current list and overwriting the
+     * saved file.
+     * @param context the current application context
+     * @throws IOException thrown if something goes wrong accessing the save file
+     */
+    public void deleteData(Context context) throws IOException {
+        fullSubscriptionList = new ArrayList<>();
+        reorderableFullSubscriptionList = fullSubscriptionList;
+        viewableSubscriptionList = fullSubscriptionList;
+        saveToFile(context);
+    }
 }
