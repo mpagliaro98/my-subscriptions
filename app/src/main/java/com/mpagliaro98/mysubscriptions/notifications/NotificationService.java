@@ -161,7 +161,7 @@ public class NotificationService {
      * @throws IOException thrown if something goes wrong while saving the file
      */
     private void updateSubDates(SharedViewModel model, Subscription sub) throws IOException {
-        sub.generateNextPaymentDate(context.getResources());
+        sub.generateNextPaymentDate();
         sub.generateNextNotifDate();
         model.updateSubscription(sub, sub.getId());
         model.saveToFile(context);

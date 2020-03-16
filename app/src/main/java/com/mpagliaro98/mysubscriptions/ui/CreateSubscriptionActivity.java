@@ -324,17 +324,19 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from note, no validation needed
         String note = noteText.getText().toString();
 
-        // Extract the string from the dropdown, make sure it's a valid string from the list
-        String rechargeFrequency = freqDropdown.getSelectedItem().toString();
-        String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
-        boolean errorInDropdown = true;
-        for (String dropdownStr : dropdownStrings) {
-            if (rechargeFrequency.equals(dropdownStr)) {
-                errorInDropdown = false;
-                break;
-            }
-        }
-        if (errorInDropdown) {
+        // Set the number of months based on the selection, display an error if an invalid value is found
+        int freqMonths;
+        if (freqDropdown.getSelectedItem().equals(getString(R.string.array_freq_monthly))) {
+            freqMonths = 1;
+        } else if (freqDropdown.getSelectedItem().equals(getString(R.string.array_freq_bimonthly))) {
+            freqMonths = 2;
+        } else if (freqDropdown.getSelectedItem().equals(getString(R.string.array_freq_trimonthly))) {
+            freqMonths = 3;
+        } else if (freqDropdown.getSelectedItem().equals(getString(R.string.array_freq_twiceyear))) {
+            freqMonths = 6;
+        } else if (freqDropdown.getSelectedItem().equals(getString(R.string.array_freq_yearly))) {
+            freqMonths = 12;
+        } else {
             displayErrorBar(view, R.string.create_error_frequency);
             return null;
         }
@@ -360,7 +362,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // Build our subscription object and return it, set the unique ID as -1 as we will
         // give it its proper value in the model
-        return new Subscription(-1, name, cost, date, note, rechargeFrequency, category, notifDays, getResources());
+        return new Subscription(-1, name, cost, date, note, freqMonths, category, notifDays);
     }
 
     /**
@@ -401,17 +403,23 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     /**
      * Get what position the recharge frequency dropdown should be in based on what that
      * field is set to in the Subscription.
-     * @param rechargeFreq the ID of the string representing how long between charges
+     * @param rechargeFreq the number of months between charges
      * @return the position the dropdown should be in, default is 0
      */
-    private int getRechargeDropdownSelection(String rechargeFreq) {
-        String[] dropdownStrings = getResources().getStringArray(R.array.array_freq_dropdown);
-        for (int strIndex = 0; strIndex < dropdownStrings.length; strIndex++) {
-            if (rechargeFreq.equals(dropdownStrings[strIndex])) {
-                return strIndex;
-            }
+    private int getRechargeDropdownSelection(int rechargeFreq) {
+        if (rechargeFreq == 1) {
+            return 0;
+        } else if (rechargeFreq == 2) {
+            return 1;
+        } else if (rechargeFreq == 3) {
+            return 2;
+        } else if (rechargeFreq == 6) {
+            return 3;
+        } else if (rechargeFreq == 12) {
+            return 4;
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     /**

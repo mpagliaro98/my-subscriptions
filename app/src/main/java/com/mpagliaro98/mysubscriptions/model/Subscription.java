@@ -18,7 +18,7 @@ public class Subscription implements Serializable {
     private double cost;
     private Date startDate;
     private String note;
-    private String rechargeFrequency;
+    private int rechargeFrequency;
     private Date nextPaymentDate;
     private Category category;
     private int notifDays;
@@ -32,17 +32,11 @@ public class Subscription implements Serializable {
      * @param startDate when the subscription first started
      * @param note any miscellaneous notes
      * @param rechargeFrequency the frequency at which this subscription is paid for
-     * @param resources the current application resources
      * @param category the category this subscription falls into
      * @param notifDays the number of days before the next payment date a notification will happen
      */
     public Subscription(int id, String name, double cost, Date startDate, String note,
-                        String rechargeFrequency, Category category, int notifDays, Resources resources) {
-        this(id, name, cost, startDate, note, rechargeFrequency, category, notifDays);
-        generateNextPaymentDate(resources);
-    }
-    public Subscription(int id, String name, double cost, Date startDate, String note,
-                        String rechargeFrequency, Category category, int notifDays) {
+                        int rechargeFrequency, Category category, int notifDays) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -52,31 +46,21 @@ public class Subscription implements Serializable {
         this.nextPaymentDate = startDate;
         this.category = category;
         this.notifDays = notifDays;
+        generateNextPaymentDate();
+        generateNextNotifDate();
     }
 
     /**
      * Calculate when the next soonest payment date will be from today.
-     * @param resources the current application resources
      */
-    public void generateNextPaymentDate(Resources resources) {
+    public void generateNextPaymentDate() {
         Calendar c = Calendar.getInstance();
         Date today = c.getTime();
         c.setTime(startDate);
         while (!nextPaymentDate.after(today)) {
-            if (rechargeFrequency.equals(resources.getString(R.string.array_freq_monthly))) {
-                c.add(Calendar.MONTH, 1);
-            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_bimonthly))) {
-                c.add(Calendar.MONTH, 2);
-            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_trimonthly))) {
-                c.add(Calendar.MONTH, 3);
-            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_twiceyear))) {
-                c.add(Calendar.MONTH, 6);
-            } else if (rechargeFrequency.equals(resources.getString(R.string.array_freq_yearly))) {
-                c.add(Calendar.YEAR, 1);
-            }
+            c.add(Calendar.MONTH, rechargeFrequency);
             nextPaymentDate = c.getTime();
         }
-        generateNextNotifDate();
     }
 
     /**
@@ -176,18 +160,18 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Get the frequency at which this subscription is paid for.
-     * @return the frequency as a string
+     * Get the frequency at which this subscription is paid for in months.
+     * @return the frequency as an int
      */
-    public String getRechargeFrequency() {
+    public int getRechargeFrequency() {
         return rechargeFrequency;
     }
 
     /**
      * Set the frequency of this subscription.
-     * @param rechargeFrequency the frequency as a string
+     * @param rechargeFrequency the frequency as an int
      */
-    public void setRechargeFrequency(String rechargeFrequency) {
+    public void setRechargeFrequency(int rechargeFrequency) {
         this.rechargeFrequency = rechargeFrequency;
     }
 
