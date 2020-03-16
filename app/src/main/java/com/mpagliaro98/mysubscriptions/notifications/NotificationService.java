@@ -147,7 +147,7 @@ public class NotificationService {
         } else {
             messagePrefix = "Soon, ";
         }
-        String fullMessage = messagePrefix + "you'll be charged $" + sub.getCost() +
+        String fullMessage = messagePrefix + "you'll be charged " + String.format("$%.2f", sub.getCost()) +
                 " for " + sub.getName() + ".";
         notification.setContentText(fullMessage);
         notificationManager.notify(notifCounter, notification.build());
