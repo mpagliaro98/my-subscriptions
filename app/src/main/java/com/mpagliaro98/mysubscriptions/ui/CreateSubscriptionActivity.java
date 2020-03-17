@@ -3,7 +3,6 @@ package com.mpagliaro98.mysubscriptions.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +51,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     private PAGE_TYPE pageType;
     // The index of the subscription we are currently looking at
     private int subIndex;
+    // The saved state bundle from the previous activity
+    private Bundle savedState;
 
     // List of every valid category, used to populate input fields
     private ArrayList<Category> categoryList = new ArrayList<Category>() {
@@ -109,6 +110,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
         // Save the index of this subscription, if it's null it isn't needed and will be set to -1
         subIndex = intent.getIntExtra(SUB_ID_MESSAGE, -1);
+        // Saved the state from the previous activity so we can send it back when we return
+        savedState = intent.getBundleExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE);
 
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
@@ -211,6 +214,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             intent.putExtra(MainActivity.SUBSCRIPTION_MESSAGE, subscription);
             intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
                             MainActivity.INCOMING_TYPE.CREATE);
+            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
             startActivity(intent);
         }
         else if (pageType == PAGE_TYPE.EDIT) {
@@ -227,6 +231,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                             MainActivity.INCOMING_TYPE.EDIT);
             intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE,
                             subIndex);
+            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
             startActivity(intent);
         }
     }
@@ -253,6 +258,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                             subscription);
             intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
                             subIndex);
+            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
             startActivity(intent);
         }
         // When the delete button is pressed, display a yes/no dialog
@@ -269,6 +275,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                                     MainActivity.INCOMING_TYPE.DELETE);
                             intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE,
                                     subIndex);
+                            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
                             startActivity(intent);
                         }
                     })

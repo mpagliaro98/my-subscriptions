@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -35,6 +36,22 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
 
     // The model shared by the three main tabs
     private SharedViewModel model;
+    // Any saved state from previously in the application to apply when loading the view
+    private Bundle savedState;
+
+    // Keys for the saved state of the home fragment when returning
+    public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SCROLL";
+    public static final String SAVED_STATE_SEARCH_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SEARCH";
+    public static final String SAVED_STATE_SORT_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SORT";
+
+    /**
+     * Create this fragment object and set its saved state bundle to be used later.
+     * @param savedState bundle of saved state
+     */
+    public FragmentHome(Bundle savedState) {
+        super();
+        this.savedState = savedState;
+    }
 
     /**
      * Initializes the model for the home tab.
@@ -156,6 +173,25 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // Apply the values from the saved state to the page
+        if (savedState != null) {
+            if (savedState.containsKey(SAVED_STATE_SORT_MESSAGE)) {
+                sortDropdown.setSelection(savedState.getInt(SAVED_STATE_SORT_MESSAGE));
+            }
+            if (savedState.containsKey(SAVED_STATE_SEARCH_MESSAGE)) {
+                searchBar.setText(savedState.getString(SAVED_STATE_SEARCH_MESSAGE));
+            }
+            if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
+                final ScrollView scrollView = root.findViewById(R.id.home_scroll_view);
+                scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
+                    }
+                });
+            }
+        }
+
         return root;
     }
 
@@ -179,6 +215,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                                     sub);
                     intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
                                     sub.getId());
+                    Bundle savedState = new Bundle();
+                    fillBundleWithSavedState(savedState);
+                    intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
                     startActivity(intent);
                 }
             });
@@ -231,5 +270,21 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Populate a given bundle with values pertaining to how this fragment is set. For
+     * FragmentHome, the scroll amount, search bar text, and sort dropdown selections are
+     * saved, so they can be reset to the saved values when returning to this fragment.
+     * The public keys at the top of this fragment are used to index the saved values.
+     * @param bundle the bundle to place the saved items in
+     */
+    public void fillBundleWithSavedState(Bundle bundle) {
+        ScrollView scrollView = getView().findViewById(R.id.home_scroll_view);
+        bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
+        TextView searchBar = getView().findViewById(R.id.home_search);
+        bundle.putString(SAVED_STATE_SEARCH_MESSAGE, searchBar.getText().toString());
+        Spinner sortDropdown = getView().findViewById(R.id.home_sort_list);
+        bundle.putInt(SAVED_STATE_SORT_MESSAGE, sortDropdown.getSelectedItemPosition());
     }
 }
