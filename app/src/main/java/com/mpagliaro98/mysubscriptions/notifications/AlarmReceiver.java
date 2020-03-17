@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import androidx.annotation.RequiresApi;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 
@@ -14,6 +15,7 @@ import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 public class AlarmReceiver extends BroadcastReceiver {
 
     public static final String intentAction = "com.mpagliaro98.action.NOTIFICATIONS";
+    private static final String TAG = "AlarmReceiver";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -30,16 +32,24 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     @RequiresApi(Build.VERSION_CODES.O)
     public void onReceive(Context context, Intent intent) {
+        Log.i(TAG, "Receiver called");
         if (intent.getAction() != null) {
             // If the intent is from this application, create notifications
             if (intent.getAction().equals(intentAction)) {
+                Log.i(TAG, "Standard application intent, running notifications");
                 NotificationService notificationService = new NotificationService(context);
                 notificationService.processBackgroundTasks();
             }
             // If the intent signals the phone was turned on, re-activate the notification alarm
             else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+                Log.i(TAG, "Boot received, setting alarm");
                 MainActivity.setRecurringAlarm(context);
             }
+            else {
+                Log.w(TAG, "The intent sent to AlarmReceiver was not recognized");
+            }
+        } else {
+            Log.w(TAG, "The intent sent to AlarmReceiver was null");
         }
     }
 }

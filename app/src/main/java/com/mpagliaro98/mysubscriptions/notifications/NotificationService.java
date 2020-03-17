@@ -4,12 +4,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.List;
  * given subscription. Future subscription payment dates are also updated here.
  */
 public class NotificationService {
+
+    private static final String TAG = "NotificationService";
 
     private Context context;
 
@@ -48,6 +52,7 @@ public class NotificationService {
 
         // Create the notification channel so we can post to it
         createNotificationChannel();
+        Log.i(TAG, "Notification channel created successfully");
 
         // Get the subscriptions from the file
         SharedViewModel model = new SharedViewModel();
@@ -57,6 +62,7 @@ public class NotificationService {
             sendIOExceptionNotif(notificationManager);
             return;
         }
+        Log.i(TAG, "Subscriptions successfully loaded from file");
 
         // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
         Calendar calendar = Calendar.getInstance();
@@ -68,22 +74,28 @@ public class NotificationService {
 
         // Loop through each subscription
         List<Subscription> subList = model.getFullSubscriptionList();
-        int notifCounter = 2;
+        List<Subscription> subsWithNotifications = new ArrayList<>();
         for (Subscription sub : subList) {
-            // If this subscription's notification date is today, send the notification
+            // If this subscription's notification date is today, add it to the list
             if (today.equals(sub.getNextNotifDate())) {
-                createSubNotification(notificationManager, sub, notifCounter);
-                notifCounter++;
+                Log.i(TAG, sub.getName() + " will be added to the notification");
+                subsWithNotifications.add(sub);
             }
             // If today is after this sub's next payment date, update it
             if (today.after(sub.getNextPaymentDate())) {
                 try {
+                    Log.i(TAG, "Updating payment dates for " + sub.getName());
                     updateSubDates(model, sub);
                 } catch (IOException e) {
                     sendIOExceptionNotif(notificationManager);
                     return;
                 }
             }
+        }
+
+        // If there's subscriptions in the notify list, create a notification for them
+        if (!subsWithNotifications.isEmpty()) {
+            createSubNotification(notificationManager, subsWithNotifications);
         }
     }
 
@@ -128,37 +140,53 @@ public class NotificationService {
 
     /**
      * Build and send a notification that indicates to the user when they're being charged
-     * for a given subscription and for how much.
+     * for a given subscription and for how much. If multiple subscriptions need to be notified,
+     * it will send one notification that list all of those subscriptions at once.
      * @param notificationManager the notification manager
-     * @param sub the subscription that is being charged
-     * @param notifCounter the ID of the current notification. Should be different each time
+     * @param subscriptions the list of subscriptions to generate notifications for
      */
     private void createSubNotification(NotificationManager notificationManager,
-                                       Subscription sub, int notifCounter) {
+                                       List<Subscription> subscriptions) {
+        String contentTitle = subscriptions.size() == 1 ?
+                subscriptions.get(0).getName() + " is being charged soon"
+                : "Multiple subscriptions are being charged soon";
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
                         .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle(sub.getName() + " is being charged soon")
+                        .setContentTitle(contentTitle)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setStyle(new NotificationCompat.BigTextStyle());
-        String messagePrefix = "";
-        if (sub.getNotifDays() == 0) {
-            messagePrefix = "Today, ";
-        } else if (sub.getNotifDays() == 1) {
-            messagePrefix = "Tomorrow, ";
-        } else if (sub.getNotifDays() == 2) {
-            messagePrefix = "In two days, ";
-        } else if (sub.getNotifDays() == 3) {
-            messagePrefix = "In three days, ";
-        } else if (sub.getNotifDays() == 7) {
-            messagePrefix = "In one week, ";
-        } else {
-            messagePrefix = "Soon, ";
+                        .setStyle(new NotificationCompat.BigTextStyle())
+                        .setContentText(generateContextText(subscriptions));
+        notificationManager.notify(2, notification.build());
+    }
+
+    /**
+     * Build the content text for the subscription notification by generating a short sentence
+     * for each due subscription and concatenating them together.
+     * @param subscriptions the list of subscriptions to generate notifications for
+     * @return a string with information on every due subscription, separated by newlines
+     */
+    private String generateContextText(List<Subscription> subscriptions) {
+        String fullMessage = "";
+        for (Subscription sub : subscriptions) {
+            String messagePrefix = "";
+            if (sub.getNotifDays() == 0) {
+                messagePrefix = "Today, ";
+            } else if (sub.getNotifDays() == 1) {
+                messagePrefix = "Tomorrow, ";
+            } else if (sub.getNotifDays() == 2) {
+                messagePrefix = "In two days, ";
+            } else if (sub.getNotifDays() == 3) {
+                messagePrefix = "In three days, ";
+            } else if (sub.getNotifDays() == 7) {
+                messagePrefix = "In one week, ";
+            } else {
+                messagePrefix = "Soon, ";
+            }
+            fullMessage += messagePrefix + "you'll be charged " + sub.getCostString() +
+                    " for " + sub.getName() + "." + "\n";
         }
-        String fullMessage = messagePrefix + "you'll be charged " + sub.getCostString() +
-                " for " + sub.getName() + ".";
-        notification.setContentText(fullMessage);
-        notificationManager.notify(notifCounter, notification.build());
+        return fullMessage.trim();
     }
 
     /**

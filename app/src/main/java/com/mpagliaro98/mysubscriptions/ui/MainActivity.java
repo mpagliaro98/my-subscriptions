@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String INCOMING_INDEX_MESSAGE = "com.mpagliaro98.mysubscriptions.INCOMING_INDEX";
     // Key for a saved state bundle when returning to a tab
     public static final String SAVED_STATE_BUNDLE_MESSAGE = "com.mpagliaro98.mysubscriptions.SAVED_STATE";
+
+    private static final String TAG = "MainActivity";
 
     // The type of action we want to do with the incoming data
     public enum INCOMING_TYPE {CREATE, EDIT, DELETE}
@@ -162,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
             alarmTime.add(Calendar.DATE, 1);
         }
         long timeUntilAlarm = alarmTime.getTime().getTime() - now.getTime();
+        Log.i(TAG, "Alarm time set to " + alarmTime.getTime().toString() + ", " +
+                timeUntilAlarm + " milliseconds from now");
 
         // Build the pending intent and set the alarm
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -171,7 +176,9 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + timeUntilAlarm, AlarmManager.INTERVAL_DAY, pendingIntent);
+                SystemClock.elapsedRealtime() + timeUntilAlarm,
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.i(TAG, "Repeating alarm set (currently elapsed time = " + SystemClock.elapsedRealtime() + ")");
     }
 
     /**
