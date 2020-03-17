@@ -1,8 +1,10 @@
 package com.mpagliaro98.mysubscriptions.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Subscription value object to store data on an individual subscription.
@@ -10,6 +12,8 @@ import java.util.Date;
  * and from files in json form.
  */
 public class Subscription implements Serializable {
+
+    public static final String dateFormat = "MM/dd/yyyy";
 
     private int id;
     private String name;
@@ -122,6 +126,14 @@ public class Subscription implements Serializable {
     }
 
     /**
+     * Get a string representation of the cost, formatted as $X.XX.
+     * @return a string representation of the cost
+     */
+    public String getCostString() {
+        return String.format(Locale.US, "$%.2f", cost);
+    }
+
+    /**
      * Set the cost of the subscription.
      * @param cost the cost as a double
      */
@@ -135,6 +147,14 @@ public class Subscription implements Serializable {
      */
     public Date getStartDate() {
         return startDate;
+    }
+
+    /**
+     * Get the start date in a string representation: MM/DD/YYYY.
+     * @return the start date as a string
+     */
+    public String getStartDateString() {
+        return new SimpleDateFormat(dateFormat, Locale.US).format(startDate);
     }
 
     /**
@@ -183,6 +203,14 @@ public class Subscription implements Serializable {
      */
     public Date getNextPaymentDate() {
         return nextPaymentDate;
+    }
+
+    /**
+     * Get the next payment date in a string representation: MM/DD/YYYY.
+     * @return the next payment date as a string
+     */
+    public String getNextPaymentDateString() {
+        return new SimpleDateFormat(dateFormat, Locale.US).format(nextPaymentDate);
     }
 
     /**

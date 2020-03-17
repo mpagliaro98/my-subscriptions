@@ -41,7 +41,7 @@ import java.util.Locale;
  */
 public class CreateSubscriptionActivity extends AppCompatActivity {
 
-    private static final String dateFormat = "MM/dd/yyyy";
+    // Messages to be passed through intents to this activity
     public static final String PAGE_TYPE_MESSAGE = "com.mpagliaro98.mysubscriptions.PAGE_TYPE";
     public static final String VIEW_SUB_MESSAGE = "com.mpagliaro98.mysubscriptions.VIEW_SUB";
     public static final String SUB_ID_MESSAGE = "com.mpagliaro98.mysubscriptions.SUB_ID";
@@ -122,7 +122,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             // Auto-fill the date field with the current date, properly formatted
-            date.setText(new SimpleDateFormat(dateFormat, Locale.getDefault()).format(new Date()));
+            date.setText(new SimpleDateFormat(Subscription.dateFormat, Locale.getDefault()).format(new Date()));
             // Make sure the next date field can't be seen when creating
             nextDate.setVisibility(View.INVISIBLE);
         }
@@ -145,8 +145,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             frequency.setEnabled(false);
             frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
             // Write the next payment date to the screen
-            String nextDateStr = "Next Payment Date: " +
-                    new SimpleDateFormat(dateFormat, Locale.US).format(sub.getNextPaymentDate());
+            String nextDateStr = "Next Payment Date: " + sub.getNextPaymentDateString();
             nextDate.setText(nextDateStr);
             // Set the category dropdown to this subscription's category
             category.setEnabled(false);
@@ -158,16 +157,16 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
             // Fill every field with the values of the subscription to view
             name.setText(sub.getName());
-            cost.setText(String.format("$%.2f", sub.getCost()));
-            date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
+            cost.setText(sub.getCostString());
+            date.setText(sub.getStartDateString());
             note.setText(sub.getNote());
         }
         else if (pageType == PAGE_TYPE.EDIT) {
             // Fill every field with the values of the subscription to edit
             createButton.setText(R.string.create_button_edit);
             name.setText(sub.getName());
-            cost.setText(String.format("%.2f", sub.getCost()));
-            date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(sub.getStartDate()));
+            cost.setText(String.valueOf(sub.getCost()));
+            date.setText(sub.getStartDateString());
             note.setText(sub.getNote());
             // Set the recharge dropdown to this subscription's value
             frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
@@ -325,7 +324,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from date and validate it
         Date date;
         try {
-            date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
+            date = new SimpleDateFormat(Subscription.dateFormat, Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
             displayErrorBar(view, R.string.create_error_date);
             return null;

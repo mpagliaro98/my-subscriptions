@@ -50,11 +50,10 @@ public class SubscriptionView extends LinearLayout {
 
         // Set the text in each part of the component
         textName.setText(subscription.getName());
-        String costStr = "$" + String.format("%.2f", subscription.getCost()) + " " +
+        String costStr = subscription.getCostString() + " " +
                 getRechargeFrequencyString(subscription.getRechargeFrequency(), context);
         textCost.setText(costStr);
-        String nextDateStr = "Next Payment Date: " +
-                new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(subscription.getNextPaymentDate());
+        String nextDateStr = "Next Payment Date: " + subscription.getNextPaymentDateString();
         textNextDate.setText(nextDateStr);
         imageColor.setColorFilter(context.getResources().getColor(subscription.getCategory().getColor()),
                 PorterDuff.Mode.SRC_IN);
