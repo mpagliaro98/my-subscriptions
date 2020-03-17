@@ -1,7 +1,5 @@
 package com.mpagliaro98.mysubscriptions.model;
 
-import android.content.res.Resources;
-import com.mpagliaro98.mysubscriptions.R;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +21,10 @@ public class Subscription implements Serializable {
     private Category category;
     private int notifDays;
     private Date nextNotifDate;
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Create and initialize all the values of this subscription.

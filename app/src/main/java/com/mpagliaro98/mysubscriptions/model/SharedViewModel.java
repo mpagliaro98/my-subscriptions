@@ -43,6 +43,10 @@ public class SharedViewModel extends ViewModel {
     // The filename the data is kept in
     private static final String filename = "subscriptions.dat";
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Set the value that goes into the mutable text.
      * @param name string to add
@@ -104,18 +108,6 @@ public class SharedViewModel extends ViewModel {
     public void deleteSubscription(int index) {
         fullSubscriptionList.remove(index);
         updateAllSubIds();
-    }
-
-    /**
-     * Re-distribute IDs for every subscription, sequentially from 0 in the order of
-     * the full subscription list. This should be done if a subscription is removed,
-     * leaving a gap in the subscription IDs.
-     */
-    private void updateAllSubIds() {
-        for (int i = 0; i < numSubscriptionsTotal(); i++) {
-            Subscription sub = fullSubscriptionList.get(i);
-            sub.setId(i);
-        }
     }
 
     /**
@@ -238,5 +230,21 @@ public class SharedViewModel extends ViewModel {
         reorderableFullSubscriptionList = fullSubscriptionList;
         viewableSubscriptionList = fullSubscriptionList;
         saveToFile(context);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Re-distribute IDs for every subscription, sequentially from 0 in the order of
+     * the full subscription list. This should be done if a subscription is removed,
+     * leaving a gap in the subscription IDs.
+     */
+    private void updateAllSubIds() {
+        for (int i = 0; i < numSubscriptionsTotal(); i++) {
+            Subscription sub = fullSubscriptionList.get(i);
+            sub.setId(i);
+        }
     }
 }

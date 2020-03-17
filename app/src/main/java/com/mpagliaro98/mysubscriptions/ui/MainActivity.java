@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         void onDataReceived(Subscription subscription, INCOMING_TYPE type, Integer subIndex);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * When this activity is created, set-up the SectionsPagerAdapter and build the tab
      * layout, as well as any items that should persist across all fragments.
@@ -95,22 +99,12 @@ public class MainActivity extends AppCompatActivity {
      * @param view the current application view
      */
     public void createButton(View view) {
-        Intent intent = new Intent(this, CreateSubscriptionActivity.class);
-        intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
-                        CreateSubscriptionActivity.PAGE_TYPE.CREATE);
-        Bundle savedState = new Bundle();
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof FragmentHome) {
-                FragmentHome fragmentHome = (FragmentHome)fragment;
-                fragmentHome.fillBundleWithSavedState(savedState);
-            } else if (fragment instanceof FragmentCalendar) {
-                FragmentCalendar fragmentCalendar = (FragmentCalendar)fragment;
-            } else if (fragment instanceof FragmentAnalytics) {
-                FragmentAnalytics fragmentAnalytics = (FragmentAnalytics)fragment;
-            }
-        }
-        intent.putExtra(SAVED_STATE_BUNDLE_MESSAGE, savedState);
+        // Build the saved state bundle and have each fragment fill it with its necessary info
+        Bundle savedState = gatherSavedState();
+
+        // Build the intent and start the activity
+        Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(this,
+                CreateSubscriptionActivity.PAGE_TYPE.CREATE, null, -1, savedState);
         startActivity(intent);
     }
 
@@ -127,7 +121,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Set up the alarm, which at a certain time each day will run the notification service.
+     * Create a bundle containing saved state from each of this activity's child fragments.
+     * Each fragment will have a method called that adds each of their relevant information
+     * to the bundle.
+     * @return a bundle of saved state information
+     */
+    public Bundle gatherSavedState() {
+        Bundle savedState = new Bundle();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof FragmentHome) {
+                FragmentHome fragmentHome = (FragmentHome)fragment;
+                fragmentHome.fillBundleWithSavedState(savedState);
+            } else if (fragment instanceof FragmentCalendar) {
+                FragmentCalendar fragmentCalendar = (FragmentCalendar)fragment;
+            } else if (fragment instanceof FragmentAnalytics) {
+                FragmentAnalytics fragmentAnalytics = (FragmentAnalytics)fragment;
+            }
+        }
+        return savedState;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // STATIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Set up the alarm, which at a certain time each day will create notifications.
      * @param context the context to create the intent with
      */
     public static void setRecurringAlarm(Context context) {
@@ -152,5 +172,27 @@ public class MainActivity extends AppCompatActivity {
         assert alarmManager != null;
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + timeUntilAlarm, AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    /**
+     * Create a valid intent that can be used to access this activity. To access this activity,
+     * several pieces of information need to be provided, which are specified by this
+     * method.
+     * @param context the current application context
+     * @param incomingType the incoming type determines how the incoming data will be handled,
+     *                     it is either CREATE, EDIT, or DELETE
+     * @param subscription incoming subscription data
+     * @param subIndex the ID of the incoming subscription, or -1 if it is new
+     * @param savedState any saved state from this activity that will be reapplied later
+     * @return a valid intent for accessing this activity
+     */
+    public static Intent buildGeneralMainIntent(Context context, MainActivity.INCOMING_TYPE incomingType,
+                                                Subscription subscription, int subIndex, Bundle savedState) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(MainActivity.SUBSCRIPTION_MESSAGE, subscription);
+        intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE, incomingType);
+        intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE, subIndex);
+        intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
+        return intent;
     }
 }

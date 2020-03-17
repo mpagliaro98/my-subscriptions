@@ -44,6 +44,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     public static final String SAVED_STATE_SEARCH_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SEARCH";
     public static final String SAVED_STATE_SORT_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SORT";
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Create this fragment object and set its saved state bundle to be used later.
      * @param savedState bundle of saved state
@@ -90,7 +94,118 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         updateSubList(root);
 
         // Add a listener to the search bar that will filter the list each time it's used
-        TextView searchBar = root.findViewById(R.id.home_search);
+        addSearchBarListener((TextView)root.findViewById(R.id.home_search), root);
+
+        // Add a listener to the sort list to sort the list when each item is selected
+        addSortDropdownListener((Spinner)root.findViewById(R.id.home_sort_list), root);
+
+        // Apply the values from the saved state to the page
+        if (savedState != null) {
+            applySavedState(savedState, root);
+        }
+
+        return root;
+    }
+
+    /**
+     * Receive data from another activity, passed to here through this fragment's
+     * parent activity. In this case, the data is a subscription object modified in
+     * a separate activity, which we will perform an operation on depending on what
+     * action should be taken.
+     * @param subscription the new subscription object
+     * @param type the action to take on the incoming data, either CREATE, EDIT, or DELETE
+     * @param subIndex if required, the index in the list of the item to modify
+     */
+    @Override
+    public void onDataReceived(Subscription subscription, MainActivity.INCOMING_TYPE type,
+                               Integer subIndex) {
+        if (type == MainActivity.INCOMING_TYPE.CREATE) {
+            model.addSubscription(subscription);
+        } else if (type == MainActivity.INCOMING_TYPE.EDIT) {
+            model.updateSubscription(subscription, subIndex);
+        } else if (type == MainActivity.INCOMING_TYPE.DELETE) {
+            model.deleteSubscription(subIndex);
+        }
+        try {
+            model.saveToFile(getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Populate a given bundle with values pertaining to how this fragment is set. For
+     * FragmentHome, the scroll amount, search bar text, and sort dropdown selections are
+     * saved, so they can be reset to the saved values when returning to this fragment.
+     * The public keys at the top of this fragment are used to index the saved values.
+     * @param bundle the bundle to place the saved items in
+     */
+    public void fillBundleWithSavedState(Bundle bundle) {
+        ScrollView scrollView = getView().findViewById(R.id.home_scroll_view);
+        bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
+        TextView searchBar = getView().findViewById(R.id.home_search);
+        bundle.putString(SAVED_STATE_SEARCH_MESSAGE, searchBar.getText().toString());
+        Spinner sortDropdown = getView().findViewById(R.id.home_sort_list);
+        bundle.putInt(SAVED_STATE_SORT_MESSAGE, sortDropdown.getSelectedItemPosition());
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Update the UI component that displays a list of every subscription.
+     * @param view the current view to display to
+     */
+    private void updateSubList(View view) {
+        LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
+        linearLayout.removeAllViewsInLayout();
+        for (int i = 0; i < model.numSubscriptionsVisible(); i++) {
+            final Subscription sub = model.getSubscription(i);
+            final SubscriptionView subView = new SubscriptionView(getContext(), sub);
+            subView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle savedState = null;
+                    if (getActivity() != null)
+                        savedState = ((MainActivity)getActivity()).gatherSavedState();
+                    Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(getContext(),
+                            CreateSubscriptionActivity.PAGE_TYPE.VIEW, sub, sub.getId(), savedState);
+                    startActivity(intent);
+                }
+            });
+            linearLayout.addView(subView);
+        }
+    }
+
+    /**
+     * Display a dialog box informing the user their data is corrupt and saying that
+     * it needs to be reset, which when agreed to resets the application data.
+     */
+    private void deleteDataDialog() {
+        final Context context = getContext();
+        new AlertDialog.Builder(context)
+                .setTitle("Something went wrong loading your data")
+                .setMessage("Your subscription data is corrupted, and will need to be erased to continue using this app.")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            model.deleteData(context);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).show();
+    }
+
+    /**
+     * Add a listener to the search bar of this tab, which will filter the list of
+     * subscriptions whenever the text entered into it changes.
+     * @param searchBar the search bar view
+     * @param root the root view of this tab
+     */
+    private void addSearchBarListener(TextView searchBar, final View root) {
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -104,9 +219,15 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
 
-        // Add a listener to the sort list to sort the list when each item is selected
-        Spinner sortDropdown = root.findViewById(R.id.home_sort_list);
+    /**
+     * Add a listener to the sorting dropdown of this tab, which will sort the list of
+     * subscriptions whenever its selection is changed.
+     * @param sortDropdown the sort dropdown spinner
+     * @param root the root view of this tab
+     */
+    private void addSortDropdownListener(Spinner sortDropdown, final View root) {
         sortDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -172,119 +293,32 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-
-        // Apply the values from the saved state to the page
-        if (savedState != null) {
-            if (savedState.containsKey(SAVED_STATE_SORT_MESSAGE)) {
-                sortDropdown.setSelection(savedState.getInt(SAVED_STATE_SORT_MESSAGE));
-            }
-            if (savedState.containsKey(SAVED_STATE_SEARCH_MESSAGE)) {
-                searchBar.setText(savedState.getString(SAVED_STATE_SEARCH_MESSAGE));
-            }
-            if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
-                final ScrollView scrollView = root.findViewById(R.id.home_scroll_view);
-                scrollView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
-                    }
-                });
-            }
-        }
-
-        return root;
     }
 
     /**
-     * Update the UI component that displays a list of every subscription.
-     * @param view the current view to display to
+     * Given a bundle of saved state, extract the values that were saved to it previously
+     * and re-apply them to this view. For this tab, it will re-apply the search bar text,
+     * the sort dropdown selection, and the Y scroll distance.
+     * @param savedState bundle of saved state, must not be null
+     * @param root the root view of this tab
      */
-    private void updateSubList(View view) {
-        LinearLayout linearLayout = view.findViewById(R.id.home_linear_layout);
-        linearLayout.removeAllViewsInLayout();
-        for (int i = 0; i < model.numSubscriptionsVisible(); i++) {
-            final Subscription sub = model.getSubscription(i);
-            final SubscriptionView subView = new SubscriptionView(getContext(), sub);
-            subView.setOnClickListener(new View.OnClickListener() {
+    private void applySavedState(@NonNull final Bundle savedState, View root) {
+        if (savedState.containsKey(SAVED_STATE_SORT_MESSAGE)) {
+            Spinner sortDropdown = root.findViewById(R.id.home_sort_list);
+            sortDropdown.setSelection(savedState.getInt(SAVED_STATE_SORT_MESSAGE));
+        }
+        if (savedState.containsKey(SAVED_STATE_SEARCH_MESSAGE)) {
+            TextView searchBar = root.findViewById(R.id.home_search);
+            searchBar.setText(savedState.getString(SAVED_STATE_SEARCH_MESSAGE));
+        }
+        if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
+            final ScrollView scrollView = root.findViewById(R.id.home_scroll_view);
+            scrollView.post(new Runnable() {
                 @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getContext(), CreateSubscriptionActivity.class);
-                    intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
-                            CreateSubscriptionActivity.PAGE_TYPE.VIEW);
-                    intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
-                                    sub);
-                    intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
-                                    sub.getId());
-                    Bundle savedState = new Bundle();
-                    fillBundleWithSavedState(savedState);
-                    intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
-                    startActivity(intent);
+                public void run() {
+                    scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
                 }
             });
-            linearLayout.addView(subView);
         }
-    }
-
-    /**
-     * Display a dialog box informing the user their data is corrupt and saying that
-     * it needs to be reset, which when agreed to resets the application data.
-     */
-    private void deleteDataDialog() {
-        final Context context = getContext();
-        new AlertDialog.Builder(context)
-                .setTitle("Something went wrong loading your data")
-                .setMessage("Your subscription data is corrupted, and will need to be erased to continue using this app.")
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            model.deleteData(context);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).show();
-    }
-
-    /**
-     * Receive data from another activity, passed to here through this fragment's
-     * parent activity. In this case, the data is a subscription object modified in
-     * a separate activity, which we will perform an operation on depending on what
-     * action should be taken.
-     * @param subscription the new subscription object
-     * @param type the action to take on the incoming data, either CREATE, EDIT, or DELETE
-     * @param subIndex if required, the index in the list of the item to modify
-     */
-    @Override
-    public void onDataReceived(Subscription subscription, MainActivity.INCOMING_TYPE type,
-                               Integer subIndex) {
-        if (type == MainActivity.INCOMING_TYPE.CREATE) {
-            model.addSubscription(subscription);
-        } else if (type == MainActivity.INCOMING_TYPE.EDIT) {
-            model.updateSubscription(subscription, subIndex);
-        } else if (type == MainActivity.INCOMING_TYPE.DELETE) {
-            model.deleteSubscription(subIndex);
-        }
-        try {
-            model.saveToFile(getContext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Populate a given bundle with values pertaining to how this fragment is set. For
-     * FragmentHome, the scroll amount, search bar text, and sort dropdown selections are
-     * saved, so they can be reset to the saved values when returning to this fragment.
-     * The public keys at the top of this fragment are used to index the saved values.
-     * @param bundle the bundle to place the saved items in
-     */
-    public void fillBundleWithSavedState(Bundle bundle) {
-        ScrollView scrollView = getView().findViewById(R.id.home_scroll_view);
-        bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
-        TextView searchBar = getView().findViewById(R.id.home_search);
-        bundle.putString(SAVED_STATE_SEARCH_MESSAGE, searchBar.getText().toString());
-        Spinner sortDropdown = getView().findViewById(R.id.home_sort_list);
-        bundle.putInt(SAVED_STATE_SORT_MESSAGE, sortDropdown.getSelectedItemPosition());
     }
 }

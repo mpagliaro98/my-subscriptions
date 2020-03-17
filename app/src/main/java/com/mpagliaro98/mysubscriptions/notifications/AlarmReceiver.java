@@ -15,6 +15,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public static final String intentAction = "com.mpagliaro98.action.NOTIFICATIONS";
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Called at the time specified in setRecurringAlarm in MainActivity, when once a day
      * this will use NotificationService to create notifications and update subscriptions.

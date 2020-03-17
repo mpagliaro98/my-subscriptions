@@ -1,5 +1,6 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -35,7 +36,8 @@ import java.util.Locale;
  * data. A PAGE_TYPE must always be sent to specify the type of page. If it's CREATE,
  * no additional data needs to be sent. If it's EDIT or VIEW, a Subscription object to
  * view or modify must be passed in, as well as its index in the underlying model (this
- * index acts like a unique ID).
+ * index acts like a unique ID). A bundle of saved state from MainActivity is optional
+ * in all cases.
  */
 public class CreateSubscriptionActivity extends AppCompatActivity {
 
@@ -61,6 +63,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             add(new Category(R.color.colorCategoryGaming, "Gaming"));
             add(new Category(R.color.colorCategoryShopping, "Online Shopping"));
         }};
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * When this activity is created, initialize it and load any data we need. Set the
@@ -210,11 +216,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             }
 
             // Put the object in the intent and send it to the tab activity
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.SUBSCRIPTION_MESSAGE, subscription);
-            intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
-                            MainActivity.INCOMING_TYPE.CREATE);
-            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
+            Intent intent = MainActivity.buildGeneralMainIntent(this,
+                    MainActivity.INCOMING_TYPE.CREATE, subscription, subIndex, savedState);
             startActivity(intent);
         }
         else if (pageType == PAGE_TYPE.EDIT) {
@@ -225,13 +228,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             }
 
             // Put the object and its index in the intent and send it to the tab activity
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.SUBSCRIPTION_MESSAGE, subscription);
-            intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
-                            MainActivity.INCOMING_TYPE.EDIT);
-            intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE,
-                            subIndex);
-            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
+            Intent intent = MainActivity.buildGeneralMainIntent(this,
+                    MainActivity.INCOMING_TYPE.EDIT, subscription, subIndex, savedState);
             startActivity(intent);
         }
     }
@@ -250,15 +248,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         int id = item.getItemId();
         // When the edit button is pressed, reload this page in edit mode
         if (id == R.id.create_edit_button) {
-            Intent intent = new Intent(this, CreateSubscriptionActivity.class);
-            intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE,
-                            PAGE_TYPE.EDIT);
-            Subscription subscription = parseInputFields(null);
-            intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE,
-                            subscription);
-            intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE,
-                            subIndex);
-            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
+            Intent intent = buildGeneralCreateIntent(this, PAGE_TYPE.EDIT,
+                    parseInputFields(null), subIndex, savedState);
             startActivity(intent);
         }
         // When the delete button is pressed, display a yes/no dialog
@@ -270,12 +261,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(packageContext, MainActivity.class);
-                            intent.putExtra(MainActivity.INCOMING_TYPE_MESSAGE,
-                                    MainActivity.INCOMING_TYPE.DELETE);
-                            intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE,
-                                    subIndex);
-                            intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
+                            Intent intent = MainActivity.buildGeneralMainIntent(packageContext,
+                                    MainActivity.INCOMING_TYPE.DELETE, null, subIndex, savedState);
                             startActivity(intent);
                         }
                     })
@@ -283,6 +270,35 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // STATIC METHODS ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Create a valid intent that can be used to access this activity. To access this activity,
+     * several pieces of information need to be provided, which are specified by this
+     * method.
+     * @param context the current application context
+     * @param pageType the page type this page should be when accessing, either VIEW, EDIT, or CREATE
+     * @param subscription if in VIEW or EDIT, this is the subscription object that will be visible
+     * @param subIndex if in VIEW or EDIT, this is the ID of the subscription
+     * @param savedState any saved state to be passed back eventually to the calling activity
+     * @return a valid intent for accessing this activity
+     */
+    public static Intent buildGeneralCreateIntent(Context context, PAGE_TYPE pageType,
+                                                  Subscription subscription, int subIndex, Bundle savedState) {
+        Intent intent = new Intent(context, CreateSubscriptionActivity.class);
+        intent.putExtra(CreateSubscriptionActivity.PAGE_TYPE_MESSAGE, pageType);
+        intent.putExtra(CreateSubscriptionActivity.VIEW_SUB_MESSAGE, subscription);
+        intent.putExtra(CreateSubscriptionActivity.SUB_ID_MESSAGE, subIndex);
+        intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
+        return intent;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Parse the input fields in the current view and build a subscription object from
