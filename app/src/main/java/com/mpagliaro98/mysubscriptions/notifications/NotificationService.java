@@ -148,8 +148,8 @@ public class NotificationService {
     private void createSubNotification(NotificationManager notificationManager,
                                        List<Subscription> subscriptions) {
         String contentTitle = subscriptions.size() == 1 ?
-                subscriptions.get(0).getName() + " is being charged soon"
-                : "Multiple subscriptions are being charged soon";
+                subscriptions.get(0).getName() + " " + context.getString(R.string.notification_title_one)
+                : context.getString(R.string.notification_title_multiple);
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
                         .setSmallIcon(R.drawable.ic_launcher_background)
@@ -167,26 +167,32 @@ public class NotificationService {
      * @return a string with information on every due subscription, separated by newlines
      */
     private String generateContextText(List<Subscription> subscriptions) {
-        String fullMessage = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (Subscription sub : subscriptions) {
-            String messagePrefix = "";
             if (sub.getNotifDays() == 0) {
-                messagePrefix = "Today, ";
+                stringBuilder.append(context.getString(R.string.notification_content_days_zero));
             } else if (sub.getNotifDays() == 1) {
-                messagePrefix = "Tomorrow, ";
+                stringBuilder.append(context.getString(R.string.notification_content_days_one));
             } else if (sub.getNotifDays() == 2) {
-                messagePrefix = "In two days, ";
+                stringBuilder.append(context.getString(R.string.notification_content_days_two));
             } else if (sub.getNotifDays() == 3) {
-                messagePrefix = "In three days, ";
+                stringBuilder.append(context.getString(R.string.notification_content_days_three));
             } else if (sub.getNotifDays() == 7) {
-                messagePrefix = "In one week, ";
+                stringBuilder.append(context.getString(R.string.notification_content_days_seven));
             } else {
-                messagePrefix = "Soon, ";
+                stringBuilder.append(context.getString(R.string.notification_content_days_default));
             }
-            fullMessage += messagePrefix + "you'll be charged " + sub.getCostString() +
-                    " for " + sub.getName() + "." + "\n";
+            stringBuilder.append(' ');
+            stringBuilder.append(context.getString(R.string.notification_content_build_1));
+            stringBuilder.append(' ');
+            stringBuilder.append(sub.getCostString(context.getResources()));
+            stringBuilder.append(' ');
+            stringBuilder.append(context.getString(R.string.notification_content_build_2));
+            stringBuilder.append(' ');
+            stringBuilder.append(sub.getName());
+            stringBuilder.append(".\n");
         }
-        return fullMessage.trim();
+        return stringBuilder.toString().trim();
     }
 
     /**

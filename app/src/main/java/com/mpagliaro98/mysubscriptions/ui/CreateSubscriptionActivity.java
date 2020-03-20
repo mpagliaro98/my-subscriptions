@@ -128,7 +128,11 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                date.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(year, monthOfYear, dayOfMonth);
+                                Date enteredDate = calendar.getTime();
+                                date.setText(new SimpleDateFormat(getString(R.string.date_format),
+                                        Locale.US).format(enteredDate));
                             }
                         }, year, month, day);
                 picker.show();
@@ -148,7 +152,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
             // Auto-fill the date field with the current date
-            date.setText(new SimpleDateFormat(Subscription.dateFormat, Locale.getDefault()).format(new Date()));
+            date.setText(new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(new Date()));
             // Make sure the next date field can't be seen when creating
             nextDate.setVisibility(View.INVISIBLE);
         }
@@ -172,7 +176,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             frequency.setEnabled(false);
             frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
             // Write the next payment date to the screen
-            String nextDateStr = "Next Payment Date: " + sub.getNextPaymentDateString();
+            String nextDateStr = getString(R.string.create_text_next_date) + " " +
+                    sub.getNextPaymentDateString(getResources());
             nextDate.setText(nextDateStr);
             // Set the category dropdown to this subscription's category
             category.setEnabled(false);
@@ -184,8 +189,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
             // Fill every field with the values of the subscription to view
             name.setText(sub.getName());
-            cost.setText(sub.getCostString());
-            date.setText(sub.getStartDateString());
+            cost.setText(sub.getCostString(getResources()));
+            date.setText(sub.getStartDateString(getResources()));
             note.setText(sub.getNote());
         }
         else if (pageType == PAGE_TYPE.EDIT) {
@@ -193,7 +198,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             createButton.setText(R.string.create_button_edit);
             name.setText(sub.getName());
             cost.setText(String.valueOf(sub.getCost()));
-            date.setText(sub.getStartDateString());
+            date.setText(sub.getStartDateString(getResources()));
             note.setText(sub.getNote());
             // Set the recharge dropdown to this subscription's value
             frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
@@ -282,8 +287,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         else if (id == R.id.create_delete_button) {
             final CreateSubscriptionActivity packageContext = this;
             new AlertDialog.Builder(this)
-                    .setTitle("Delete")
-                    .setMessage("Would you like to delete this Subscription?")
+                    .setTitle(getString(R.string.create_delete_dialog_title))
+                    .setMessage(getString(R.string.create_delete_dialog_content))
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -351,7 +356,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from date and validate it
         Date date;
         try {
-            date = new SimpleDateFormat(Subscription.dateFormat, Locale.US).parse(dateText.getText().toString());
+            date = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
             displayErrorBar(view, R.string.create_error_date);
             return null;
@@ -360,7 +365,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from cost and validate it, remove the currency symbol if it's there
         double cost;
         String costTemp = costText.getText().toString();
-        if (costTemp.startsWith("$")) {
+        if (costTemp.startsWith(getString(R.string.currency))) {
             costTemp = costTemp.substring(1);
         }
         try {

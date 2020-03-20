@@ -1,56 +1,46 @@
 <resources>
+    <!-- General strings for use anywhere in the application -->
     <string name="app_name">MySubscriptions</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="tab_text_calendar">Calendar</string>
     <string name="tab_text_home">Home</string>
     <string name="tab_text_analytics">Analytics</string>
-    <string name="create_name">Name</string>
-    <string name="create_cost">XX.XX</string>
-    <string name="create_note">Any additional notes</string>
-    <string name="current_date">MM/DD/YYYY</string>
+    <string name="date_format">MM/dd/yyyy</string>
+    <string name="cost_format">$%.2f</string>
+    <string name="currency">$</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="ok">OK</string>
+    <string name="unimplemented">That feature is not yet implemented.</string>
+
+    <!-- Create page strings -->
     <string name="create_button">Create Subscription</string>
-    <string name="create_error_name">You must input a name.</string>
-    <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
-    <string name="create_error_cost">The cost must be a valid number.</string>
     <string name="create_edit_button">Edit Subscription</string>
     <string name="create_button_edit">Update Subscription</string>
     <string name="create_delete_button">Delete Subscription</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
+    <string name="create_name">Name</string>
+    <string name="create_cost">XX.XX</string>
+    <string name="create_note">Any additional notes</string>
+    <string name="create_text_cost">Cost ($):</string>
+    <string name="create_text_date">Start Date:</string>
+    <string name="create_text_freq">You get charged</string>
+    <string name="create_text_category">Category:</string>
+    <string name="create_text_notif">Notifications:</string>
+    <string name="create_text_next_date">Next Payment Date:</string>
+    <string name="create_delete_dialog_title">Delete</string>
+    <string name="create_delete_dialog_content">Would you like to delete this Subscription?</string>
+    <!-- Create page errors -->
+    <string name="create_error_name">You must input a name.</string>
+    <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
+    <string name="create_error_cost">The cost must be a valid number.</string>
+    <string name="create_error_frequency">The frequency value is invalid.</string>
+    <!-- Create page recharge frequency list strings -->
     <string name="array_freq_monthly">Every Month</string>
     <string name="array_freq_bimonthly">Every Two Months</string>
     <string name="array_freq_trimonthly">Every Three Months</string>
     <string name="array_freq_twiceyear">Twice a Year</string>
     <string name="array_freq_yearly">Once a Year</string>
-
-    <string-array name="array_freq_dropdown">
-        <item>@string/array_freq_monthly</item>
-        <item>@string/array_freq_bimonthly</item>
-        <item>@string/array_freq_trimonthly</item>
-        <item>@string/array_freq_twiceyear</item>
-        <item>@string/array_freq_yearly</item>
-    </string-array>
-
-    <string name="create_error_frequency">The frequency value is invalid.</string>
-    <string name="create_text_cost">Cost ($):</string>
-    <string name="create_text_date">Start Date:</string>
-    <string name="create_text_freq">You get charged</string>
-    <string name="home_search">Search</string>
-    <string name="array_sort_name">By Name</string>
-    <string name="array_sort_next">By Next Date</string>
-    <string name="array_sort_category">By Category</string>
-    <string name="array_sort_cost">By Cost</string>
-    <string name="array_sort_default">No Sorting</string>
-
-    <string-array name="array_sort_dropdown">
-        <item>@string/array_sort_default</item>
-        <item>@string/array_sort_name</item>
-        <item>@string/array_sort_next</item>
-        <item>@string/array_sort_category</item>
-        <item>@string/array_sort_cost</item>
-    </string-array>
-    <string name="unimplemented">That feature is not yet implemented.</string>
-    <string name="create_text_category">Category:</string>
+    <!-- Create page notification frequency list strings -->
     <string name="array_notif_none">No Notifications</string>
     <string name="array_notif_day_of">The Day Of</string>
     <string name="array_notif_day_before">The Day Before</string>
@@ -58,6 +48,48 @@
     <string name="array_notif_three_days">Three Days Before</string>
     <string name="array_notif_week">One Week Before</string>
 
+    <!-- Home tab strings -->
+    <string name="home_search">Search</string>
+    <string name="array_sort_name">By Name</string>
+    <string name="array_sort_next">By Next Date</string>
+    <string name="array_sort_category">By Category</string>
+    <string name="array_sort_cost">By Cost</string>
+    <string name="array_sort_default">No Sorting</string>
+    <string name="subview_next_date">Next Payment Date:</string>
+    <string name="delete_dialog_title">Something went wrong loading your data</string>
+    <string name="delete_dialog_content">Your subscription data is corrupted, and will need to be erased to continue using this app.</string>
+
+    <!-- Notification strings -->
+    <string name="notification_channel_name">Subscription Notifications</string>
+    <string name="notification_channel_description">Notifications related to when upcoming subscription payments will occur.</string>
+    <string name="notification_ioexception_title">Something went wrong with MySubscriptions</string>
+    <string name="notification_ioexception_desc">An error occurred while getting your notifications. Check the app for more details.</string>
+    <string name="notification_title_one">is being charged soon</string>
+    <string name="notification_title_multiple">Multiple subscriptions are being charged soon</string>
+    <string name="notification_content_days_zero">Today,</string>
+    <string name="notification_content_days_one">Tomorrow,</string>
+    <string name="notification_content_days_two">In two days,</string>
+    <string name="notification_content_days_three">In three days,</string>
+    <string name="notification_content_days_seven">In one week,</string>
+    <string name="notification_content_days_default">Soon,</string>
+    <string name="notification_content_build_1">you\'ll be charged</string>
+    <string name="notification_content_build_2">for</string>
+
+    <!-- String arrays -->
+    <string-array name="array_freq_dropdown">
+        <item>@string/array_freq_monthly</item>
+        <item>@string/array_freq_bimonthly</item>
+        <item>@string/array_freq_trimonthly</item>
+        <item>@string/array_freq_twiceyear</item>
+        <item>@string/array_freq_yearly</item>
+    </string-array>
+    <string-array name="array_sort_dropdown">
+        <item>@string/array_sort_default</item>
+        <item>@string/array_sort_name</item>
+        <item>@string/array_sort_next</item>
+        <item>@string/array_sort_category</item>
+        <item>@string/array_sort_cost</item>
+    </string-array>
     <string-array name="array_notif_dropdown">
         <item>@string/array_notif_none</item>
         <item>@string/array_notif_day_of</item>
@@ -66,9 +98,4 @@
         <item>@string/array_notif_three_days</item>
         <item>@string/array_notif_week</item>
     </string-array>
-    <string name="create_text_notif">Notifications:</string>
-    <string name="notification_channel_name">Subscription Notifications</string>
-    <string name="notification_channel_description">Notifications related to when upcoming subscription payments will occur.</string>
-    <string name="notification_ioexception_title">Something went wrong with MySubscriptions</string>
-    <string name="notification_ioexception_desc">An error occurred while getting your notifications. Check the app for more details.</string>
 </resources>

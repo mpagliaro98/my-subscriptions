@@ -185,9 +185,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     private void deleteDataDialog() {
         final Context context = getContext();
         new AlertDialog.Builder(context)
-                .setTitle("Something went wrong loading your data")
-                .setMessage("Your subscription data is corrupted, and will need to be erased to continue using this app.")
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                .setTitle(context.getString(R.string.delete_dialog_title))
+                .setMessage(context.getString(R.string.delete_dialog_content))
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {

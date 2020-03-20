@@ -8,8 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 /**
  * A custom UI component for displaying Subscriptions a few relevant bits of data on them.
@@ -50,10 +48,11 @@ public class SubscriptionView extends LinearLayout {
 
         // Set the text in each part of the component
         textName.setText(subscription.getName());
-        String costStr = subscription.getCostString() + " " +
+        String costStr = subscription.getCostString(context.getResources()) + " " +
                 getRechargeFrequencyString(subscription.getRechargeFrequency(), context);
         textCost.setText(costStr);
-        String nextDateStr = "Next Payment Date: " + subscription.getNextPaymentDateString();
+        String nextDateStr = context.getString(R.string.subview_next_date) + " " +
+                subscription.getNextPaymentDateString(context.getResources());
         textNextDate.setText(nextDateStr);
         imageColor.setColorFilter(context.getResources().getColor(subscription.getCategory().getColor()),
                 PorterDuff.Mode.SRC_IN);

@@ -1,5 +1,9 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import android.content.res.Resources;
+
+import com.mpagliaro98.mysubscriptions.R;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,8 +16,6 @@ import java.util.Locale;
  * and from files in json form.
  */
 public class Subscription implements Serializable {
-
-    public static final String dateFormat = "MM/dd/yyyy";
 
     private int id;
     private String name;
@@ -134,11 +136,12 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Get a string representation of the cost, formatted as $X.XX.
+     * Get a string representation of the cost based on how cost_format is set.
+     * @param resources the resources containing the cost_format string
      * @return a string representation of the cost
      */
-    public String getCostString() {
-        return String.format(Locale.US, "$%.2f", cost);
+    public String getCostString(Resources resources) {
+        return String.format(Locale.US, resources.getString(R.string.cost_format), cost);
     }
 
     /**
@@ -158,11 +161,12 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Get the start date in a string representation: MM/DD/YYYY.
+     * Get the start date in a string representation based on how date_format is set.
+     * @param resources the resources containing the date_format string
      * @return the start date as a string
      */
-    public String getStartDateString() {
-        return new SimpleDateFormat(dateFormat, Locale.US).format(startDate);
+    public String getStartDateString(Resources resources) {
+        return new SimpleDateFormat(resources.getString(R.string.date_format), Locale.US).format(startDate);
     }
 
     /**
@@ -214,11 +218,12 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Get the next payment date in a string representation: MM/DD/YYYY.
+     * Get the next payment date in a string representation based on how date_format is set.
+     * @param resources the resources containing the date_format string
      * @return the next payment date as a string
      */
-    public String getNextPaymentDateString() {
-        return new SimpleDateFormat(dateFormat, Locale.US).format(nextPaymentDate);
+    public String getNextPaymentDateString(Resources resources) {
+        return new SimpleDateFormat(resources.getString(R.string.date_format), Locale.US).format(nextPaymentDate);
     }
 
     /**
