@@ -52,6 +52,14 @@ public class Subscription implements Serializable {
         this.nextPaymentDate = startDate;
         this.category = category;
         this.notifDays = notifDays;
+        regenerateSubInfo();
+    }
+
+    /**
+     * Regenerate each subscription field that isn't directly specified on creation, or needs
+     * to be updated after a certain amount of time passes.
+     */
+    public void regenerateSubInfo() {
         generateNextPaymentDate();
         generateNextNotifDate();
     }
@@ -59,7 +67,7 @@ public class Subscription implements Serializable {
     /**
      * Calculate when the next soonest payment date will be from today.
      */
-    public void generateNextPaymentDate() {
+    private void generateNextPaymentDate() {
         Calendar c = Calendar.getInstance();
         Date today = c.getTime();
         c.setTime(startDate);
@@ -74,7 +82,7 @@ public class Subscription implements Serializable {
      * be run after the next payment date is generated. If notifications are set to off for
      * this subscription, the next notification date will be set to null.
      */
-    public void generateNextNotifDate() {
+    private void generateNextNotifDate() {
         Calendar c = Calendar.getInstance();
         c.setTime(nextPaymentDate);
         if (notifDays == -1) {
