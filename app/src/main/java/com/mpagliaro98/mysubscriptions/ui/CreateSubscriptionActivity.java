@@ -1,5 +1,6 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,12 +8,15 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -24,6 +28,7 @@ import com.mpagliaro98.mysubscriptions.model.Category;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -82,7 +87,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Pre-load each field from the page so we can easily modify them
         TextView name = findViewById(R.id.create_name);
         TextView cost = findViewById(R.id.create_cost);
-        TextView date = findViewById(R.id.create_date);
+        final TextView date = findViewById(R.id.create_date);
+        ImageView datePicker = findViewById(R.id.create_date_picker);
         TextView note = findViewById(R.id.create_note);
         Spinner frequency = findViewById(R.id.create_freq_dropdown);
         TextView nextDate = findViewById(R.id.create_next_date);
@@ -121,8 +127,26 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
-            // Auto-fill the date field with the current date, properly formatted
+            // Auto-fill the date field with the current date and set the dialog on the date field
             date.setText(new SimpleDateFormat(Subscription.dateFormat, Locale.getDefault()).format(new Date()));
+            datePicker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Calendar calendar = Calendar.getInstance();
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    int month = calendar.get(Calendar.MONTH);
+                    int year = calendar.get(Calendar.YEAR);
+                    // Create the date picker dialog to display when accessing the date field
+                    DatePickerDialog picker = new DatePickerDialog(CreateSubscriptionActivity.this,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                    date.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                                }
+                            }, year, month, day);
+                    picker.show();
+                }
+            });
             // Make sure the next date field can't be seen when creating
             nextDate.setVisibility(View.INVISIBLE);
         }
@@ -138,6 +162,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             date.setLinksClickable(false);
             date.setCursorVisible(false);
             date.setFocusableInTouchMode(false);
+            datePicker.setVisibility(View.INVISIBLE);
             note.setLinksClickable(false);
             note.setCursorVisible(false);
             note.setFocusableInTouchMode(false);
@@ -168,6 +193,25 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             cost.setText(String.valueOf(sub.getCost()));
             date.setText(sub.getStartDateString());
             note.setText(sub.getNote());
+            // Create the date picker
+            datePicker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Calendar calendar = Calendar.getInstance();
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    int month = calendar.get(Calendar.MONTH);
+                    int year = calendar.get(Calendar.YEAR);
+                    // Create the date picker dialog to display when accessing the date field
+                    DatePickerDialog picker = new DatePickerDialog(CreateSubscriptionActivity.this,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                    date.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                                }
+                            }, year, month, day);
+                    picker.show();
+                }
+            });
             // Set the recharge dropdown to this subscription's value
             frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
             // Set the category dropdown to this subscription's category

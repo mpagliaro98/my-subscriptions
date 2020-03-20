@@ -149,7 +149,7 @@
                     android:layout_marginBottom="13dp"
                     android:text="@string/create_text_date"
                     app:layout_constraintBottom_toBottomOf="@+id/create_date"
-                    app:layout_constraintEnd_toStartOf="@+id/create_date"
+                    app:layout_constraintEnd_toStartOf="@+id/create_date_picker"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <Spinner
@@ -186,6 +186,17 @@
                     app:layout_constraintBottom_toBottomOf="@+id/create_category_dropdown"
                     app:layout_constraintEnd_toStartOf="@+id/create_category_dropdown"
                     app:srcCompat="@drawable/circle_element" />
+
+                <ImageView
+                    android:id="@+id/create_date_picker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="11dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/create_date"
+                    app:layout_constraintEnd_toStartOf="@+id/create_date"
+                    app:srcCompat="@drawable/ic_date_range_grey_24dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
