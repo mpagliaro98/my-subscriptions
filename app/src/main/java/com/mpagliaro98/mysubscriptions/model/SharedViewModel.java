@@ -33,13 +33,13 @@ public class SharedViewModel extends ViewModel {
         }
     });
     // An underlying hierarchy of lists is kept to handle the subscription list
-    // The viewable list is the top level list, its contents are shown in the UI
-    private ArrayList<Subscription> viewableSubscriptionList = new ArrayList<>();
-    // Re-orderable list always has all the elements the full list has, but can be re-ordered
-    // The viewable list takes what re-orderable list has and filters it before displaying
-    private ArrayList<Subscription> reorderableFullSubscriptionList = new ArrayList<>();
     // The full list has all subscriptions in it, always ordered by ID
     private ArrayList<Subscription> fullSubscriptionList = new ArrayList<>();
+    // Re-orderable list always has all the elements the full list has, but can be re-ordered
+    // The viewable list takes what re-orderable list has and filters it before displaying
+    private ArrayList<Subscription> reorderableFullSubscriptionList = fullSubscriptionList;
+    // The viewable list is the top level list, its contents are shown in the UI
+    private ArrayList<Subscription> viewableSubscriptionList = fullSubscriptionList;
     // The filename the data is kept in
     private static final String filename = "subscriptions.dat";
 
@@ -181,7 +181,6 @@ public class SharedViewModel extends ViewModel {
         int id = 0;
         while (line != null) {
             Subscription subscription = gson.fromJson(line, Subscription.class);
-            subscription.regenerateSubInfo();
             subscription.setId(id);
             fullSubscriptionList.add(subscription);
             line = reader.readLine();
