@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 
+import java.util.Calendar;
+
 /**
  * A custom UI component for displaying Subscriptions a few relevant bits of data on them.
  */
@@ -46,14 +48,28 @@ public class SubscriptionView extends LinearLayout {
         TextView textNextDate = findViewById(R.id.subview_startdate);
         ImageView imageColor = findViewById(R.id.subview_color);
 
-        // Set the text in each part of the component
+        // Set the text of the subscription name
         textName.setText(subscription.getName());
+
+        // Set the text of the subscription cost and recharge frequency
         String costStr = subscription.getCostString(context.getResources()) + " " +
                 getRechargeFrequencyString(subscription.getRechargeFrequency(), context);
         textCost.setText(costStr);
+
+        // Set the text of the next payment date and change the color if it's today
         String nextDateStr = context.getString(R.string.subview_next_date) + " " +
                 subscription.getNextPaymentDateString(context.getResources());
         textNextDate.setText(nextDateStr);
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        if (subscription.getNextPaymentDate().equals(c.getTime())) {
+            textNextDate.setTextColor(context.getResources().getColor(R.color.colorPaymentToday));
+        }
+
+        // Set the category color
         imageColor.setColorFilter(context.getResources().getColor(subscription.getCategory().getColor()),
                 PorterDuff.Mode.SRC_IN);
     }

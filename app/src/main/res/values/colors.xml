@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorLightGreyBG">#EFEFEF</color>
+    <color name="colorPaymentToday">#FF0000</color>
 
     <color name="colorCategoryStreaming">#FF5214</color>
     <color name="colorCategoryGaming">#6B68FF</color>
