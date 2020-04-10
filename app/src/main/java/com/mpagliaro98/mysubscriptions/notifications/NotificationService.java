@@ -112,7 +112,7 @@ public class NotificationService {
         // Create the channel with a name, description, and importance
         CharSequence name = context.getString(R.string.notification_channel_name);
         String description = context.getString(R.string.notification_channel_description);
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel channel = new NotificationChannel(name.toString(), name, importance);
         channel.setDescription(description);
 
