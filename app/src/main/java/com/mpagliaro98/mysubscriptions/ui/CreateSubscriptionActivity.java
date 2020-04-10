@@ -360,7 +360,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             return null;
         }
 
-        // Extract the data from date and validate it
+        // Extract the data from date and validate it. The hour, minute, second, and millisecond
+        // of this date field will all be 0. (an assumption needed by the Subscription)
         Date date;
         try {
             date = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(dateText.getText().toString());

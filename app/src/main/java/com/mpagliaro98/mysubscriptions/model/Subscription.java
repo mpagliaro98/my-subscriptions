@@ -67,13 +67,19 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Calculate when the next soonest payment date will be from today.
+     * Calculate when the next soonest payment date will be from today. Assumes the hour, minute,
+     * second, and millisecond fields of the start date are 0, which is handled in
+     * CreateSubscriptionActivity.
      */
     private void generateNextPaymentDate() {
         Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
         Date today = c.getTime();
         c.setTime(startDate);
-        while (!nextPaymentDate.after(today)) {
+        while (!nextPaymentDate.after(today) && !nextPaymentDate.equals(today)) {
             c.add(Calendar.MONTH, rechargeFrequency);
             nextPaymentDate = c.getTime();
         }
