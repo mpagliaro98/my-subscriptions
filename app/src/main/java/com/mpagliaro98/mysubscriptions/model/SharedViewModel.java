@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -153,6 +157,41 @@ public class SharedViewModel extends ViewModel {
     public void sortList(Comparator<Subscription> comparator, CharSequence searchText) {
         Collections.sort(reorderableFullSubscriptionList, comparator);
         filterList(searchText);
+    }
+
+    /**
+     * Iterate through every subscription in the model and regenerate the relevant date info
+     * for those whose next payment dates have passed. If any were actually updated, then
+     * save the changes to the file.
+     * @param context the current application context
+     */
+    public void updateSubscriptionDates(Context context) {
+        // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date today = calendar.getTime();
+
+        // Iterate through every subscription and update ones whose payment dates have passed
+        int numToUpdate = 0;
+        for (Subscription sub : fullSubscriptionList) {
+            if (today.after(sub.getNextPaymentDate())) {
+                sub.regenerateSubInfo();
+                updateSubscription(sub, sub.getId());
+                numToUpdate++;
+            }
+        }
+
+        // If any subscriptions were updated, save these changes back to the file
+        if (numToUpdate > 0) {
+            try {
+                saveToFile(context);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

@@ -54,10 +54,11 @@ public class NotificationService {
         createNotificationChannel();
         Log.i(TAG, "Notification channel created successfully");
 
-        // Get the subscriptions from the file
+        // Get the subscriptions from the file and update any dates as necessary
         SharedViewModel model = new SharedViewModel();
         try {
             model.loadFromFile(context);
+            model.updateSubscriptionDates(context);
         } catch (IOException e) {
             sendIOExceptionNotif(notificationManager);
             return;
@@ -80,16 +81,6 @@ public class NotificationService {
             if (today.equals(sub.getNextNotifDate())) {
                 Log.i(TAG, sub.getName() + " will be added to the notification");
                 subsWithNotifications.add(sub);
-            }
-            // If today is after this sub's next payment date, update it
-            if (today.after(sub.getNextPaymentDate())) {
-                try {
-                    Log.i(TAG, "Updating payment dates for " + sub.getName());
-                    updateSubDates(model, sub);
-                } catch (IOException e) {
-                    sendIOExceptionNotif(notificationManager);
-                    return;
-                }
             }
         }
 
@@ -193,18 +184,5 @@ public class NotificationService {
             stringBuilder.append(".\n");
         }
         return stringBuilder.toString().trim();
-    }
-
-    /**
-     * Update the next payment date and next notification date of a subscription, then
-     * save those changes back to the file.
-     * @param model the model that holds all the subscriptions and their functionality
-     * @param sub the subscription to update
-     * @throws IOException thrown if something goes wrong while saving the file
-     */
-    private void updateSubDates(SharedViewModel model, Subscription sub) throws IOException {
-        sub.regenerateSubInfo();
-        model.updateSubscription(sub, sub.getId());
-        model.saveToFile(context);
     }
 }
