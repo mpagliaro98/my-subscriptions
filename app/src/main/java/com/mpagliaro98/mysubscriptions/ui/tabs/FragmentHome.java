@@ -265,12 +265,16 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                         }
                     }, searchText);
                 }
-                // Sort by next payment date
+                // Sort by next payment date, if equal then sort by name
                 else if (sortOption.equals(getString(R.string.array_sort_next))) {
                     model.sortList(new Comparator<Subscription>() {
                         @Override
                         public int compare(Subscription o1, Subscription o2) {
-                            return o1.getNextPaymentDate().compareTo(o2.getNextPaymentDate());
+                            if (o1.getNextPaymentDate().equals(o2.getNextPaymentDate())) {
+                                return o1.getName().compareToIgnoreCase(o2.getName());
+                            } else {
+                                return o1.getNextPaymentDate().compareTo(o2.getNextPaymentDate());
+                            }
                         }
                     }, searchText);
                 }

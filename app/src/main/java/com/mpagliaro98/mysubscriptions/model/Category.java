@@ -55,7 +55,8 @@ public class Category implements Serializable {
     }
 
     /**
-     * Two categories are equal if their colors and names are equivalent.
+     * Two categories are equal if their colors are the same and their names are the
+     * same regardless of case.
      * @param obj The object to compare to this category
      * @return true if they are equal, false otherwise
      */
@@ -65,7 +66,7 @@ public class Category implements Serializable {
             return true;
         } else if (obj instanceof Category) {
             Category cat2 = (Category)obj;
-            if (this.name.equals(cat2.name) && this.color == cat2.color) {
+            if (this.name.equalsIgnoreCase(cat2.name) && this.color == cat2.color) {
                 return true;
             } else {
                 return false;
