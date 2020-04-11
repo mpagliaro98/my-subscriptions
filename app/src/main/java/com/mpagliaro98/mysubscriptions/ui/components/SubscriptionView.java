@@ -27,18 +27,20 @@ public class SubscriptionView extends LinearLayout {
      * then initialize the text in the view.
      * @param context the current application context
      * @param subscription the Subscription object to display on this component
+     * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public SubscriptionView(Context context, Subscription subscription) {
+    public SubscriptionView(Context context, Subscription subscription, Calendar zeroTimeCalendar) {
         super(context);
         this.subscription = subscription;
-        initSubView(context);
+        initSubView(context, zeroTimeCalendar);
     }
 
     /**
      * Initialize the various values of this component.
      * @param context the current application context
+     * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    private void initSubView(Context context) {
+    private void initSubView(Context context, Calendar zeroTimeCalendar) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.component_subscriptionview, this);
 
@@ -60,12 +62,7 @@ public class SubscriptionView extends LinearLayout {
         String nextDateStr = context.getString(R.string.subview_next_date) + " " +
                 subscription.getNextPaymentDateString(context.getResources());
         textNextDate.setText(nextDateStr);
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        if (subscription.getNextPaymentDate().equals(c.getTime())) {
+        if (subscription.getNextPaymentDate().equals(zeroTimeCalendar.getTime())) {
             textNextDate.setTextColor(context.getResources().getColor(R.color.colorPaymentToday));
         }
 

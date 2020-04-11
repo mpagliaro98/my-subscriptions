@@ -38,7 +38,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             if (intent.getAction().equals(intentAction)) {
                 Log.i(TAG, "Standard application intent, running notifications");
                 NotificationService notificationService = new NotificationService(context);
-                notificationService.processBackgroundTasks();
+                notificationService.processBackgroundTasks(MainActivity.getZeroTimeCalendar());
             }
             // If the intent signals the phone was turned on, re-activate the notification alarm
             else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {

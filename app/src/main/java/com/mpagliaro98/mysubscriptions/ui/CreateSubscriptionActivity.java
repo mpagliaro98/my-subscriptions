@@ -119,7 +119,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
+                final Calendar calendar = MainActivity.getZeroTimeCalendar();
                 try {
                     Date startDate = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(date.getText().toString());
                     calendar.setTimeInMillis(startDate.getTime());
@@ -135,7 +135,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Calendar calendar = Calendar.getInstance();
+                                Calendar calendar = MainActivity.getZeroTimeCalendar();
                                 calendar.set(year, monthOfYear, dayOfMonth);
                                 Date enteredDate = calendar.getTime();
                                 date.setText(new SimpleDateFormat(getString(R.string.date_format),
@@ -424,7 +424,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // Build our subscription object and return it, set the unique ID as -1 as we will
         // give it its proper value in the model
-        return new Subscription(-1, name, cost, date, note, freqMonths, category, notifDays);
+        return new Subscription(-1, name, cost, date, note, freqMonths, category, notifDays,
+                MainActivity.getZeroTimeCalendar());
     }
 
     /**

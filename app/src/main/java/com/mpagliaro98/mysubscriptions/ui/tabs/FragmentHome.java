@@ -69,7 +69,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         // Populate the model by loading subscriptions from the file
         try {
             model.loadFromFile(getContext());
-            model.updateSubscriptionDates(getContext());
+            model.updateSubscriptionDates(getContext(), MainActivity.getZeroTimeCalendar());
         } catch(IOException e) {
             e.printStackTrace();
         } catch(Exception e) {
@@ -163,7 +163,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         linearLayout.removeAllViewsInLayout();
         for (int i = 0; i < model.numSubscriptionsVisible(); i++) {
             final Subscription sub = model.getSubscription(i);
-            final SubscriptionView subView = new SubscriptionView(getContext(), sub);
+            final SubscriptionView subView = new SubscriptionView(getContext(), sub, MainActivity.getZeroTimeCalendar());
             subView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

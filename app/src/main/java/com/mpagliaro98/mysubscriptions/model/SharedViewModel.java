@@ -164,21 +164,17 @@ public class SharedViewModel extends ViewModel {
      * for those whose next payment dates have passed. If any were actually updated, then
      * save the changes to the file.
      * @param context the current application context
+     * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public void updateSubscriptionDates(Context context) {
+    public void updateSubscriptionDates(Context context, Calendar zeroTimeCalendar) {
         // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date today = calendar.getTime();
+        Date today = zeroTimeCalendar.getTime();
 
         // Iterate through every subscription and update ones whose payment dates have passed
         int numToUpdate = 0;
         for (Subscription sub : fullSubscriptionList) {
             if (today.after(sub.getNextPaymentDate())) {
-                sub.regenerateSubInfo();
+                sub.regenerateSubInfo(zeroTimeCalendar);
                 updateSubscription(sub, sub.getId());
                 numToUpdate++;
             }

@@ -43,9 +43,10 @@ public class NotificationService {
     /**
      * Main method to create notifications for the subscriptions that require them
      * on any given day and update any subscription dates.
+     * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    public void processBackgroundTasks() {
+    public void processBackgroundTasks(Calendar zeroTimeCalendar) {
         // Get the notification manager, which will allow us to send notifications
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         assert notificationManager != null;
@@ -58,7 +59,7 @@ public class NotificationService {
         SharedViewModel model = new SharedViewModel();
         try {
             model.loadFromFile(context);
-            model.updateSubscriptionDates(context);
+            model.updateSubscriptionDates(context, zeroTimeCalendar);
         } catch (IOException e) {
             sendIOExceptionNotif(notificationManager);
             return;
@@ -66,12 +67,7 @@ public class NotificationService {
         Log.i(TAG, "Subscriptions successfully loaded from file");
 
         // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date today = calendar.getTime();
+        Date today = zeroTimeCalendar.getTime();
 
         // Loop through each subscription
         List<Subscription> subList = model.getFullSubscriptionList();

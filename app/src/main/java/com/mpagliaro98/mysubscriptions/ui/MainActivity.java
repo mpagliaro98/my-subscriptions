@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public static void setRecurringAlarm(Context context) {
         // Get how long it will be from now until the time notifications will go off
+        // Since "now" needs to have the current time, we won't use a zero time calendar here
         Calendar alarmTime = Calendar.getInstance();
         Date now = alarmTime.getTime();
         alarmTime.set(Calendar.HOUR_OF_DAY, 6);
@@ -201,5 +202,21 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(MainActivity.INCOMING_INDEX_MESSAGE, subIndex);
         intent.putExtra(MainActivity.SAVED_STATE_BUNDLE_MESSAGE, savedState);
         return intent;
+    }
+
+    /**
+     * Gets an instance of the Calendar object with its date as the current date, but the time
+     * set to 0:00:00. This is useful for most components of the application, as date comparisons
+     * happen with the time at 0:00:00, so we can compare specific dates without worrying about
+     * the time.
+     * @return a calendar object of today's date with the time set to midnight
+     */
+    public static Calendar getZeroTimeCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
     }
 }
