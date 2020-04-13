@@ -20,6 +20,7 @@ public class SharedViewModelTest {
 
     // Any objects needed by the component to be mocked
     private Subscription sub1, sub2, sub3;
+    private Calendar calendar = Calendar.getInstance();
 
     /**
      * Run before every test, initializes the component under test and the mock objects.
@@ -70,6 +71,12 @@ public class SharedViewModelTest {
         when(sub3.getCost()).thenReturn(10.10101010101);
         when(sub3.getNextPaymentDate()).thenReturn(date3);
         when(sub3.getCategory()).thenReturn(cat2);
+
+        // Set the calendar to have zero time
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
     }
 
     /**
@@ -349,5 +356,42 @@ public class SharedViewModelTest {
         assertEquals(sub2, pos1);
         assertEquals(sub1, pos2);
         assertEquals(sub3, pos3);
+    }
+
+    /**
+     * Test iterating over the subscriptions and updating ones that are outdated.
+     */
+    @Test
+    public void test_update_subscription_dates() {
+        // All next payment dates are in the future, so update none
+        CuT.addSubscription(sub1);
+        CuT.addSubscription(sub2);
+        CuT.addSubscription(sub3);
+        calendar.set(Calendar.YEAR, 2020);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 5);
+        int numUpdated = CuT.updateSubscriptionDates(calendar);
+        assertEquals(0, numUpdated);
+
+        // One next payment date is today, so don't update it
+        calendar.set(Calendar.YEAR, 2021);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 5);
+        numUpdated = CuT.updateSubscriptionDates(calendar);
+        assertEquals(0, numUpdated);
+
+        // One date in the past, so update one
+        calendar.set(Calendar.YEAR, 2021);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 6);
+        numUpdated = CuT.updateSubscriptionDates(calendar);
+        assertEquals(1, numUpdated);
+
+        // Update multiple
+        calendar.set(Calendar.YEAR, 2023);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 6);
+        numUpdated = CuT.updateSubscriptionDates(calendar);
+        assertEquals(3, numUpdated);
     }
 }

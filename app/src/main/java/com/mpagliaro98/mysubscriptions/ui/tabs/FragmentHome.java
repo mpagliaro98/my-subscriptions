@@ -69,7 +69,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         // Populate the model by loading subscriptions from the file
         try {
             model.loadFromFile(getContext());
-            model.updateSubscriptionDates(getContext(), MainActivity.getZeroTimeCalendar());
+            int numUpdated = model.updateSubscriptionDates(MainActivity.getZeroTimeCalendar());
+            if (numUpdated > 0) {
+                model.saveToFile(getContext());
+            }
         } catch(IOException e) {
             e.printStackTrace();
         } catch(Exception e) {

@@ -59,7 +59,10 @@ public class NotificationService {
         SharedViewModel model = new SharedViewModel();
         try {
             model.loadFromFile(context);
-            model.updateSubscriptionDates(context, zeroTimeCalendar);
+            int numUpdated = model.updateSubscriptionDates(zeroTimeCalendar);
+            if (numUpdated > 0) {
+                model.saveToFile(context);
+            }
         } catch (IOException e) {
             sendIOExceptionNotif(notificationManager);
             return;
