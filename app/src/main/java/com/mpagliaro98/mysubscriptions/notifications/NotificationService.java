@@ -120,7 +120,7 @@ public class NotificationService {
     private void sendIOExceptionNotif(NotificationManager notificationManager) {
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
-                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentTitle(context.getString(R.string.notification_ioexception_title))
                         .setContentText(context.getString(R.string.notification_ioexception_desc))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -142,7 +142,7 @@ public class NotificationService {
                 : context.getString(R.string.notification_title_multiple);
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
-                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentTitle(contentTitle)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setStyle(new NotificationCompat.BigTextStyle())
