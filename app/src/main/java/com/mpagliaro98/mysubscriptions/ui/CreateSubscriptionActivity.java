@@ -63,9 +63,11 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     // List of every valid category, used to populate input fields
     private ArrayList<Category> categoryList = new ArrayList<Category>() {
         {
-            add(new Category(R.color.colorCategoryStreaming, "Streaming"));
+            add(new Category(R.color.colorCategoryVideoStreaming, "Video Streaming"));
+            add(new Category(R.color.colorCategoryAudioStreaming, "Audio Streaming"));
             add(new Category(R.color.colorCategoryGaming, "Gaming"));
             add(new Category(R.color.colorCategoryShopping, "Online Shopping"));
+            add(new Category(R.color.colorCategoryMisc, "Misc"));
         }};
 
     //////////////////////////////////////////////////////////////////////////////////////////

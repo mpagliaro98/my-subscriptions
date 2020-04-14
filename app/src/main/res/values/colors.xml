@@ -6,7 +6,9 @@
     <color name="colorLightGreyBG">#EFEFEF</color>
     <color name="colorPaymentToday">#FF0000</color>
 
-    <color name="colorCategoryStreaming">#FF5214</color>
+    <color name="colorCategoryVideoStreaming">#FF5214</color>
+    <color name="colorCategoryAudioStreaming">#D8C952</color>
     <color name="colorCategoryGaming">#6B68FF</color>
     <color name="colorCategoryShopping">#ADFF16</color>
+    <color name="colorCategoryMisc">#7F6262</color>
 </resources>
