@@ -66,11 +66,7 @@ public class Category implements Serializable {
             return true;
         } else if (obj instanceof Category) {
             Category cat2 = (Category)obj;
-            if (this.name.equalsIgnoreCase(cat2.name) && this.color == cat2.color) {
-                return true;
-            } else {
-                return false;
-            }
+            return this.name.equalsIgnoreCase(cat2.name) && this.color == cat2.color;
         } else {
             return false;
         }

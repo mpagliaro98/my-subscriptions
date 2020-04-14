@@ -17,8 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
@@ -72,7 +72,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
 
         // Populate the model by loading subscriptions from the file
         try {
-            model.loadFromFile(getContext());
+            Context context = getContext();
+            assert context != null;
+            model.loadFromFile(context);
             int numUpdated = model.updateSubscriptionDates(MainActivity.getZeroTimeCalendar());
             if (numUpdated > 0) {
                 model.saveToFile(getContext());
@@ -86,13 +88,14 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
 
         // Set this fragment as the data listener for the tab activity
         MainActivity mainActivity = (MainActivity)getActivity();
+        assert mainActivity != null;
         mainActivity.checkIncomingData(this);
     }
 
     /**
      * Creates the root view for this fragment.
-     * @param inflater
-     * @param container
+     * @param inflater inflater to instantiate the xml view into an object
+     * @param container the group that will serve as the base for the view
      * @param savedInstanceState any saved state needed
      * @return the view that displays this fragment
      */
@@ -101,7 +104,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                              Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_home_tab, container, false);
         if (errorFlag) {
-            showErrorSnackbar(getActivity().findViewById(android.R.id.content));
+            FragmentActivity activity = getActivity();
+            assert activity != null;
+            showErrorSnackbar(activity.findViewById(android.R.id.content));
             errorFlag = false;
             return root;
         }
@@ -141,7 +146,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             model.deleteSubscription(subIndex);
         }
         try {
-            model.saveToFile(getContext());
+            Context context = getContext();
+            assert context != null;
+            model.saveToFile(context);
         } catch (IOException e) {
             showErrorSnackbar(getView());
         }
@@ -155,11 +162,13 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
      * @param bundle the bundle to place the saved items in
      */
     public void fillBundleWithSavedState(Bundle bundle) {
-        ScrollView scrollView = getView().findViewById(R.id.home_scroll_view);
+        View view = getView();
+        assert view != null;
+        ScrollView scrollView = view.findViewById(R.id.home_scroll_view);
         bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
-        TextView searchBar = getView().findViewById(R.id.home_search);
+        TextView searchBar = view.findViewById(R.id.home_search);
         bundle.putString(SAVED_STATE_SEARCH_MESSAGE, searchBar.getText().toString());
-        Spinner sortDropdown = getView().findViewById(R.id.home_sort_list);
+        Spinner sortDropdown = view.findViewById(R.id.home_sort_list);
         bundle.putInt(SAVED_STATE_SORT_MESSAGE, sortDropdown.getSelectedItemPosition());
     }
 
@@ -198,6 +207,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
      */
     private void deleteDataDialog() {
         final Context context = getContext();
+        assert context != null;
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.delete_dialog_title))
                 .setMessage(context.getString(R.string.delete_dialog_content))
@@ -253,7 +263,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                     model.sortList(new Comparator<Subscription>() {
                         @Override
                         public int compare(Subscription o1, Subscription o2) {
-                            return o1.getId() < o2.getId() ? -1 : 1;
+                            if (o1.getId() == o2.getId())
+                                return 0;
+                            else
+                                return o1.getId() < o2.getId() ? -1 : 1;
                         }
                     }, searchText);
                 }

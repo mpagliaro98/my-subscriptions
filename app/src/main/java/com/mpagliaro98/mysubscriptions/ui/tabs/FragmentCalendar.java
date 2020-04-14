@@ -38,8 +38,8 @@ public class FragmentCalendar extends Fragment {
 
     /**
      * Creates the root view for this fragment.
-     * @param inflater
-     * @param container
+     * @param inflater inflater to instantiate the xml view into an object
+     * @param container the group that will serve as the base for the view
      * @param savedInstanceState any saved state needed
      * @return the view that displays this fragment
      */

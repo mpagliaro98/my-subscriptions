@@ -8,8 +8,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +50,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     public static final String SUB_ID_MESSAGE = "com.mpagliaro98.mysubscriptions.SUB_ID";
 
     // Different versions this page can be, send this to this page each time it is accessed
-    public enum PAGE_TYPE {CREATE, EDIT, VIEW};
+    public enum PAGE_TYPE {CREATE, EDIT, VIEW}
 
     // The current state of this page
     private PAGE_TYPE pageType;
@@ -122,6 +120,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                 final Calendar calendar = MainActivity.getZeroTimeCalendar();
                 try {
                     Date startDate = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(date.getText().toString());
+                    assert startDate != null;
                     calendar.setTimeInMillis(startDate.getTime());
                 } catch (ParseException e) {
                     calendar.setTimeInMillis(new Date().getTime());
@@ -165,6 +164,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         }
         // For view, populate the page with un-selectable text fields for each subscription field
         else if (pageType == PAGE_TYPE.VIEW) {
+            assert sub != null;
             // Set each field to be non-editable
             name.setLinksClickable(false);
             name.setCursorVisible(false);
@@ -201,6 +201,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             note.setText(sub.getNote());
         }
         else if (pageType == PAGE_TYPE.EDIT) {
+            assert sub != null;
             // Fill every field with the values of the subscription to edit
             createButton.setText(R.string.create_button_edit);
             name.setText(sub.getName());

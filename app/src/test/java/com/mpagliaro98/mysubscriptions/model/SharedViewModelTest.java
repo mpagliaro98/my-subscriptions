@@ -189,7 +189,10 @@ public class SharedViewModelTest {
         CuT.sortList(new Comparator<Subscription>() {
             @Override
             public int compare(Subscription o1, Subscription o2) {
-                return o1.getId() < o2.getId() ? -1 : 1;
+                if (o1.getId() == o2.getId())
+                    return 0;
+                else
+                    return o1.getId() < o2.getId() ? -1 : 1;
             }
         }, "");
         Subscription pos1 = CuT.getSubscription(0);

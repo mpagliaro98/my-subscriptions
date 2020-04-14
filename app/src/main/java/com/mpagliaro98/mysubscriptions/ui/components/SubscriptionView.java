@@ -42,6 +42,7 @@ public class SubscriptionView extends LinearLayout {
      */
     private void initSubView(Context context, Calendar zeroTimeCalendar) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
         inflater.inflate(R.layout.component_subscriptionview, this);
 
         // Get the TextViews that make up this component

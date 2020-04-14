@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import android.content.Context;
-import android.util.Log;
-
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.File;
@@ -190,7 +188,6 @@ public class SharedViewModel extends ViewModel {
      */
     public void loadFromFile(Context context) throws IOException {
         // TODO add more IO checks, like making sure there's enough storage before writing
-        // TODO add a snackbar to display IOExceptions if they occur
         // Don't do anything if the internal file doesn't exist
         File file = new File(context.getFilesDir(), filename);
         if (!file.exists()) {
