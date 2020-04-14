@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
@@ -38,6 +40,8 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     private SharedViewModel model;
     // Any saved state from previously in the application to apply when loading the view
     private Bundle savedState;
+    // Flag to tell the view to display an error message if something went wrong early on
+    private boolean errorFlag = false;
 
     // Keys for the saved state of the home fragment when returning
     public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SCROLL";
@@ -75,6 +79,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             }
         } catch(IOException e) {
             e.printStackTrace();
+            errorFlag = true;
         } catch(Exception e) {
             deleteDataDialog();
         }
@@ -95,6 +100,11 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_home_tab, container, false);
+        if (errorFlag) {
+            showErrorSnackbar(getActivity().findViewById(android.R.id.content));
+            errorFlag = false;
+            return root;
+        }
         updateSubList(root);
 
         // Add a listener to the search bar that will filter the list each time it's used
@@ -133,7 +143,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         try {
             model.saveToFile(getContext());
         } catch (IOException e) {
-            e.printStackTrace();
+            showErrorSnackbar(getView());
         }
     }
 
@@ -197,7 +207,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                         try {
                             model.deleteData(context);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            showErrorSnackbar(getView());
                         }
                     }
                 }).show();
@@ -328,5 +338,24 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                 }
             });
         }
+    }
+
+    /**
+     * Display an error message along the bottom of the screen saying an error occurred, and give
+     * the option to reload the current view. This should be called when an IOException occurs
+     * from accessing subscription data.
+     * @param view the view to display the Snackbar message in
+     */
+    private void showErrorSnackbar(View view) {
+        Snackbar ioExceptionBar = Snackbar.make(view, R.string.home_snackbar_ioexception, Snackbar.LENGTH_INDEFINITE);
+        ioExceptionBar.setAction(R.string.retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = MainActivity.buildGeneralMainIntent(getContext(), null,
+                        null, -1, null);
+                startActivity(intent);
+            }
+        });
+        ioExceptionBar.show();
     }
 }
