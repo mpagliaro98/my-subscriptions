@@ -1,5 +1,6 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -157,6 +158,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
+            setTitle(R.string.create_title_create);
             // Auto-fill the date field with the current date
             date.setText(new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(new Date()));
             // Make sure the next date field can't be seen when creating
@@ -165,6 +167,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // For view, populate the page with un-selectable text fields for each subscription field
         else if (pageType == PAGE_TYPE.VIEW) {
             assert sub != null;
+            setTitle(R.string.create_title_view);
             // Set each field to be non-editable
             name.setLinksClickable(false);
             name.setCursorVisible(false);
@@ -202,6 +205,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         }
         else if (pageType == PAGE_TYPE.EDIT) {
             assert sub != null;
+            setTitle(R.string.create_title_edit);
             // Fill every field with the values of the subscription to edit
             createButton.setText(R.string.create_button_edit);
             name.setText(sub.getName());

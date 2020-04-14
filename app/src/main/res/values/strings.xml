@@ -30,6 +30,9 @@
     <string name="create_text_next_date">Next Payment Date:</string>
     <string name="create_delete_dialog_title">Delete</string>
     <string name="create_delete_dialog_content">Would you like to delete this Subscription?</string>
+    <string name="create_title_view">View Subscription</string>
+    <string name="create_title_edit">Edit Subscription</string>
+    <string name="create_title_create">Create Subscription</string>
     <!-- Create page errors -->
     <string name="create_error_name">You must input a name.</string>
     <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
