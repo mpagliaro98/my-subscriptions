@@ -1,4 +1,4 @@
-![MySubscriptions icon](https://github.com/mpagliaro98/my-subscriptions/blob/master/app/src/main/ic_launcher-playstore.png?raw=true =250x)
+![MySubscriptions icon](https://github.com/mpagliaro98/my-subscriptions/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png?raw=true)
 # MySubscriptions
 
 Author: Michael Pagliaro
