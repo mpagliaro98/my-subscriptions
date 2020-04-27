@@ -35,4 +35,5 @@ anybody to use.
 
 ## License
 MIT License
+
 See LICENSE.md for details.
