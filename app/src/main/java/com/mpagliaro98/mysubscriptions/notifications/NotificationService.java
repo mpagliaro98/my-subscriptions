@@ -45,15 +45,22 @@ public class NotificationService {
      * on any given day and update any subscription dates.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     public void processBackgroundTasks(Calendar zeroTimeCalendar) {
         // Get the notification manager, which will allow us to send notifications
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        assert notificationManager != null;
-
-        // Create the notification channel so we can post to it
-        createNotificationChannel();
-        Log.i(TAG, "Notification channel created successfully");
+        NotificationManager notificationManager;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager = context.getSystemService(NotificationManager.class);
+            assert notificationManager != null;
+            // Create the notification channel so we can post to it
+            createNotificationChannel(notificationManager);
+            Log.i(TAG, "Notification channel created successfully");
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            notificationManager = context.getSystemService(NotificationManager.class);
+            assert notificationManager != null;
+        } else {
+            notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            assert notificationManager != null;
+        }
 
         // Get the subscriptions from the file and update any dates as necessary
         SharedViewModel model = new SharedViewModel();
@@ -96,9 +103,10 @@ public class NotificationService {
     /**
      * Helper method to create the notification channel needed to post notifications
      * on API level >= 26.
+     * @param notificationManager the notification manager
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    private void createNotificationChannel() {
+    private void createNotificationChannel(NotificationManager notificationManager) {
         // Create the channel with a name, description, and importance
         CharSequence name = context.getString(R.string.notification_channel_name);
         String description = context.getString(R.string.notification_channel_description);
@@ -107,8 +115,6 @@ public class NotificationService {
         channel.setDescription(description);
 
         // Register the channel with the system
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        assert notificationManager != null;
         notificationManager.createNotificationChannel(channel);
     }
 
