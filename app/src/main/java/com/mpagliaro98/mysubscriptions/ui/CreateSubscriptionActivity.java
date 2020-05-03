@@ -1,12 +1,12 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
-import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
@@ -55,6 +55,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
     // The current state of this page
     private PAGE_TYPE pageType;
+    // The subscription object being used by this page
+    private Subscription sub;
     // The index of the subscription we are currently looking at
     private int subIndex;
     // The saved state bundle from the previous activity
@@ -84,6 +86,11 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_subscription);
+
+        // Put the back button on this activity's title bar
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Pre-load each field from the page so we can easily modify them
         TextView name = findViewById(R.id.create_name);
@@ -150,7 +157,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         // This incoming subscription will be null when page type is CREATE
-        Subscription sub = (Subscription)intent.getSerializableExtra(VIEW_SUB_MESSAGE);
+        sub = (Subscription)intent.getSerializableExtra(VIEW_SUB_MESSAGE);
         // Display a different version of this page depending on the parameter passed in
         pageType = (PAGE_TYPE)intent.getSerializableExtra(PAGE_TYPE_MESSAGE);
         // Save the index of this subscription, if it's null it isn't needed and will be set to -1
@@ -313,7 +320,36 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     })
                     .setNegativeButton(R.string.no, null).show();
         }
+        // Otherwise, treat the action as using the back button
+        else {
+            // If this is in create or view mode, go back to the home tab
+            if (pageType == PAGE_TYPE.CREATE || pageType == PAGE_TYPE.VIEW) {
+                backButtonFromCreateOrView();
+            }
+            // If this is in edit mode, go back to the view page for this subscription
+            else if (pageType == PAGE_TYPE.EDIT) {
+                backButtonFromEdit();
+            }
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Overrides the functionality of the Android back button when on a subscription page.
+     * If this page is in create or view mode, pressing back will send it to the home page,
+     * or if it's in edit mode, pressing back will send it to the previous view page of the
+     * current subscription.
+     */
+    @Override
+    public void onBackPressed() {
+        // If this is in create or view mode, go back to the home tab
+        if (pageType == PAGE_TYPE.CREATE || pageType == PAGE_TYPE.VIEW) {
+            backButtonFromCreateOrView();
+        }
+        // If this is in edit mode, go back to the view page for this subscription
+        else if (pageType == PAGE_TYPE.EDIT) {
+            backButtonFromEdit();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -505,5 +541,27 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             }
         }
         return 0;
+    }
+
+    /**
+     * The functionality the back button will use if pressed while this page is in
+     * create or view mode. It will send the app back to the main activity, retaining
+     * all saved state.
+     */
+    private void backButtonFromCreateOrView() {
+        Intent intent = MainActivity.buildGeneralMainIntent(this, null,
+                null, -1, savedState);
+        startActivity(intent);
+    }
+
+    /**
+     * The functionality the back button will use if pressed while this page is in
+     * edit mode. It will return the app to the view mode page of the subscription that
+     * is currently being edited.
+     */
+    private void backButtonFromEdit() {
+        Intent intent = buildGeneralCreateIntent(this, PAGE_TYPE.VIEW, sub,
+                subIndex, savedState);
+        startActivity(intent);
     }
 }

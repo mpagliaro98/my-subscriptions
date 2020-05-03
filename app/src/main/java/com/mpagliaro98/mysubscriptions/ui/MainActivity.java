@@ -145,6 +145,16 @@ public class MainActivity extends AppCompatActivity {
         return savedState;
     }
 
+    /**
+     * Overrides the Android back button, so using it while on one of the tabs will act
+     * the same as if the home button was pressed. This is to prevent situations like deleting
+     * a subscription, then pressing the back button to retrieve that data.
+     */
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // STATIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -188,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
      * method.
      * @param context the current application context
      * @param incomingType the incoming type determines how the incoming data will be handled,
-     *                     it is either CREATE, EDIT, or DELETE
+     *                     it is either CREATE, EDIT, or DELETE, or null if nothing should change
      * @param subscription incoming subscription data
      * @param subIndex the ID of the incoming subscription, or -1 if it is new
      * @param savedState any saved state from this activity that will be reapplied later
