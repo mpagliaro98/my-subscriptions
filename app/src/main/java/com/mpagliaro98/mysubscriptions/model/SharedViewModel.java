@@ -6,7 +6,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import android.content.Context;
+import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import com.google.gson.Gson;
+import com.mpagliaro98.mysubscriptions.R;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -187,7 +191,6 @@ public class SharedViewModel extends ViewModel {
      * @throws IOException thrown if something goes wrong in reading the file
      */
     public void loadFromFile(Context context) throws IOException {
-        // TODO add more IO checks, like making sure there's enough storage before writing
         // Don't do anything if the internal file doesn't exist
         File file = new File(context.getFilesDir(), filename);
         if (!file.exists()) {
@@ -219,9 +222,15 @@ public class SharedViewModel extends ViewModel {
     /**
      * Save every subscription currently in the list to a file in internal storage.
      * @param context the current context of the application
-     * @throws IOException thrown if something goes wrong writing to the file
+     * @throws IOException thrown if something goes wrong writing to the file, or if not enough
+     *                     memory is available to write the file
      */
     public void saveToFile(Context context) throws IOException {
+        // Estimate how much storage we will need, throw an error if there's not enough
+        if (getAvailableMemory() <= estimateNeededStorage()) {
+            throw new IOException(context.getResources().getString(R.string.no_memory_exception));
+        }
+
         // Refresh the file so we write to it from scratch
         Gson gson = new Gson();
         File file = new File(context.getFilesDir(), filename);
@@ -270,6 +279,41 @@ public class SharedViewModel extends ViewModel {
         for (int i = 0; i < numSubscriptionsTotal(); i++) {
             Subscription sub = fullSubscriptionList.get(i);
             sub.setId(i);
+        }
+    }
+
+    /**
+     * Gets the available amount of memory in the system in bytes.
+     * @return the amount of memory the system has available
+     */
+    private long getAvailableMemory() {
+        File path = Environment.getDataDirectory();
+        StatFs statFs = new StatFs(path.getPath());
+        long blockSize, availableBlocks;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            blockSize = statFs.getBlockSizeLong();
+            availableBlocks = statFs.getAvailableBlocksLong();
+        } else {
+            blockSize = statFs.getBlockSize();
+            availableBlocks = statFs.getAvailableBlocks();
+        }
+        return availableBlocks * blockSize;
+    }
+
+    /**
+     * Estimates how much storage in bytes the system will need to be able to save
+     * the subscriptions file. This estimate uses 500 times the number of subscriptions,
+     * so if there are 8 subscriptions saved, it'll estimate 4000 bytes, or about 4 megabytes.
+     * In practice, the actual space needed will be around half of that, but this is
+     * made to be a large enough estimation to account for lots of extra data, like long
+     * notes on each subscription. If there's no subscriptions, it defaults to 10 bytes.
+     * @return the estimate of how much space is needed in bytes
+     */
+    private long estimateNeededStorage() {
+        if (fullSubscriptionList.size() == 0){
+            return 10;
+        } else {
+            return fullSubscriptionList.size() * 500;
         }
     }
 }

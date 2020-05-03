@@ -64,6 +64,7 @@
     <string name="delete_dialog_title">Something went wrong loading your data</string>
     <string name="delete_dialog_content">Your subscription data is corrupted, and will need to be erased to continue using this app.</string>
     <string name="home_snackbar_ioexception">Something went wrong accessing your saved subscriptions.</string>
+    <string name="no_memory_exception">Your device does not have enough storage space available.</string>
 
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>

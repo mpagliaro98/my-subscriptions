@@ -40,8 +40,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
     private SharedViewModel model;
     // Any saved state from previously in the application to apply when loading the view
     private Bundle savedState;
-    // Flag to tell the view to display an error message if something went wrong early on
+    // Flags to tell the view to display an error message if something went wrong early on
     private boolean errorFlag = false;
+    private boolean noMemoryError = false;
 
     // Keys for the saved state of the home fragment when returning
     public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.H_SAVED_SCROLL";
@@ -82,6 +83,8 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         } catch(IOException e) {
             e.printStackTrace();
             errorFlag = true;
+            if (e.getMessage() != null && e.getMessage().equals(getString(R.string.no_memory_exception)))
+                noMemoryError = true;
         } catch(Exception e) {
             deleteDataDialog();
         }
@@ -106,8 +109,12 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         if (errorFlag) {
             FragmentActivity activity = getActivity();
             assert activity != null;
-            showErrorSnackbar(activity.findViewById(android.R.id.content));
+            if (noMemoryError)
+                showErrorSnackbar(activity.findViewById(android.R.id.content), getString(R.string.no_memory_exception));
+            else
+                showErrorSnackbar(activity.findViewById(android.R.id.content), getString(R.string.home_snackbar_ioexception));
             errorFlag = false;
+            noMemoryError = false;
             return root;
         }
         updateSubList(root);
@@ -150,7 +157,9 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             assert context != null;
             model.saveToFile(context);
         } catch (IOException e) {
-            showErrorSnackbar(getView());
+            errorFlag = true;
+            if (e.getMessage() != null && e.getMessage().equals(getString(R.string.no_memory_exception)))
+                noMemoryError = true;
         }
     }
 
@@ -217,7 +226,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
                         try {
                             model.deleteData(context);
                         } catch (IOException e) {
-                            showErrorSnackbar(getView());
+                            if (e.getMessage() != null && e.getMessage().equals(getString(R.string.no_memory_exception)))
+                                showErrorSnackbar(getView(), getString(R.string.no_memory_exception));
+                            else
+                                showErrorSnackbar(getView(), getString(R.string.home_snackbar_ioexception));
                         }
                     }
                 }).show();
@@ -358,9 +370,10 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
      * the option to reload the current view. This should be called when an IOException occurs
      * from accessing subscription data.
      * @param view the view to display the Snackbar message in
+     * @param errorMessage the string to display on the Snackbar
      */
-    private void showErrorSnackbar(View view) {
-        Snackbar ioExceptionBar = Snackbar.make(view, R.string.home_snackbar_ioexception, Snackbar.LENGTH_INDEFINITE);
+    private void showErrorSnackbar(View view, String errorMessage) {
+        Snackbar ioExceptionBar = Snackbar.make(view, errorMessage, Snackbar.LENGTH_INDEFINITE);
         ioExceptionBar.setAction(R.string.retry, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
