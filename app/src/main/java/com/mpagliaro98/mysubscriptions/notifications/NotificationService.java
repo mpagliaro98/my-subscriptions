@@ -2,7 +2,10 @@ package com.mpagliaro98.mysubscriptions.notifications;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.RequiresApi;
@@ -10,6 +13,8 @@ import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
+import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -124,13 +129,23 @@ public class NotificationService {
      * @param notificationManager the notification manager
      */
     private void sendIOExceptionNotif(NotificationManager notificationManager) {
+        // Setup the intent to launch the home page when this notification is selected
+        Intent intent = MainActivity.buildGeneralMainIntent(context, null,
+                null, -1, null);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntentWithParentStack(intent);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Build the actual notification
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context, context.getString(R.string.notification_channel_name))
                         .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentTitle(context.getString(R.string.notification_ioexception_title))
                         .setContentText(context.getString(R.string.notification_ioexception_desc))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setStyle(new NotificationCompat.BigTextStyle());
+                        .setStyle(new NotificationCompat.BigTextStyle())
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
         notificationManager.notify(1, notification.build());
     }
 
@@ -143,6 +158,21 @@ public class NotificationService {
      */
     private void createSubNotification(NotificationManager notificationManager,
                                        List<Subscription> subscriptions) {
+        // If there's multiple subscriptions, launch the homepage, otherwise launch the subscription
+        Intent intent;
+        if (subscriptions.size() == 1) {
+            intent = CreateSubscriptionActivity.buildGeneralCreateIntent(context,
+                    CreateSubscriptionActivity.PAGE_TYPE.VIEW, subscriptions.get(0),
+                    subscriptions.get(0).getId(), null);
+        } else {
+            intent = MainActivity.buildGeneralMainIntent(context, null,
+                    null, -1, null);
+        }
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntentWithParentStack(intent);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Build the actual notification
         String contentTitle = subscriptions.size() == 1 ?
                 subscriptions.get(0).getName() + " " + context.getString(R.string.notification_title_one)
                 : context.getString(R.string.notification_title_multiple);
@@ -152,7 +182,9 @@ public class NotificationService {
                         .setContentTitle(contentTitle)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setStyle(new NotificationCompat.BigTextStyle())
-                        .setContentText(generateContextText(subscriptions));
+                        .setContentText(generateContextText(subscriptions))
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
         notificationManager.notify(2, notification.build());
     }
 
