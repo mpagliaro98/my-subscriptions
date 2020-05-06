@@ -15,6 +15,7 @@ import android.view.View;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.OnDataListenerReceived;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 import java.util.Calendar;
@@ -51,15 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private Subscription incomingData;
     private INCOMING_TYPE incomingType;
     private Integer incomingIndex;
-
-    /**
-     * Fragments under this activity should implement this interface in order to be a
-     * receiver of new Subscription objects. onDataReceived will be called in the
-     * data listener each time a new Subscription object arrives.
-     */
-    public interface OnDataListenerReceived {
-        void onDataReceived(Subscription subscription, INCOMING_TYPE type, Integer subIndex);
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////

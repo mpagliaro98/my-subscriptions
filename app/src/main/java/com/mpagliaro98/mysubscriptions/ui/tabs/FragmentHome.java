@@ -26,6 +26,7 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.OnDataListenerReceived;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.io.IOException;
 import java.util.Comparator;
@@ -35,7 +36,7 @@ import java.util.Comparator;
  * interface so we can get data from the Create activity and properly send it to the
  * model.
  */
-public class FragmentHome extends Fragment implements MainActivity.OnDataListenerReceived, SavedStateCompatible {
+public class FragmentHome extends Fragment implements OnDataListenerReceived, SavedStateCompatible {
 
     // The model shared by the three main tabs
     private SharedViewModel model;
