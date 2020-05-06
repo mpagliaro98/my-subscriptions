@@ -13,11 +13,11 @@ import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,9 +48,16 @@ public class NotificationService {
     /**
      * Main method to create notifications for the subscriptions that require them
      * on any given day and update any subscription dates.
+     */
+    public void processBackgroundTasks() {
+        processBackgroundTasks(new ZeroTimeCalendar());
+    }
+    /**
+     * Main method to create notifications for the subscriptions that require them
+     * on any given day and update any subscription dates.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public void processBackgroundTasks(Calendar zeroTimeCalendar) {
+    public void processBackgroundTasks(ZeroTimeCalendar zeroTimeCalendar) {
         // Get the notification manager, which will allow us to send notifications
         NotificationManager notificationManager;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -71,7 +78,7 @@ public class NotificationService {
         SharedViewModel model = new SharedViewModel();
         try {
             model.loadFromFile(context);
-            int numUpdated = model.updateSubscriptionDates((Calendar)zeroTimeCalendar.clone());
+            int numUpdated = model.updateSubscriptionDates();
             if (numUpdated > 0) {
                 model.saveToFile(context);
             }
@@ -82,7 +89,7 @@ public class NotificationService {
         Log.i(TAG, "Subscriptions successfully loaded from file");
 
         // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
-        Date today = zeroTimeCalendar.getTime();
+        Date today = zeroTimeCalendar.getCurrentDate();
 
         // Loop through each subscription
         List<Subscription> subList = model.getFullSubscriptionList();

@@ -8,8 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
-
-import java.util.Calendar;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 
 /**
  * A custom UI component for displaying Subscriptions a few relevant bits of data on them.
@@ -27,9 +26,20 @@ public class SubscriptionView extends LinearLayout {
      * then initialize the text in the view.
      * @param context the current application context
      * @param subscription the Subscription object to display on this component
+     */
+    public SubscriptionView(Context context, Subscription subscription) {
+        super(context);
+        this.subscription = subscription;
+        initSubView(context, new ZeroTimeCalendar());
+    }
+    /**
+     * Build this view off of a LinearLayout so we can utilize some of its properties,
+     * then initialize the text in the view.
+     * @param context the current application context
+     * @param subscription the Subscription object to display on this component
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public SubscriptionView(Context context, Subscription subscription, Calendar zeroTimeCalendar) {
+    public SubscriptionView(Context context, Subscription subscription, ZeroTimeCalendar zeroTimeCalendar) {
         super(context);
         this.subscription = subscription;
         initSubView(context, zeroTimeCalendar);
@@ -40,7 +50,7 @@ public class SubscriptionView extends LinearLayout {
      * @param context the current application context
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    private void initSubView(Context context, Calendar zeroTimeCalendar) {
+    private void initSubView(Context context, ZeroTimeCalendar zeroTimeCalendar) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
         inflater.inflate(R.layout.component_subscriptionview, this);
@@ -63,7 +73,7 @@ public class SubscriptionView extends LinearLayout {
         String nextDateStr = context.getString(R.string.subview_next_date) + " " +
                 subscription.getNextPaymentDateString(context.getResources());
         textNextDate.setText(nextDateStr);
-        if (subscription.getNextPaymentDate().equals(zeroTimeCalendar.getTime())) {
+        if (subscription.getNextPaymentDate().equals(zeroTimeCalendar.getCurrentDate())) {
             textNextDate.setTextColor(context.getResources().getColor(R.color.colorPaymentToday));
         }
 

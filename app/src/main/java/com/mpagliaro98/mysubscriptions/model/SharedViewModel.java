@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -163,13 +162,22 @@ public class SharedViewModel extends ViewModel {
 
     /**
      * Iterate through every subscription in the model and regenerate the relevant date info
+     * for those whose next payment dates have passed. A new ZeroTimeCalendar instance is
+     * created and used for this method.
+     * @return the number of subscriptions updated
+     */
+    public int updateSubscriptionDates() {
+        return updateSubscriptionDates(new ZeroTimeCalendar());
+    }
+    /**
+     * Iterate through every subscription in the model and regenerate the relevant date info
      * for those whose next payment dates have passed.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      * @return the number of subscriptions updated
      */
-    public int updateSubscriptionDates(Calendar zeroTimeCalendar) {
+    public int updateSubscriptionDates(ZeroTimeCalendar zeroTimeCalendar) {
         // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
-        Date today = zeroTimeCalendar.getTime();
+        Date today = zeroTimeCalendar.getCurrentDate();
 
         // Iterate through every subscription and update ones whose payment dates have passed
         int numUpdated = 0;

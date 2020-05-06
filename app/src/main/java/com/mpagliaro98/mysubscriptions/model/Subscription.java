@@ -1,12 +1,9 @@
 package com.mpagliaro98.mysubscriptions.model;
 
 import android.content.res.Resources;
-
 import com.mpagliaro98.mysubscriptions.R;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -42,11 +39,35 @@ public class Subscription implements Serializable {
      * @param rechargeFrequency the frequency at which this subscription is paid for
      * @param category the category this subscription falls into
      * @param notifDays the number of days before the next payment date a notification will happen
+     */
+    public Subscription(int id, String name, double cost, Date startDate, String note,
+                        int rechargeFrequency, Category category, int notifDays) {
+        this.id = id;
+        this.name = name;
+        this.cost = cost;
+        this.startDate = startDate;
+        this.note = note;
+        this.rechargeFrequency = rechargeFrequency;
+        this.nextPaymentDate = startDate;
+        this.category = category;
+        this.notifDays = notifDays;
+        regenerateSubInfo();
+    }
+    /**
+     * Create and initialize all the values of this subscription.
+     * @param id the unique id of this subscription
+     * @param name the name of the subscription
+     * @param cost how much it costs
+     * @param startDate when the subscription first started
+     * @param note any miscellaneous notes
+     * @param rechargeFrequency the frequency at which this subscription is paid for
+     * @param category the category this subscription falls into
+     * @param notifDays the number of days before the next payment date a notification will happen
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
     public Subscription(int id, String name, double cost, Date startDate, String note,
                         int rechargeFrequency, Category category, int notifDays,
-                        Calendar zeroTimeCalendar) {
+                        ZeroTimeCalendar zeroTimeCalendar) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -62,25 +83,37 @@ public class Subscription implements Serializable {
     /**
      * Regenerate each subscription field that isn't directly specified on creation, or needs
      * to be updated after a certain amount of time passes.
+     */
+    public void regenerateSubInfo() {
+        generateNextPaymentDate();
+        generateNextNotifDate();
+    }
+    /**
+     * Regenerate each subscription field that isn't directly specified on creation, or needs
+     * to be updated after a certain amount of time passes.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public void regenerateSubInfo(Calendar zeroTimeCalendar) {
+    public void regenerateSubInfo(ZeroTimeCalendar zeroTimeCalendar) {
         generateNextPaymentDate(zeroTimeCalendar);
         generateNextNotifDate(zeroTimeCalendar);
     }
 
     /**
-     * Calculate when the next soonest payment date will be from today. Assumes the hour, minute,
-     * second, and millisecond fields of the start date are 0, which is handled in
-     * CreateSubscriptionActivity.
+     * Calculate when the next soonest payment date will be from today.
+     */
+    private void generateNextPaymentDate() {
+        generateNextPaymentDate(new ZeroTimeCalendar());
+    }
+    /**
+     * Calculate when the next soonest payment date will be from today.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    private void generateNextPaymentDate(Calendar zeroTimeCalendar) {
-        Date today = zeroTimeCalendar.getTime();
-        zeroTimeCalendar.setTime(startDate);
+    private void generateNextPaymentDate(ZeroTimeCalendar zeroTimeCalendar) {
+        Date today = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTimeToDate(startDate);
         while (!nextPaymentDate.after(today) && !nextPaymentDate.equals(today)) {
-            zeroTimeCalendar.add(Calendar.MONTH, rechargeFrequency);
-            nextPaymentDate = zeroTimeCalendar.getTime();
+            zeroTimeCalendar.addMonths(rechargeFrequency);
+            nextPaymentDate = zeroTimeCalendar.getCurrentDate();
         }
     }
 
@@ -88,15 +121,23 @@ public class Subscription implements Serializable {
      * Generate the next date a notification should occur for this subscription. This should
      * be run after the next payment date is generated. If notifications are set to off for
      * this subscription, the next notification date will be set to null.
+     */
+    private void generateNextNotifDate() {
+        generateNextNotifDate(new ZeroTimeCalendar());
+    }
+    /**
+     * Generate the next date a notification should occur for this subscription. This should
+     * be run after the next payment date is generated. If notifications are set to off for
+     * this subscription, the next notification date will be set to null.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    private void generateNextNotifDate(Calendar zeroTimeCalendar) {
-        zeroTimeCalendar.setTime(nextPaymentDate);
+    private void generateNextNotifDate(ZeroTimeCalendar zeroTimeCalendar) {
+        zeroTimeCalendar.setTimeToDate(nextPaymentDate);
         if (notifDays == -1) {
             nextNotifDate = null;
         } else {
-            zeroTimeCalendar.add(Calendar.DATE, notifDays * -1);
-            nextNotifDate = zeroTimeCalendar.getTime();
+            zeroTimeCalendar.addDays(notifDays * -1);
+            nextNotifDate = zeroTimeCalendar.getCurrentDate();
         }
     }
 

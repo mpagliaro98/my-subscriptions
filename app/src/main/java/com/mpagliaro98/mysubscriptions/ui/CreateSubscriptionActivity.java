@@ -24,10 +24,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.Category;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -127,26 +127,26 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar calendar = MainActivity.getZeroTimeCalendar();
+                final ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
                 try {
                     Date startDate = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(date.getText().toString());
                     assert startDate != null;
-                    calendar.setTimeInMillis(startDate.getTime());
+                    zeroTimeCalendar.setTimeToDate(startDate);
                 } catch (ParseException e) {
-                    calendar.setTimeInMillis(new Date().getTime());
+                    zeroTimeCalendar.setTimeToDate(new Date());
                 }
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
+                int day = zeroTimeCalendar.getDayOfMonth();
+                int month = zeroTimeCalendar.getMonth();
+                int year = zeroTimeCalendar.getYear();
                 // Start the date picker display at the date in the start date field if valid, if
                 // not it displays at today's date
                 DatePickerDialog picker = new DatePickerDialog(CreateSubscriptionActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Calendar calendar = MainActivity.getZeroTimeCalendar();
-                                calendar.set(year, monthOfYear, dayOfMonth);
-                                Date enteredDate = calendar.getTime();
+                                ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
+                                zeroTimeCalendar.setTime(year, monthOfYear, dayOfMonth);
+                                Date enteredDate = zeroTimeCalendar.getCurrentDate();
                                 date.setText(new SimpleDateFormat(getString(R.string.date_format),
                                         Locale.US).format(enteredDate));
                             }
@@ -467,8 +467,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // Build our subscription object and return it, set the unique ID as -1 as we will
         // give it its proper value in the model
-        return new Subscription(-1, name, cost, date, note, freqMonths, category, notifDays,
-                MainActivity.getZeroTimeCalendar());
+        return new Subscription(-1, name, cost, date, note, freqMonths, category, notifDays);
     }
 
     /**

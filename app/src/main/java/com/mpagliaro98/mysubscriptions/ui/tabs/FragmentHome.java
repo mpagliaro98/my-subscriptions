@@ -76,7 +76,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             Context context = getContext();
             assert context != null;
             model.loadFromFile(context);
-            int numUpdated = model.updateSubscriptionDates(MainActivity.getZeroTimeCalendar());
+            int numUpdated = model.updateSubscriptionDates();
             if (numUpdated > 0) {
                 model.saveToFile(getContext());
             }
@@ -194,7 +194,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         linearLayout.removeAllViewsInLayout();
         for (int i = 0; i < model.numSubscriptionsVisible(); i++) {
             final Subscription sub = model.getSubscription(i);
-            final SubscriptionView subView = new SubscriptionView(getContext(), sub, MainActivity.getZeroTimeCalendar());
+            final SubscriptionView subView = new SubscriptionView(getContext(), sub);
             subView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
