@@ -5,7 +5,6 @@ import com.mpagliaro98.mysubscriptions.R;
 import org.junit.Before;
 import org.junit.Test;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
@@ -21,17 +20,14 @@ public class SubscriptionTest {
     // The component under test
     private Subscription CuT;
 
-    private Calendar calendar = Calendar.getInstance();
+    private ZeroTimeCalendar zeroTimeCalendar;
 
     /**
      * Run before each test, set the calendar to have zero time.
      */
     @Before
     public void setup() {
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        zeroTimeCalendar = new ZeroTimeCalendar();
     }
 
     /**
@@ -42,7 +38,7 @@ public class SubscriptionTest {
         Date startDate = mock(Date.class);
         Category category = mock(Category.class);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals(0, CuT.getId());
         assertEquals("test", CuT.getName());
         assertEquals(4.33, CuT.getCost(), 0.01);
@@ -58,66 +54,46 @@ public class SubscriptionTest {
      */
     @Test
     public void test_next_payment_date() {
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        Date startDate = calendar.getTime();
+        zeroTimeCalendar.setTime(2021, 3, 5);
+        Date startDate = zeroTimeCalendar.getCurrentDate();
         Category category = mock(Category.class);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals(6, CuT.getRechargeFrequency());
 
         // Start date is today, so next payment date stays today
         assertEquals(startDate, CuT.getNextPaymentDate());
 
         // Start date yesterday, so advance next payment date to six months in the future
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 6);
-        CuT.regenerateSubInfo(calendar);
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        calendar.set(Calendar.MONTH, 9);
-        assertEquals(calendar.getTime(), CuT.getNextPaymentDate());
+        zeroTimeCalendar.setTime(2021, 3, 6);
+        CuT.regenerateSubInfo(zeroTimeCalendar);
+        zeroTimeCalendar.setTime(2021, 9, 5);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentDate());
 
         // Test future start date
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 5);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        startDate = calendar.getTime();
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
+        zeroTimeCalendar.setTime(2021, 5, 5);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2021, 3, 5);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                12, category, 7, calendar);
+                12, category, 7, zeroTimeCalendar);
         assertEquals(12, CuT.getRechargeFrequency());
         assertEquals(startDate, CuT.getNextPaymentDate());
 
         // Advance by one year
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 5);
-        calendar.set(Calendar.DAY_OF_MONTH, 6);
-        CuT.regenerateSubInfo(calendar);
-        calendar.set(Calendar.YEAR, 2022);
-        calendar.set(Calendar.MONTH, 5);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        assertEquals(calendar.getTime(), CuT.getNextPaymentDate());
+        zeroTimeCalendar.setTime(2021, 5, 6);
+        CuT.regenerateSubInfo(zeroTimeCalendar);
+        zeroTimeCalendar.setTime(2022, 5, 5);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentDate());
 
         // Test incrementing by one month several times
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 5);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        startDate = calendar.getTime();
-        calendar.set(Calendar.YEAR, 2024);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
+        zeroTimeCalendar.setTime(2021, 5, 5);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2024, 3, 20);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                1, category, 7, calendar);
+                1, category, 7, zeroTimeCalendar);
         assertEquals(1, CuT.getRechargeFrequency());
-        calendar.set(Calendar.YEAR, 2024);
-        calendar.set(Calendar.MONTH, 4);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        assertEquals(calendar.getTime(), CuT.getNextPaymentDate());
+        zeroTimeCalendar.setTime(2024, 4, 5);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentDate());
     }
 
     /**
@@ -126,63 +102,43 @@ public class SubscriptionTest {
     @Test
     public void test_next_notification_date() {
         // Test null notification date
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        Date startDate = calendar.getTime();
+        zeroTimeCalendar.setTime(2021, 3, 5);
+        Date startDate = zeroTimeCalendar.getCurrentDate();
         Category category = mock(Category.class);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                6, category, -1, calendar);
+                6, category, -1, zeroTimeCalendar);
         assertEquals(-1, CuT.getNotifDays());
         assertNull(CuT.getNextNotifDate());
 
         // Test notification a week before next payment, both in future
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 1);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
-        startDate = calendar.getTime();
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
+        zeroTimeCalendar.setTime(2021, 1, 20);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2021, 3, 20);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals(7, CuT.getNotifDays());
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 7);
-        calendar.set(Calendar.DAY_OF_MONTH, 13);
-        assertEquals(calendar.getTime(), CuT.getNextNotifDate());
+        zeroTimeCalendar.setTime(2021, 7, 13);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextNotifDate());
 
         // Test notification date in the past, but payment date in the future
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 1);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
-        startDate = calendar.getTime();
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 4);
-        calendar.set(Calendar.DAY_OF_MONTH, 19);
+        zeroTimeCalendar.setTime(2021, 1, 20);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2021, 4, 19);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                3, category, 2, calendar);
+                3, category, 2, zeroTimeCalendar);
         assertEquals(2, CuT.getNotifDays());
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 4);
-        calendar.set(Calendar.DAY_OF_MONTH, 18);
-        assertEquals(calendar.getTime(), CuT.getNextNotifDate());
+        zeroTimeCalendar.setTime(2021, 4, 18);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextNotifDate());
 
         // Test both the day of
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 1);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
-        startDate = calendar.getTime();
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
+        zeroTimeCalendar.setTime(2021, 1, 20);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2021, 3, 20);
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                2, category, 0, calendar);
+                2, category, 0, zeroTimeCalendar);
         assertEquals(0, CuT.getNotifDays());
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
-        assertEquals(calendar.getTime(), CuT.getNextNotifDate());
+        zeroTimeCalendar.setTime(2021, 3, 20);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextNotifDate());
     }
 
     /**
@@ -190,37 +146,31 @@ public class SubscriptionTest {
      */
     @Test
     public void test_formatted_strings() {
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
-        Date startDate = calendar.getTime();
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 21);
+        zeroTimeCalendar.setTime(2021, 3, 20);
+        Date startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2021, 3, 21);
         Category category = mock(Category.class);
         Resources resources = mock(Resources.class);
         when(resources.getString(R.string.cost_format)).thenReturn("$%.2f");
         when(resources.getString(R.string.date_format)).thenReturn("MM/dd/yyyy");
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals("$4.33", CuT.getCostString(resources));
         assertEquals(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(startDate),
                 CuT.getStartDateString(resources));
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 9);
-        calendar.set(Calendar.DAY_OF_MONTH, 20);
-        assertEquals(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(calendar.getTime()),
+        zeroTimeCalendar.setTime(2021, 9, 20);
+        assertEquals(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(zeroTimeCalendar.getCurrentDate()),
                 CuT.getNextPaymentDateString(resources));
 
         // Test odd cost formatting
         CuT = new Subscription(0, "test", 4, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals("$4.00", CuT.getCostString(resources));
         CuT = new Subscription(0, "test", 4.0213516, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals("$4.02", CuT.getCostString(resources));
         CuT = new Subscription(0, "test", 4.039, startDate, "test note",
-                6, category, 7, calendar);
+                6, category, 7, zeroTimeCalendar);
         assertEquals("$4.04", CuT.getCostString(resources));
     }
 }

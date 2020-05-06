@@ -20,7 +20,7 @@ public class SharedViewModelTest {
 
     // Any objects needed by the component to be mocked
     private Subscription sub1, sub2, sub3;
-    private Calendar calendar = Calendar.getInstance();
+    private Calendar zeroTimeCalendar = Calendar.getInstance();
 
     /**
      * Run before every test, initializes the component under test and the mock objects.
@@ -37,9 +37,7 @@ public class SharedViewModelTest {
 
         // Create the first subscription
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2022);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 6);
+        calendar.set(2022, 3, 6);
         Date date1 = calendar.getTime();
         sub1 = mock(Subscription.class);
         when(sub1.getId()).thenReturn(0);
@@ -49,9 +47,7 @@ public class SharedViewModelTest {
         when(sub1.getCategory()).thenReturn(cat1);
 
         // Create the second subscription
-        calendar.set(Calendar.YEAR, 2022);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 6);
+        calendar.set(2022, 3, 6);
         Date date2 = calendar.getTime();
         sub2 = mock(Subscription.class);
         when(sub2.getId()).thenReturn(1);
@@ -61,9 +57,7 @@ public class SharedViewModelTest {
         when(sub2.getCategory()).thenReturn(cat1);
 
         // Create the third subscription
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
+        calendar.set(2021, 3, 5);
         Date date3 = calendar.getTime();
         sub3 = mock(Subscription.class);
         when(sub3.getId()).thenReturn(2);
@@ -73,10 +67,10 @@ public class SharedViewModelTest {
         when(sub3.getCategory()).thenReturn(cat2);
 
         // Set the calendar to have zero time
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        zeroTimeCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        zeroTimeCalendar.set(Calendar.MINUTE, 0);
+        zeroTimeCalendar.set(Calendar.SECOND, 0);
+        zeroTimeCalendar.set(Calendar.MILLISECOND, 0);
     }
 
     /**
@@ -370,31 +364,28 @@ public class SharedViewModelTest {
         CuT.addSubscription(sub1);
         CuT.addSubscription(sub2);
         CuT.addSubscription(sub3);
-        calendar.set(Calendar.YEAR, 2020);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        int numUpdated = CuT.updateSubscriptionDates(calendar);
+        zeroTimeCalendar.set(2020, 3, 5);
+        ZeroTimeCalendar ztc = mock(ZeroTimeCalendar.class);
+        when(ztc.getCurrentDate()).thenReturn(zeroTimeCalendar.getTime());
+        int numUpdated = CuT.updateSubscriptionDates(ztc);
         assertEquals(0, numUpdated);
 
         // One next payment date is today, so don't update it
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 5);
-        numUpdated = CuT.updateSubscriptionDates(calendar);
+        zeroTimeCalendar.set(2021, 3, 5);
+        when(ztc.getCurrentDate()).thenReturn(zeroTimeCalendar.getTime());
+        numUpdated = CuT.updateSubscriptionDates(ztc);
         assertEquals(0, numUpdated);
 
         // One date in the past, so update one
-        calendar.set(Calendar.YEAR, 2021);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 6);
-        numUpdated = CuT.updateSubscriptionDates(calendar);
+        zeroTimeCalendar.set(2021, 3, 6);
+        when(ztc.getCurrentDate()).thenReturn(zeroTimeCalendar.getTime());
+        numUpdated = CuT.updateSubscriptionDates(ztc);
         assertEquals(1, numUpdated);
 
         // Update multiple
-        calendar.set(Calendar.YEAR, 2023);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 6);
-        numUpdated = CuT.updateSubscriptionDates(calendar);
+        zeroTimeCalendar.set(2023, 3, 6);
+        when(ztc.getCurrentDate()).thenReturn(zeroTimeCalendar.getTime());
+        numUpdated = CuT.updateSubscriptionDates(ztc);
         assertEquals(3, numUpdated);
     }
 }
