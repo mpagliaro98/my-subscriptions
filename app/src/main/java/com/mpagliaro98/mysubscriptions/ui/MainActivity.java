@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String INCOMING_INDEX_MESSAGE = "com.mpagliaro98.mysubscriptions.INCOMING_INDEX";
     // Key for a saved state bundle when returning to a tab
     public static final String SAVED_STATE_BUNDLE_MESSAGE = "com.mpagliaro98.mysubscriptions.SAVED_STATE";
+    public static final String SAVED_STATE_TAB_MESSAGE = "com.mpagliaro98.mysubscriptions.SAVED_STATE_TAB";
 
     private static final String TAG = "MainActivity";
 
@@ -84,8 +85,13 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        // Start on the home tab, the one in the middle
-        viewPager.setCurrentItem(1);
+        // Set the current tab to the one in the saved state, default to the home tab
+        Bundle savedState = intent.getBundleExtra(SAVED_STATE_BUNDLE_MESSAGE);
+        if (savedState == null) {
+            viewPager.setCurrentItem(1);
+        } else {
+            viewPager.setCurrentItem(savedState.getInt(SAVED_STATE_TAB_MESSAGE));
+        }
 
         // Check if any data was passed here, and save it to private fields
         incomingData = (Subscription)intent.getSerializableExtra(SUBSCRIPTION_MESSAGE);
@@ -131,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public Bundle gatherSavedState() {
         Bundle savedState = new Bundle();
+        TabLayout tabs = findViewById(R.id.tabs);
+        savedState.putInt(SAVED_STATE_TAB_MESSAGE, tabs.getSelectedTabPosition());
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof FragmentHome) {
