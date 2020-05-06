@@ -15,9 +15,7 @@ import android.view.View;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
-import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentAnalytics;
-import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentCalendar;
-import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentHome;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 import java.util.Calendar;
 import java.util.Date;
@@ -137,18 +135,16 @@ public class MainActivity extends AppCompatActivity {
      */
     public Bundle gatherSavedState() {
         Bundle savedState = new Bundle();
+
+        // First put the current tab index in the bundle
         TabLayout tabs = findViewById(R.id.tabs);
         savedState.putInt(SAVED_STATE_TAB_MESSAGE, tabs.getSelectedTabPosition());
+
+        // Loop through each fragment and have each add to the bundle what it needs
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof FragmentHome) {
-                FragmentHome fragmentHome = (FragmentHome)fragment;
-                fragmentHome.fillBundleWithSavedState(savedState);
-            } else if (fragment instanceof FragmentCalendar) {
-                FragmentCalendar fragmentCalendar = (FragmentCalendar)fragment;
-            } else if (fragment instanceof FragmentAnalytics) {
-                FragmentAnalytics fragmentAnalytics = (FragmentAnalytics)fragment;
-            }
+        for (int fragmentIndex = 0; fragmentIndex < fragments.size(); fragmentIndex++) {
+            SavedStateCompatible fragment = (SavedStateCompatible)fragments.get(fragmentIndex);
+            fragment.fillBundleWithSavedState(savedState);
         }
         return savedState;
     }

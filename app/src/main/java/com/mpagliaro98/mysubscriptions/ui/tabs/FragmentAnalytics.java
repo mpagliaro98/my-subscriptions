@@ -12,11 +12,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 
 /**
  * A fragment containing the view for the analytics tab.
  */
-public class FragmentAnalytics extends Fragment {
+public class FragmentAnalytics extends Fragment implements SavedStateCompatible {
 
     // The model shared by the three main tabs
     private SharedViewModel model;
@@ -56,5 +57,25 @@ public class FragmentAnalytics extends Fragment {
             }
         });
         return root;
+    }
+
+    /**
+     * Populate a given bundle with values pertaining to how this fragment is set.
+     * @param bundle the bundle to place the saved items in
+     */
+    @Override
+    public void fillBundleWithSavedState(Bundle bundle) {
+
+    }
+
+    /**
+     * Given a bundle of saved state, extract the values that were saved to it previously
+     * and re-apply them to this view.
+     * @param savedState bundle of saved state, must not be null
+     * @param root the root view of this tab
+     */
+    @Override
+    public void applySavedState(@NonNull final Bundle savedState, View root) {
+
     }
 }

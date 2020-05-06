@@ -26,6 +26,7 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.io.IOException;
 import java.util.Comparator;
 
@@ -34,7 +35,7 @@ import java.util.Comparator;
  * interface so we can get data from the Create activity and properly send it to the
  * model.
  */
-public class FragmentHome extends Fragment implements MainActivity.OnDataListenerReceived {
+public class FragmentHome extends Fragment implements MainActivity.OnDataListenerReceived, SavedStateCompatible {
 
     // The model shared by the three main tabs
     private SharedViewModel model;
@@ -170,6 +171,7 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
      * The public keys at the top of this fragment are used to index the saved values.
      * @param bundle the bundle to place the saved items in
      */
+    @Override
     public void fillBundleWithSavedState(Bundle bundle) {
         View view = getView();
         assert view != null;
@@ -179,6 +181,34 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
         bundle.putString(SAVED_STATE_SEARCH_MESSAGE, searchBar.getText().toString());
         Spinner sortDropdown = view.findViewById(R.id.home_sort_list);
         bundle.putInt(SAVED_STATE_SORT_MESSAGE, sortDropdown.getSelectedItemPosition());
+    }
+
+    /**
+     * Given a bundle of saved state, extract the values that were saved to it previously
+     * and re-apply them to this view. For this tab, it will re-apply the search bar text,
+     * the sort dropdown selection, and the Y scroll distance.
+     * @param savedState bundle of saved state, must not be null
+     * @param root the root view of this tab
+     */
+    @Override
+    public void applySavedState(@NonNull final Bundle savedState, View root) {
+        if (savedState.containsKey(SAVED_STATE_SORT_MESSAGE)) {
+            Spinner sortDropdown = root.findViewById(R.id.home_sort_list);
+            sortDropdown.setSelection(savedState.getInt(SAVED_STATE_SORT_MESSAGE));
+        }
+        if (savedState.containsKey(SAVED_STATE_SEARCH_MESSAGE)) {
+            TextView searchBar = root.findViewById(R.id.home_search);
+            searchBar.setText(savedState.getString(SAVED_STATE_SEARCH_MESSAGE));
+        }
+        if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
+            final ScrollView scrollView = root.findViewById(R.id.home_scroll_view);
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
+                }
+            });
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -336,33 +366,6 @@ public class FragmentHome extends Fragment implements MainActivity.OnDataListene
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-    }
-
-    /**
-     * Given a bundle of saved state, extract the values that were saved to it previously
-     * and re-apply them to this view. For this tab, it will re-apply the search bar text,
-     * the sort dropdown selection, and the Y scroll distance.
-     * @param savedState bundle of saved state, must not be null
-     * @param root the root view of this tab
-     */
-    private void applySavedState(@NonNull final Bundle savedState, View root) {
-        if (savedState.containsKey(SAVED_STATE_SORT_MESSAGE)) {
-            Spinner sortDropdown = root.findViewById(R.id.home_sort_list);
-            sortDropdown.setSelection(savedState.getInt(SAVED_STATE_SORT_MESSAGE));
-        }
-        if (savedState.containsKey(SAVED_STATE_SEARCH_MESSAGE)) {
-            TextView searchBar = root.findViewById(R.id.home_search);
-            searchBar.setText(savedState.getString(SAVED_STATE_SEARCH_MESSAGE));
-        }
-        if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
-            final ScrollView scrollView = root.findViewById(R.id.home_scroll_view);
-            scrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
-                }
-            });
-        }
     }
 
     /**
