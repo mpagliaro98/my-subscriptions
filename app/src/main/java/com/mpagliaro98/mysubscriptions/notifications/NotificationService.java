@@ -71,7 +71,7 @@ public class NotificationService {
         SharedViewModel model = new SharedViewModel();
         try {
             model.loadFromFile(context);
-            int numUpdated = model.updateSubscriptionDates(zeroTimeCalendar);
+            int numUpdated = model.updateSubscriptionDates((Calendar)zeroTimeCalendar.clone());
             if (numUpdated > 0) {
                 model.saveToFile(context);
             }
