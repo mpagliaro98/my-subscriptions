@@ -107,7 +107,8 @@ public class SubscriptionCalendar extends LinearLayout {
         }
 
         // Update the grid to display their proper views
-        grid.setAdapter(new CalendarAdapter(getContext(), cells, events));
+        grid.setAdapter(new CalendarAdapter(getContext(), cells, events,
+                currentDate.get(Calendar.MONTH), currentDate.get(Calendar.YEAR)));
 
         // Update the title to the current month and year
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);

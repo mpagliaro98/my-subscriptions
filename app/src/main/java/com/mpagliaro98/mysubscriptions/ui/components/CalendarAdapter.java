@@ -27,6 +27,10 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
     // The view inflater
     private LayoutInflater inflater;
 
+    // The month and year the calendar is currently showing
+    private int showingMonth;
+    private int showingYear;
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -38,11 +42,16 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
      * @param days a list of days that make up the current month (and parts of the previous
      *             and next months) that is visible in the calendar
      * @param eventDays a set of days that contain events and should be highlighted
+     * @param showingMonth the month currently being displayed by the calendar
+     * @param showingYear the year currently being displayed by the calendar
      */
-    public CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays) {
+    public CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays,
+                           int showingMonth, int showingYear) {
         super(context, R.layout.component_subscriptioncalendar_day, days);
         this.eventDays = eventDays;
-        inflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(context);
+        this.showingMonth = showingMonth;
+        this.showingYear = showingYear;
     }
 
     /**
@@ -95,11 +104,12 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
         ((TextView)view).setTextColor(Color.BLACK);
 
         // If this date is outside the current month, grey it out
-        if (month != today.get(Calendar.MONTH) || year != today.get(Calendar.YEAR)) {
+        if (month != showingMonth || year != showingYear) {
             ((TextView)view).setTextColor(getContext().getResources().getColor(R.color.colorLightGreyBG));
         }
         // If this date is today, set it to the primary color and bold
-        else if (day == today.get(Calendar.DAY_OF_MONTH)) {
+        if (day == today.get(Calendar.DAY_OF_MONTH) && month == today.get(Calendar.MONTH) &&
+                year == today.get(Calendar.YEAR)) {
             ((TextView)view).setTypeface(null, Typeface.BOLD);
             ((TextView)view).setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
         }
