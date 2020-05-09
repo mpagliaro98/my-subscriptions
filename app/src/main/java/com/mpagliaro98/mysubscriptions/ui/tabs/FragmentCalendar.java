@@ -12,8 +12,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
+import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
+import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * A fragment containing the view for the calendar tab.
@@ -66,6 +72,17 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_calendar_tab, container, false);
+
+        // Gather up all next payment dates for all subscriptions
+        List<Subscription> subList = model.getFullSubscriptionList();
+        HashSet<Date> nextPaymentDates = new HashSet<>();
+        for (Subscription sub : subList) {
+            nextPaymentDates.addAll(sub.getNextPaymentList());
+        }
+
+        // Update the calendar using the set of next payment dates as the events
+        SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+        subCalendar.updateCalendar(nextPaymentDates);
         return root;
     }
 
