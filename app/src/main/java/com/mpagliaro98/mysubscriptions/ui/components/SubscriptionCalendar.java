@@ -33,6 +33,7 @@ public class SubscriptionCalendar extends LinearLayout {
     private Calendar currentDate = Calendar.getInstance();
     private String dateFormat;
     private CalendarEventHandler calendarEventHandler = null;
+    private HashSet<Date> events = null;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -77,18 +78,26 @@ public class SubscriptionCalendar extends LinearLayout {
     }
 
     /**
-     * Cause the calendar to update its appearance and data based on the current state.
+     * Give the calendar a set of events to highlight, that it will be able to hold onto
+     * between calendar updates.
+     * @param events a set of dates that represent days that should be highlighted in
+     *               the calendar
      */
-    public void updateCalendar() {
-        updateCalendar(null);
+    public void setEvents(HashSet<Date> events) {
+        this.events = events;
+    }
+
+    /**
+     * Clear the set of events.
+     */
+    public void clearEvents() {
+        this.events = null;
     }
 
     /**
      * Cause the calendar to update its appearance and data based on the current state.
-     * @param events a set of dates that represent days that should be highlighted in
-     *               the calendar
      */
-    public void updateCalendar(HashSet<Date> events) {
+    public void updateCalendar() {
         // Initialize a list of dates for every cell in the calendar
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar)currentDate.clone();

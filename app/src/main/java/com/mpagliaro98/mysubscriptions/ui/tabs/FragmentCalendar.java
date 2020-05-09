@@ -4,11 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
@@ -16,7 +13,6 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -82,7 +78,8 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
 
         // Update the calendar using the set of next payment dates as the events
         SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
-        subCalendar.updateCalendar(nextPaymentDates);
+        subCalendar.setEvents(nextPaymentDates);
+        subCalendar.updateCalendar();
         return root;
     }
 
