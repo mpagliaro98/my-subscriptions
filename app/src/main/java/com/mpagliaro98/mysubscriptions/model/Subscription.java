@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import com.mpagliaro98.mysubscriptions.R;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -14,6 +15,9 @@ import java.util.Locale;
  */
 public class Subscription implements Serializable {
 
+    // The number of years ahead next payment dates will be generated for
+    private static final int MAX_YEARS_AHEAD = 5;
+
     private int id;
     private String name;
     private double cost;
@@ -21,6 +25,7 @@ public class Subscription implements Serializable {
     private String note;
     private int rechargeFrequency;
     private Date nextPaymentDate;
+    private ArrayList<Date> nextPaymentList;
     private Category category;
     private int notifDays;
     private Date nextNotifDate;
@@ -49,6 +54,7 @@ public class Subscription implements Serializable {
         this.note = note;
         this.rechargeFrequency = rechargeFrequency;
         this.nextPaymentDate = startDate;
+        this.nextPaymentList = new ArrayList<>();
         this.category = category;
         this.notifDays = notifDays;
         regenerateSubInfo();
@@ -75,6 +81,7 @@ public class Subscription implements Serializable {
         this.note = note;
         this.rechargeFrequency = rechargeFrequency;
         this.nextPaymentDate = startDate;
+        this.nextPaymentList = new ArrayList<>();
         this.category = category;
         this.notifDays = notifDays;
         regenerateSubInfo(zeroTimeCalendar);
@@ -99,22 +106,42 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Calculate when the next soonest payment date will be from today.
+     * Calculate when the next soonest payment date will be from today, as well as a list
+     * of payment dates after that for the next MAX_YEARS_AHEAD years.
      */
     private void generateNextPaymentDate() {
         generateNextPaymentDate(new ZeroTimeCalendar());
     }
     /**
-     * Calculate when the next soonest payment date will be from today.
+     * Calculate when the next soonest payment date will be from today, as well as a list
+     * of payment dates after that for the next MAX_YEARS_AHEAD years.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
     private void generateNextPaymentDate(ZeroTimeCalendar zeroTimeCalendar) {
+        nextPaymentList = new ArrayList<>();
         Date today = zeroTimeCalendar.getCurrentDate();
+        Date nextPaymentDate = startDate;
         zeroTimeCalendar.setTimeToDate(startDate);
+
+        // Loop forward until we find the first next payment date
         while (!nextPaymentDate.after(today) && !nextPaymentDate.equals(today)) {
             zeroTimeCalendar.addMonths(rechargeFrequency);
             nextPaymentDate = zeroTimeCalendar.getCurrentDate();
         }
+
+        // Start the list with this payment date
+        nextPaymentList.add(nextPaymentDate);
+        zeroTimeCalendar.addYears(MAX_YEARS_AHEAD);
+        Date futureLimit = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTimeToDate(nextPaymentDate);
+
+        // Find each payment date between now and the future limit
+        while (nextPaymentDate.before(futureLimit)) {
+            zeroTimeCalendar.addMonths(rechargeFrequency);
+            nextPaymentDate = zeroTimeCalendar.getCurrentDate();
+            nextPaymentList.add(nextPaymentDate);
+        }
+        this.nextPaymentDate = nextPaymentList.get(0);
     }
 
     /**
@@ -270,6 +297,15 @@ public class Subscription implements Serializable {
      */
     public String getNextPaymentDateString(Resources resources) {
         return new SimpleDateFormat(resources.getString(R.string.date_format), Locale.US).format(nextPaymentDate);
+    }
+
+    /**
+     * Get a list of the future payment dates for this subscription for the next X amount
+     * of years, as defined by MAX_YEARS_AHEAD in this class.
+     * @return a list of next payment dates
+     */
+    public ArrayList<Date> getNextPaymentList() {
+        return nextPaymentList;
     }
 
     /**
