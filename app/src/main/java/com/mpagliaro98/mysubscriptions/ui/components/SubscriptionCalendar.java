@@ -31,7 +31,6 @@ public class SubscriptionCalendar extends LinearLayout {
     private GridView grid;
     private static final int DAYS_COUNT = 42;
     private Calendar currentDate = Calendar.getInstance();
-    private static final String DATE_FORMAT = "MMM yyyy";
     private String dateFormat;
     private CalendarEventHandler calendarEventHandler = null;
 
@@ -131,7 +130,7 @@ public class SubscriptionCalendar extends LinearLayout {
         inflater.inflate(R.layout.component_subscriptioncalendar, this);
 
         // Initialize the data format, UI elements, and handlers
-        loadDateFormat(attrs);
+        loadDateFormat(context, attrs);
         assignUiElements();
         assignClickHandlers();
 
@@ -142,15 +141,16 @@ public class SubscriptionCalendar extends LinearLayout {
     /**
      * Load in the date format from a previously defined style, or if none exists, use the
      * default format.
+     * @param context the current application context
      * @param attrs the attribute set containing the date format
      */
-    private void loadDateFormat(AttributeSet attrs) {
+    private void loadDateFormat(Context context, AttributeSet attrs) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.SubscriptionCalendar);
         try {
             // Try to load provided date format, and fallback to default otherwise
             dateFormat = ta.getString(R.styleable.SubscriptionCalendar_dateFormat);
             if (dateFormat == null)
-                dateFormat = DATE_FORMAT;
+                dateFormat = context.getResources().getString(R.string.calendar_date_format);
         } finally {
             ta.recycle();
         }

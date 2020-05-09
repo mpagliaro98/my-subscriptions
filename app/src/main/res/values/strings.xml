@@ -82,6 +82,20 @@
     <string name="notification_content_build_1">you\'ll be charged</string>
     <string name="notification_content_build_2">for</string>
 
+    <!-- Calendar tab strings -->
+    <string name="calendar_date_format">MMM yyyy</string>
+    <string name="calendar_title_text_default">Current Date</string>
+    <string name="calendar_day_text_default">00</string>
+    <string name="calendar_header_sunday">SUN</string>
+    <string name="calendar_header_monday">MON</string>
+    <string name="calendar_header_tuesday">TUE</string>
+    <string name="calendar_header_wednesday">WED</string>
+    <string name="calendar_header_thursday">THU</string>
+    <string name="calendar_header_friday">FRI</string>
+    <string name="calendar_header_saturday">SAT</string>
+    <string name="calendar_prev_btn_desc">Previous Button</string>
+    <string name="calendar_next_btn_desc">Next Button</string>
+
     <!-- String arrays -->
     <string-array name="array_freq_dropdown">
         <item>@string/array_freq_monthly</item>
