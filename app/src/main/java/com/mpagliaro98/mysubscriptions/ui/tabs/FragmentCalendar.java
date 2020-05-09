@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
+import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 
 /**
@@ -33,7 +34,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = new ViewModelProvider(this).get(SharedViewModel.class);
+        MainActivity mainActivity = (MainActivity)getActivity();
+        assert mainActivity != null;
+        model = new ViewModelProvider(mainActivity).get(SharedViewModel.class);
         model.setName("Calendar Tab");
     }
 
@@ -49,6 +52,8 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_calendar_tab, container, false);
+        int size = model.numSubscriptionsTotal();
+        System.out.println("IN CALENDAR TAB: " + size);
         final TextView textView = root.findViewById(R.id.section_label);
         model.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
