@@ -32,6 +32,7 @@ public class SubscriptionView extends LinearLayout {
         this.subscription = subscription;
         initSubView(context, new ZeroTimeCalendar());
     }
+
     /**
      * Build this view off of a LinearLayout so we can utilize some of its properties,
      * then initialize the text in the view.
@@ -44,6 +45,10 @@ public class SubscriptionView extends LinearLayout {
         this.subscription = subscription;
         initSubView(context, zeroTimeCalendar);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Initialize the various values of this component.
@@ -81,10 +86,6 @@ public class SubscriptionView extends LinearLayout {
         imageColor.setColorFilter(context.getResources().getColor(subscription.getCategory().getColor()),
                 PorterDuff.Mode.SRC_IN);
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Convert a recharge frequency integer value into its corresponding string.
