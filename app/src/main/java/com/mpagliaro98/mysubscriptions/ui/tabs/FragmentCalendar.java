@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,6 +13,7 @@ import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.util.Date;
 import java.util.HashSet;
@@ -80,6 +82,15 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
         subCalendar.setEvents(nextPaymentDates);
         subCalendar.updateCalendar();
+
+        // Set a listener for the calendar
+        subCalendar.setCalendarEventHandler(new CalendarEventHandler() {
+            @Override
+            public void onDayPress(Date date) {
+                List<Subscription> subsDueList = model.getSubsDueOnDate(date);
+                Toast.makeText(getContext(), date.toString() + ", " + subsDueList.size(), Toast.LENGTH_SHORT).show();
+            }
+        });
         return root;
     }
 
