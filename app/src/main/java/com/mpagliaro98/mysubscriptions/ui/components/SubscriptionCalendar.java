@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -30,7 +30,7 @@ public class SubscriptionCalendar extends LinearLayout {
     private TextView txtDate;
     private GridView grid;
     private static final int DAYS_COUNT = 42;
-    private Calendar currentDate = Calendar.getInstance();
+    private ZeroTimeCalendar currentDate = new ZeroTimeCalendar();
     private String dateFormat;
     private CalendarEventHandler calendarEventHandler = null;
     private HashSet<Date> events = null;
@@ -100,28 +100,28 @@ public class SubscriptionCalendar extends LinearLayout {
     public void updateCalendar() {
         // Initialize a list of dates for every cell in the calendar
         ArrayList<Date> cells = new ArrayList<>();
-        Calendar calendar = (Calendar)currentDate.clone();
+        ZeroTimeCalendar calendar = currentDate.copyCalendar();
 
         // Determine the cell for current month's beginning
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.setTime(calendar.getYear(), calendar.getMonth(), 1);
+        int monthBeginningCell = calendar.getDayOfWeek() - 1;
 
         // Move calendar backwards to the beginning of the week
-        calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);
+        calendar.addDays(-monthBeginningCell);
 
         // Fill the cells with the dates they will contain
         while (cells.size() < DAYS_COUNT) {
-            cells.add(calendar.getTime());
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            cells.add(calendar.getCurrentDate());
+            calendar.addDays(1);
         }
 
         // Update the grid to display their proper views
         grid.setAdapter(new CalendarAdapter(getContext(), cells, events,
-                currentDate.get(Calendar.MONTH), currentDate.get(Calendar.YEAR)));
+                currentDate.getMonth(), currentDate.getYear()));
 
         // Update the title to the current month and year
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
-        txtDate.setText(sdf.format(currentDate.getTime()));
+        txtDate.setText(sdf.format(currentDate.getCurrentDate()));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -185,7 +185,7 @@ public class SubscriptionCalendar extends LinearLayout {
         btnNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentDate.add(Calendar.MONTH, 1);
+                currentDate.addMonths(1);
                 updateCalendar();
             }
         });
@@ -194,7 +194,7 @@ public class SubscriptionCalendar extends LinearLayout {
         btnPrev.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentDate.add(Calendar.MONTH, -1);
+                currentDate.addMonths(-1);
                 updateCalendar();
             }
         });

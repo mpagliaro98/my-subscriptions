@@ -10,8 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.mpagliaro98.mysubscriptions.R;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -70,14 +70,14 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
         // Get the date at this position
         Date date = getItem(position);
         assert date != null;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
+        ZeroTimeCalendar calendar = new ZeroTimeCalendar();
+        calendar.setTimeToDate(date);
+        int day = calendar.getDayOfMonth();
+        int month = calendar.getMonth();
+        int year = calendar.getYear();
 
         // Get today
-        Calendar today = Calendar.getInstance();
+        ZeroTimeCalendar today = new ZeroTimeCalendar();
 
         // Inflate the item if it does not exist yet
         if (view == null)
@@ -87,11 +87,11 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
         view.setBackgroundResource(0);
         if (eventDays != null) {
             for (Date eventDate : eventDays) {
-                Calendar eventDateCalendar = Calendar.getInstance();
-                eventDateCalendar.setTime(eventDate);
-                if (eventDateCalendar.get(Calendar.DAY_OF_MONTH) == day &&
-                        eventDateCalendar.get(Calendar.MONTH) == month &&
-                        eventDateCalendar.get(Calendar.YEAR) == year) {
+                ZeroTimeCalendar eventDateCalendar = new ZeroTimeCalendar();
+                eventDateCalendar.setTimeToDate(eventDate);
+                if (eventDateCalendar.getDayOfMonth() == day &&
+                        eventDateCalendar.getMonth() == month &&
+                        eventDateCalendar.getYear() == year) {
                     // Mark this day for event
                     if (month != showingMonth || year != showingYear) {
                         view.setBackgroundColor(getContext().getResources().getColor(R.color.colorCalendarEventNotCurrent));
@@ -112,8 +112,8 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
             ((TextView)view).setTextColor(getContext().getResources().getColor(R.color.colorLightGreyBG));
         }
         // If this date is today, set it to the primary color and bold
-        if (day == today.get(Calendar.DAY_OF_MONTH) && month == today.get(Calendar.MONTH) &&
-                year == today.get(Calendar.YEAR)) {
+        if (day == today.getDayOfMonth() && month == today.getMonth() &&
+                year == today.getYear()) {
             ((TextView)view).setTypeface(null, Typeface.BOLD);
             if (month != showingMonth || year != showingYear) {
                 ((TextView) view).setTextColor(getContext().getResources().getColor(R.color.colorCalendarTodayNotCurrent));
@@ -123,7 +123,7 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
         }
 
         // Set the number of this date
-        ((TextView)view).setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+        ((TextView)view).setText(String.valueOf(calendar.getDayOfMonth()));
         return view;
     }
 }
