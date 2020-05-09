@@ -65,6 +65,11 @@ public class FragmentHome extends Fragment implements OnDataListenerReceived, Sa
     }
 
     /**
+     * Default empty constructor for this fragment.
+     */
+    public FragmentHome() {}
+
+    /**
      * Initializes the model for the home tab.
      * @param savedInstanceState any saved state needed
      */
