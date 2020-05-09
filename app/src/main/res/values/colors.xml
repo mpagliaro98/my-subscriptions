@@ -5,6 +5,10 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorLightGreyBG">#EFEFEF</color>
     <color name="colorPaymentToday">#FF0000</color>
+    <color name="colorCalendarToday">#6200EE</color>
+    <color name="colorCalendarTodayNotCurrent">#AB80ED</color>
+    <color name="colorCalendarEvent">#03DAC5</color>
+    <color name="colorCalendarEventNotCurrent">#8FD8D1</color>
 
     <color name="colorCategoryVideoStreaming">#FF5214</color>
     <color name="colorCategoryAudioStreaming">#D8C952</color>

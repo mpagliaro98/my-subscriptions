@@ -93,7 +93,11 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
                         eventDateCalendar.get(Calendar.MONTH) == month &&
                         eventDateCalendar.get(Calendar.YEAR) == year) {
                     // Mark this day for event
-                    view.setBackgroundResource(R.drawable.reminder);
+                    if (month != showingMonth || year != showingYear) {
+                        view.setBackgroundColor(getContext().getResources().getColor(R.color.colorCalendarEventNotCurrent));
+                    } else {
+                        view.setBackgroundColor(getContext().getResources().getColor(R.color.colorCalendarEvent));
+                    }
                     break;
                 }
             }
@@ -111,7 +115,11 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
         if (day == today.get(Calendar.DAY_OF_MONTH) && month == today.get(Calendar.MONTH) &&
                 year == today.get(Calendar.YEAR)) {
             ((TextView)view).setTypeface(null, Typeface.BOLD);
-            ((TextView)view).setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+            if (month != showingMonth || year != showingYear) {
+                ((TextView) view).setTextColor(getContext().getResources().getColor(R.color.colorCalendarTodayNotCurrent));
+            } else {
+                ((TextView) view).setTextColor(getContext().getResources().getColor(R.color.colorCalendarToday));
+            }
         }
 
         // Set the number of this date
