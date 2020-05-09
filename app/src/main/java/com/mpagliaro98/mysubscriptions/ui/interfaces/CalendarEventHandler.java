@@ -14,5 +14,5 @@ public interface CalendarEventHandler {
      * Called when a date on the calendar is pressed.
      * @param date the date of the grid cell that is pressed
      */
-    void onDayLongPress(Date date);
+    void onDayPress(Date date);
 }

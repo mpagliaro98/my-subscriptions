@@ -200,13 +200,11 @@ public class SubscriptionCalendar extends LinearLayout {
         });
 
         // If a day is pressed, run the given event handler if one exists
-        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> view, View cell, int position, long id) {
-                if (calendarEventHandler == null)
-                    return false;
-                calendarEventHandler.onDayLongPress((Date)view.getItemAtPosition(position));
-                return true;
+            public void onItemClick(AdapterView<?> view, View cell, int position, long id) {
+                if (calendarEventHandler != null)
+                    calendarEventHandler.onDayPress((Date)view.getItemAtPosition(position));
             }
         });
     }
