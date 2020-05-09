@@ -46,7 +46,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new FragmentCalendar();
+                return new FragmentCalendar(savedStateBundle);
             case 1:
                 return new FragmentHome(savedStateBundle);
             case 2:

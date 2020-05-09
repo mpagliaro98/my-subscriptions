@@ -21,10 +21,25 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
 
     // The model shared by the three main tabs
     private SharedViewModel model;
+    // Any saved state from previously in the application to apply when loading the view
+    private Bundle savedState;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Create this fragment object and set its saved state bundle to be used later.
+     * @param savedState bundle of saved state
+     */
+    public FragmentCalendar(Bundle savedState) {
+        this.savedState = savedState;
+    }
+
+    /**
+     * Default empty constructor for this fragment.
+     */
+    public FragmentCalendar() {}
 
     /**
      * Initializes the model for the calendar tab.
@@ -34,7 +49,6 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(this).get(SharedViewModel.class);
-        model.setName("Calendar Tab");
     }
 
     /**
