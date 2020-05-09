@@ -71,7 +71,9 @@ public class FragmentHome extends Fragment implements OnDataListenerReceived, Sa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = new ViewModelProvider(this).get(SharedViewModel.class);
+        MainActivity mainActivity = (MainActivity)getActivity();
+        assert mainActivity != null;
+        model = new ViewModelProvider(mainActivity).get(SharedViewModel.class);
 
         // Populate the model by loading subscriptions from the file
         try {
@@ -92,8 +94,6 @@ public class FragmentHome extends Fragment implements OnDataListenerReceived, Sa
         }
 
         // Set this fragment as the data listener for the tab activity
-        MainActivity mainActivity = (MainActivity)getActivity();
-        assert mainActivity != null;
         mainActivity.checkIncomingData(this);
     }
 
