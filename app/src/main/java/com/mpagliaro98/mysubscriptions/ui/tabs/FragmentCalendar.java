@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
+import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 
 /**
@@ -48,7 +49,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = new ViewModelProvider(this).get(SharedViewModel.class);
+        MainActivity mainActivity = (MainActivity)getActivity();
+        assert mainActivity != null;
+        model = new ViewModelProvider(mainActivity).get(SharedViewModel.class);
     }
 
     /**
