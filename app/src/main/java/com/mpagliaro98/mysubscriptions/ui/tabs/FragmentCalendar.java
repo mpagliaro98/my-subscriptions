@@ -1,9 +1,11 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -11,8 +13,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
+import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.util.Date;
@@ -69,7 +73,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_calendar_tab, container, false);
+        final View root = inflater.inflate(R.layout.fragment_calendar_tab, container, false);
 
         // Gather up all next payment dates for all subscriptions
         List<Subscription> subList = model.getFullSubscriptionList();
@@ -87,8 +91,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         subCalendar.setCalendarEventHandler(new CalendarEventHandler() {
             @Override
             public void onDayPress(Date date) {
-                List<Subscription> subsDueList = model.getSubsDueOnDate(date);
-                Toast.makeText(getContext(), date.toString() + ", " + subsDueList.size(), Toast.LENGTH_SHORT).show();
+                updateSubList(root, date);
             }
         });
         return root;
@@ -112,5 +115,37 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     @Override
     public void applySavedState(@NonNull final Bundle savedState, View root) {
 
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Update the UI component that displays a list of subscriptions depending on what day
+     * on the calendar is pressed.
+     * @param view the current view to display to
+     * @param date the date pressed on the calendar, so this should display the subscriptions
+     *             that have a payment due on that date
+     */
+    private void updateSubList(View view, Date date) {
+        LinearLayout linearLayout = view.findViewById(R.id.calendarLinearLayout);
+        linearLayout.removeAllViewsInLayout();
+        List<Subscription> subsDueList = model.getSubsDueOnDate(date);
+        for (final Subscription sub : subsDueList) {
+            final SubscriptionView subView = new SubscriptionView(getContext(), sub);
+            subView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle savedState = null;
+                    if (getActivity() != null)
+                        savedState = ((MainActivity)getActivity()).gatherSavedState();
+                    Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(getContext(),
+                            CreateSubscriptionActivity.PAGE_TYPE.VIEW, sub, sub.getId(), savedState);
+                    startActivity(intent);
+                }
+            });
+            linearLayout.addView(subView);
+        }
     }
 }
