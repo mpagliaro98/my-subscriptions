@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -40,6 +41,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     // Keys for the saved state of the calendar fragment when returning
     public static final String SAVED_STATE_MONTH_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_MONTH";
     public static final String SAVED_STATE_SELECTED_DATE_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_SELECTED_DATE";
+    public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_SCROLL";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -130,6 +132,8 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         bundle.putSerializable(SAVED_STATE_MONTH_MESSAGE, subCalendar.getDisplayedMonth());
         Date selectedDate = subCalendar.getSelectedDate();
         bundle.putSerializable(SAVED_STATE_SELECTED_DATE_MESSAGE, selectedDate);
+        ScrollView scrollView = view.findViewById(R.id.calendarScrollView);
+        bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
     }
 
     /**
@@ -152,6 +156,15 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             assert selectedDate != null;
             subCalendar.setSelectedDate(selectedDate);
             updateCalendarTabOnDayPress(selectedDate, root);
+        }
+        if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
+            final ScrollView scrollView = root.findViewById(R.id.calendarScrollView);
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
+                }
+            });
         }
     }
 
