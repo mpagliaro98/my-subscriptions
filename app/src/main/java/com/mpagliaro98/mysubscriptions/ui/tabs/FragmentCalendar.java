@@ -94,7 +94,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         }
 
         // Update the calendar using the set of next payment dates as the events
-        SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+        SubscriptionCalendar subCalendar = root.findViewById(R.id.subscription_calendar);
         subCalendar.setEvents(nextPaymentDates);
         subCalendar.updateCalendar();
 
@@ -103,7 +103,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @Override
             public void onDayPress(Date date) {
                 updateCalendarTabOnDayPress(date, root);
-                SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+                SubscriptionCalendar subCalendar = root.findViewById(R.id.subscription_calendar);
                 subCalendar.setSelectedDate(date);
             }
         });
@@ -128,11 +128,11 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     public void fillBundleWithSavedState(Bundle bundle) {
         View view = getView();
         assert view != null;
-        SubscriptionCalendar subCalendar = view.findViewById(R.id.subscriptionCalendar);
+        SubscriptionCalendar subCalendar = view.findViewById(R.id.subscription_calendar);
         bundle.putSerializable(SAVED_STATE_MONTH_MESSAGE, subCalendar.getDisplayedMonth());
         Date selectedDate = subCalendar.getSelectedDate();
         bundle.putSerializable(SAVED_STATE_SELECTED_DATE_MESSAGE, selectedDate);
-        ScrollView scrollView = view.findViewById(R.id.calendarScrollView);
+        ScrollView scrollView = view.findViewById(R.id.calendar_scroll_view);
         bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
     }
 
@@ -145,20 +145,20 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     @Override
     public void applySavedState(@NonNull final Bundle savedState, View root) {
         if (savedState.containsKey(SAVED_STATE_MONTH_MESSAGE)) {
-            SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+            SubscriptionCalendar subCalendar = root.findViewById(R.id.subscription_calendar);
             Date date = (Date)savedState.getSerializable(SAVED_STATE_MONTH_MESSAGE);
             assert date != null;
             subCalendar.setCalendarToMonth(date);
         }
         if (savedState.containsKey(SAVED_STATE_SELECTED_DATE_MESSAGE)) {
-            SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+            SubscriptionCalendar subCalendar = root.findViewById(R.id.subscription_calendar);
             Date selectedDate = (Date)savedState.getSerializable(SAVED_STATE_SELECTED_DATE_MESSAGE);
             assert selectedDate != null;
             subCalendar.setSelectedDate(selectedDate);
             updateCalendarTabOnDayPress(selectedDate, root);
         }
         if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
-            final ScrollView scrollView = root.findViewById(R.id.calendarScrollView);
+            final ScrollView scrollView = root.findViewById(R.id.calendar_scroll_view);
             scrollView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -180,7 +180,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      *             that have a payment due on that date
      */
     private void updateSubList(View view, Date date) {
-        LinearLayout linearLayout = view.findViewById(R.id.calendarLinearLayout);
+        LinearLayout linearLayout = view.findViewById(R.id.calendar_linear_layout);
         removeOnlySubViews(linearLayout);
         List<Subscription> subsDueList = model.getSubsDueOnDate(date);
         for (final Subscription sub : subsDueList) {
@@ -232,7 +232,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      */
     private void updateCalendarTabOnDayPress(Date date, View root) {
         updateSubList(root, date);
-        TextView dateText = root.findViewById(R.id.calendarDateTextView);
+        TextView dateText = root.findViewById(R.id.calendar_date_text_view);
         String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
                 new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
                 + ":";

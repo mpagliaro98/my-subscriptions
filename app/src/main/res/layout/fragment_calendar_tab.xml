@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.tabs.FragmentCalendar">
@@ -16,15 +15,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subscriptionCalendar">
+        app:layout_constraintTop_toBottomOf="@+id/subscription_calendar">
 
         <ScrollView
-            android:id="@+id/calendarScrollView"
+            android:id="@+id/calendar_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/calendarLinearLayout"
+                android:id="@+id/calendar_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -32,7 +31,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/calendarDateTextView"
+                    android:id="@+id/calendar_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -46,7 +45,7 @@
     </LinearLayout>
 
     <com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar
-        android:id="@+id/subscriptionCalendar"
+        android:id="@+id/subscription_calendar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
