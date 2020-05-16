@@ -140,9 +140,7 @@ public class SubscriptionCalendar extends LinearLayout {
      * @param date a date object representing which month and year the calendar should be showing
      */
     public void setCalendarToMonth(Date date) {
-        ZeroTimeCalendar target = new ZeroTimeCalendar();
-        target.setTimeToDate(date);
-        currentDate.setTime(target.getYear(), target.getMonth(), target.getDayOfMonth());
+        currentDate.setTimeToDate(date);
         updateCalendar();
     }
 
