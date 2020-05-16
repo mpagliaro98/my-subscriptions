@@ -39,6 +39,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
 
     // Keys for the saved state of the calendar fragment when returning
     public static final String SAVED_STATE_MONTH_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_MONTH";
+    public static final String SAVED_STATE_SELECTED_DATE_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_SELECTED_DATE";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -100,12 +101,15 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @Override
             public void onDayPress(Date date) {
                 updateCalendarTabOnDayPress(date, root);
+                SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+                subCalendar.setSelectedDate(date);
             }
         });
 
         // Set the calendar to default to today's date when first loaded
         Date currentDate = new ZeroTimeCalendar().getCurrentDate();
         updateCalendarTabOnDayPress(currentDate, root);
+        subCalendar.setSelectedDate(currentDate);
 
         // Apply the values from the saved state to the page
         if (savedState != null) {
@@ -123,7 +127,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         View view = getView();
         assert view != null;
         SubscriptionCalendar subCalendar = view.findViewById(R.id.subscriptionCalendar);
-        bundle.putSerializable(SAVED_STATE_MONTH_MESSAGE, subCalendar.getDisplayedDate());
+        bundle.putSerializable(SAVED_STATE_MONTH_MESSAGE, subCalendar.getDisplayedMonth());
+        Date selectedDate = subCalendar.getSelectedDate();
+        bundle.putSerializable(SAVED_STATE_SELECTED_DATE_MESSAGE, selectedDate);
     }
 
     /**
@@ -139,6 +145,13 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             Date date = (Date)savedState.getSerializable(SAVED_STATE_MONTH_MESSAGE);
             assert date != null;
             subCalendar.setCalendarToMonth(date);
+        }
+        if (savedState.containsKey(SAVED_STATE_SELECTED_DATE_MESSAGE)) {
+            SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+            Date selectedDate = (Date)savedState.getSerializable(SAVED_STATE_SELECTED_DATE_MESSAGE);
+            assert selectedDate != null;
+            subCalendar.setSelectedDate(selectedDate);
+            updateCalendarTabOnDayPress(selectedDate, root);
         }
     }
 

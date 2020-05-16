@@ -34,6 +34,7 @@ public class SubscriptionCalendar extends LinearLayout {
     private String dateFormat;
     private CalendarEventHandler calendarEventHandler = null;
     private HashSet<Date> events = null;
+    private Date selectedDate = currentDate.getCurrentDate();
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -130,7 +131,7 @@ public class SubscriptionCalendar extends LinearLayout {
      * that the calendar shows.
      * @return a date object representing what month the calendar is currently showing
      */
-    public Date getDisplayedDate() {
+    public Date getDisplayedMonth() {
         return currentDate.getCurrentDate();
     }
 
@@ -142,6 +143,25 @@ public class SubscriptionCalendar extends LinearLayout {
     public void setCalendarToMonth(Date date) {
         currentDate.setTimeToDate(date);
         updateCalendar();
+    }
+
+    /**
+     * Get the date that was last selected on the calendar. This is simply used as a means of
+     * tracking the currently selected date, the setting of this value should be done in the
+     * CalendarEventHandler each time a new date is selected.
+     * @return a date object representing the most recent selected date
+     */
+    public Date getSelectedDate() {
+        return selectedDate;
+    }
+
+    /**
+     * Set the field for the most recent selected date. This should be called in the
+     * CalendarEventHandler attached to this calendar and set there.
+     * @param date the date to track
+     */
+    public void setSelectedDate(Date date) {
+        this.selectedDate = date;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
