@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,9 +20,13 @@ import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A fragment containing the view for the calendar tab.
@@ -92,6 +97,11 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @Override
             public void onDayPress(Date date) {
                 updateSubList(root, date);
+                TextView dateText = root.findViewById(R.id.calendarDateTextView);
+                String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
+                        new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
+                        + ":";
+                dateText.setText(displayStr);
             }
         });
         return root;
@@ -130,7 +140,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      */
     private void updateSubList(View view, Date date) {
         LinearLayout linearLayout = view.findViewById(R.id.calendarLinearLayout);
-        linearLayout.removeAllViewsInLayout();
+        removeOnlySubViews(linearLayout);
         List<Subscription> subsDueList = model.getSubsDueOnDate(date);
         for (final Subscription sub : subsDueList) {
             final SubscriptionView subView = new SubscriptionView(getContext(), sub);
@@ -146,6 +156,29 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
                 }
             });
             linearLayout.addView(subView);
+        }
+    }
+
+    /**
+     * Given a linear layout, remove from it only child views that are SubscriptionView
+     * objects. This will leave any views that aren't subscription views still in the
+     * layout.
+     * @param linearLayout the linear layout to modify in place
+     */
+    private void removeOnlySubViews(LinearLayout linearLayout) {
+        List<SubscriptionView> viewsToRemove = new ArrayList<>();
+
+        // Compile all subscription views in this layout into a list
+        for (int viewIdx = 0; viewIdx < linearLayout.getChildCount(); viewIdx++) {
+            View childView = linearLayout.getChildAt(viewIdx);
+            if (childView instanceof SubscriptionView) {
+                viewsToRemove.add((SubscriptionView)childView);
+            }
+        }
+
+        // Remove the previously compiled subscription views from the layout one by one
+        for (SubscriptionView subView : viewsToRemove) {
+            linearLayout.removeView(subView);
         }
     }
 }
