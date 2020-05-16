@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
     <!-- date toolbar -->
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
         android:paddingLeft="30dp"
-        android:paddingRight="30dp">
+        android:paddingTop="12dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/calendar_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/calendar_header"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- prev button -->
         <ImageView
             android:id="@+id/calendar_prev_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            app:srcCompat="@drawable/prev_icon"
             android:layout_alignParentStart="true"
-            android:contentDescription="@string/calendar_prev_btn_desc" />
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/calendar_prev_btn_desc"
+            app:srcCompat="@drawable/prev_icon" />
 
         <!-- date title -->
         <TextView
@@ -33,34 +38,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/calendar_next_button"
             android:layout_toLeftOf="@id/calendar_next_button"
+            android:layout_toEndOf="@id/calendar_prev_button"
             android:layout_toRightOf="@id/calendar_prev_button"
             android:gravity="center"
             android:text="@string/calendar_title_text_default"
             android:textAppearance="@android:style/TextAppearance.Medium"
-            android:textColor="#222222"
-            android:layout_toEndOf="@id/calendar_prev_button"
-            android:layout_toStartOf="@id/calendar_next_button" />
+            android:textColor="#222222" />
 
         <!-- next button -->
         <ImageView
             android:id="@+id/calendar_next_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            app:srcCompat="@drawable/next_icon"
             android:layout_alignParentEnd="true"
-            android:contentDescription="@string/calendar_next_btn_desc" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/calendar_next_btn_desc"
+            app:srcCompat="@drawable/next_icon" />
     </RelativeLayout>
 
     <!-- days header -->
     <LinearLayout
         android:id="@+id/calendar_header"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/calendar_grid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
         <TextView
             android:layout_width="0dp"
@@ -122,7 +131,11 @@
     <!-- days view -->
     <GridView
         android:id="@+id/calendar_grid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="7"/>
-</LinearLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/calendar_header"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_header" />
+</androidx.constraintlayout.widget.ConstraintLayout>
