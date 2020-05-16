@@ -124,6 +124,28 @@ public class SubscriptionCalendar extends LinearLayout {
         txtDate.setText(sdf.format(currentDate.getCurrentDate()));
     }
 
+    /**
+     * Get the date currently being used by the calendar to represent the displayed
+     * month. The month and year components of this date are what determines the month
+     * that the calendar shows.
+     * @return a date object representing what month the calendar is currently showing
+     */
+    public Date getDisplayedDate() {
+        return currentDate.getCurrentDate();
+    }
+
+    /**
+     * Given a date object, set the calendar to display the month and year of that given
+     * date.
+     * @param date a date object representing which month and year the calendar should be showing
+     */
+    public void setCalendarToMonth(Date date) {
+        ZeroTimeCalendar target = new ZeroTimeCalendar();
+        target.setTimeToDate(date);
+        currentDate.setTime(target.getYear(), target.getMonth(), target.getDayOfMonth());
+        updateCalendar();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     // Any saved state from previously in the application to apply when loading the view
     private Bundle savedState;
 
+    // Keys for the saved state of the calendar fragment when returning
+    public static final String SAVED_STATE_MONTH_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_MONTH";
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +49,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      * @param savedState bundle of saved state
      */
     public FragmentCalendar(Bundle savedState) {
+        super();
         this.savedState = savedState;
     }
 
@@ -102,6 +106,11 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         // Set the calendar to default to today's date when first loaded
         Date currentDate = new ZeroTimeCalendar().getCurrentDate();
         updateCalendarTabOnDayPress(currentDate, root);
+
+        // Apply the values from the saved state to the page
+        if (savedState != null) {
+            applySavedState(savedState, root);
+        }
         return root;
     }
 
@@ -111,7 +120,10 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      */
     @Override
     public void fillBundleWithSavedState(Bundle bundle) {
-
+        View view = getView();
+        assert view != null;
+        SubscriptionCalendar subCalendar = view.findViewById(R.id.subscriptionCalendar);
+        bundle.putSerializable(SAVED_STATE_MONTH_MESSAGE, subCalendar.getDisplayedDate());
     }
 
     /**
@@ -122,7 +134,12 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      */
     @Override
     public void applySavedState(@NonNull final Bundle savedState, View root) {
-
+        if (savedState.containsKey(SAVED_STATE_MONTH_MESSAGE)) {
+            SubscriptionCalendar subCalendar = root.findViewById(R.id.subscriptionCalendar);
+            Date date = (Date)savedState.getSerializable(SAVED_STATE_MONTH_MESSAGE);
+            assert date != null;
+            subCalendar.setCalendarToMonth(date);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
