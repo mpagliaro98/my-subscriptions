@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
@@ -96,14 +97,14 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         subCalendar.setCalendarEventHandler(new CalendarEventHandler() {
             @Override
             public void onDayPress(Date date) {
-                updateSubList(root, date);
-                TextView dateText = root.findViewById(R.id.calendarDateTextView);
-                String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
-                        new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
-                        + ":";
-                dateText.setText(displayStr);
+                updateCalendarTabOnDayPress(date, root);
+
             }
         });
+
+        // Set the calendar to default to today's date when first loaded
+        Date currentDate = new ZeroTimeCalendar().getCurrentDate();
+        updateCalendarTabOnDayPress(currentDate, root);
         return root;
     }
 
@@ -180,5 +181,21 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         for (SubscriptionView subView : viewsToRemove) {
             linearLayout.removeView(subView);
         }
+    }
+
+    /**
+     * The full procedure the calendar tab does each time a date is pressed. First, the
+     * list of subscriptions due on the date pressed will be updated, then the text above
+     * that list will be changed to reflect the date selected.
+     * @param date the date selected on the calendar
+     * @param root the root view of this tab
+     */
+    private void updateCalendarTabOnDayPress(Date date, View root) {
+        updateSubList(root, date);
+        TextView dateText = root.findViewById(R.id.calendarDateTextView);
+        String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
+                new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
+                + ":";
+        dateText.setText(displayStr);
     }
 }
