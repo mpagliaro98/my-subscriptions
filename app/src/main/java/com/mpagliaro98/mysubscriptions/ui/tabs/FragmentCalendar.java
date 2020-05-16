@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,7 +20,6 @@ import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,7 +96,6 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @Override
             public void onDayPress(Date date) {
                 updateCalendarTabOnDayPress(date, root);
-
             }
         });
 
