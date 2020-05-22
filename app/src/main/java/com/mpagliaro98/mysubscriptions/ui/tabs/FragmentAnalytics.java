@@ -151,7 +151,15 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      * @return the total dollar amount of the most expensive yearly subscription as a double
      */
     private double calculateMostExpensiveCost(SharedViewModel model) {
-        return 0;
+        double costMostExpensive = 0;
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            int multiplier = 12 / sub.getRechargeFrequency();
+            double totalDueYearly = sub.getCost() * multiplier;
+            if (totalDueYearly > costMostExpensive) {
+                costMostExpensive = totalDueYearly;
+            }
+        }
+        return costMostExpensive;
     }
 
     /**
@@ -161,6 +169,16 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      * @return the name of the most expensive yearly subscription as a string
      */
     private String getMostExpensiveName(SharedViewModel model) {
-        return "";
+        double costMostExpensive = 0;
+        String nameMostExpensive = "";
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            int multiplier = 12 / sub.getRechargeFrequency();
+            double totalDueYearly = sub.getCost() * multiplier;
+            if (totalDueYearly > costMostExpensive) {
+                costMostExpensive = totalDueYearly;
+                nameMostExpensive = sub.getName();
+            }
+        }
+        return nameMostExpensive;
     }
 }
