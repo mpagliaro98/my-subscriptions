@@ -98,6 +98,15 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         double totalDueYearly = calculateTotalDueYearly(model);
         TextView textDueYearly = root.findViewById(R.id.analytics_data_yearly);
         textDueYearly.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueYearly));
+
+        // Find the most expensive yearly subscription
+        double costMostExpensive = calculateMostExpensiveCost(model);
+        String nameMostExpensive = getMostExpensiveName(model);
+        TextView textMostExpensive = root.findViewById(R.id.analytics_data_mostexpensive);
+        String displayStr = nameMostExpensive + ": " +
+                String.format(Locale.US, getString(R.string.cost_format), costMostExpensive) +
+                " " + getString(R.string.analytics_mostexpensive_per_year);
+        textMostExpensive.setText(displayStr);
     }
 
     /**
@@ -133,5 +142,25 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             totalDueYearly += sub.getCost() * multiplier;
         }
         return totalDueYearly;
+    }
+
+    /**
+     * Calculates the analytic for the most expensive subscription per year, and returns
+     * the highest amount per year a single subscription is worth.
+     * @param model the model containing all subscription data
+     * @return the total dollar amount of the most expensive yearly subscription as a double
+     */
+    private double calculateMostExpensiveCost(SharedViewModel model) {
+        return 0;
+    }
+
+    /**
+     * Calculates the most expensive subscription per year, and returns the name of that
+     * subscription.
+     * @param model the model containing all subscription data
+     * @return the name of the most expensive yearly subscription as a string
+     */
+    private String getMostExpensiveName(SharedViewModel model) {
+        return "";
     }
 }
