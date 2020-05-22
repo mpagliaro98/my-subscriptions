@@ -66,6 +66,9 @@
     <string name="home_snackbar_ioexception">Something went wrong accessing your saved subscriptions.</string>
     <string name="no_memory_exception">Your device does not have enough storage space available.</string>
 
+    <!-- Analytics tab strings -->
+    <string name="analytics_thismonth">Total due this month:</string>
+
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>
     <string name="notification_channel_description">Notifications related to when upcoming subscription payments will occur.</string>

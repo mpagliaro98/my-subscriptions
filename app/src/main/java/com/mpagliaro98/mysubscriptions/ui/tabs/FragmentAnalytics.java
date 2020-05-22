@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
+import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+
+import java.util.Locale;
 
 /**
  * A fragment containing the view for the analytics tab.
@@ -37,7 +40,6 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         MainActivity mainActivity = (MainActivity)getActivity();
         assert mainActivity != null;
         model = new ViewModelProvider(mainActivity).get(SharedViewModel.class);
-        model.setName("Analytics Tab");
     }
 
     /**
@@ -52,13 +54,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_analytics_tab, container, false);
-        final TextView textView = root.findViewById(R.id.section_label);
-        model.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        calculateAnalytics(root, model);
         return root;
     }
 
@@ -80,5 +76,38 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
     @Override
     public void applySavedState(@NonNull final Bundle savedState, View root) {
 
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Calculate the set of analytics that get displayed in the main layout on the
+     * analytics tab. This calculates each analytic, then adds it to its respective
+     * view.
+     * @param root the root view of this tab
+     * @param model the model containing all subscription data
+     */
+    private void calculateAnalytics(View root, SharedViewModel model) {
+        // calculate total due this month
+        double totalDueThisMonth = calculateTotalThisMonth(model);
+        // add it to the proper view
+        TextView textDueThisMonth = root.findViewById(R.id.analytics_data_thismonth);
+        String displayText = String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth);
+        textDueThisMonth.setText(displayText);
+    }
+
+    /**
+     * Calculates the analytic for total amount due in the current month.
+     * @param model the model containing all subscription data
+     * @return the total dollar amount due this month as a double
+     */
+    private double calculateTotalThisMonth(SharedViewModel model) {
+        double totalDueThisMonth = 0;
+        for (Subscription sub : model.getFullSubscriptionList()) {
+
+        }
+        return totalDueThisMonth;
     }
 }
