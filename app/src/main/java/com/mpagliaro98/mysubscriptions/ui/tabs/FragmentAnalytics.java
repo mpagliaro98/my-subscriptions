@@ -127,6 +127,11 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      * @return the total dollar amount due yearly as a double
      */
     private double calculateTotalDueYearly(SharedViewModel model) {
-        return 0;
+        double totalDueYearly = 0;
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            int multiplier = 12 / sub.getRechargeFrequency();
+            totalDueYearly += sub.getCost() * multiplier;
+        }
+        return totalDueYearly;
     }
 }
