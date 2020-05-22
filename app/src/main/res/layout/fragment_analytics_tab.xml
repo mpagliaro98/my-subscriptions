@@ -40,11 +40,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
                     android:text="@string/analytics_thismonth"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="@+id/analytics_data_thismonth"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/analytics_data_thismonth"
@@ -52,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:gravity="end"
@@ -59,7 +59,7 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_thismonth"
-                    app:layout_constraintTop_toTopOf="@+id/analytics_text_thismonth" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/horizontal1"
@@ -69,7 +69,7 @@
                     android:background="@color/colorLightGreyBG"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/analytics_text_thismonth" />
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_data_thismonth" />
 
                 <TextView
                     android:id="@+id/analytics_text_yearly"
@@ -77,12 +77,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
                     android:text="@string/analytics_yearly"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal1" />
+                    app:layout_constraintBottom_toBottomOf="@+id/analytics_data_yearly"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/analytics_data_yearly"
@@ -90,6 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:gravity="end"
@@ -97,7 +96,7 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_yearly"
-                    app:layout_constraintTop_toTopOf="@+id/analytics_text_yearly" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal1" />
 
                 <View
                     android:id="@+id/horizontal2"
@@ -107,7 +106,7 @@
                     android:background="@color/colorLightGreyBG"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/analytics_text_yearly" />
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_data_yearly" />
 
                 <TextView
                     android:id="@+id/analytics_text_mostexpensive"
@@ -115,13 +114,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
                     android:text="@string/analytics_mostexpensive"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal2" />
+                    app:layout_constraintBottom_toBottomOf="@+id/analytics_data_mostexpensive"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/analytics_data_mostexpensive"
@@ -129,14 +125,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="end"
                     android:textColor="@color/solid_black"
                     android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_mostexpensive"
-                    app:layout_constraintTop_toTopOf="@+id/analytics_text_mostexpensive" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
