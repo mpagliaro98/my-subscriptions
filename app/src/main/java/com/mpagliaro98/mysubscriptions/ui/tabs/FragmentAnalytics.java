@@ -93,6 +93,11 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         double totalDueThisMonth = calculateTotalThisMonth(model);
         TextView textDueThisMonth = root.findViewById(R.id.analytics_data_thismonth);
         textDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth));
+
+        // Calculate the total due yearly
+        double totalDueYearly = calculateTotalDueYearly(model);
+        TextView textDueYearly = root.findViewById(R.id.analytics_data_yearly);
+        textDueYearly.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueYearly));
     }
 
     /**
@@ -113,5 +118,15 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             }
         }
         return totalDueThisMonth;
+    }
+
+    /**
+     * Calculates the analytic for total amount due per year, which also finds the yearly
+     * total for subscriptions that aren't explicitly yearly.
+     * @param model the model containing all subscription data
+     * @return the total dollar amount due yearly as a double
+     */
+    private double calculateTotalDueYearly(SharedViewModel model) {
+        return 0;
     }
 }

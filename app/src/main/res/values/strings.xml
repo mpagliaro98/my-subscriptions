@@ -68,6 +68,7 @@
 
     <!-- Analytics tab strings -->
     <string name="analytics_thismonth">Total due this month:</string>
+    <string name="analytics_yearly">Total due yearly:</string>
 
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>
