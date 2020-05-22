@@ -61,6 +61,16 @@
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_thismonth"
                     app:layout_constraintTop_toTopOf="@+id/analytics_text_thismonth" />
 
+                <View
+                    android:id="@+id/horizontal1"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_text_thismonth" />
+
                 <TextView
                     android:id="@+id/analytics_text_yearly"
                     android:layout_width="0dp"
@@ -73,7 +83,7 @@
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/analytics_text_thismonth" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal1" />
 
                 <TextView
                     android:id="@+id/analytics_data_yearly"
