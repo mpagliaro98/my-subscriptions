@@ -1,10 +1,8 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +11,10 @@ import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
+import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
-
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -90,12 +89,10 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      * @param model the model containing all subscription data
      */
     private void calculateAnalytics(View root, SharedViewModel model) {
-        // calculate total due this month
+        // Calculate the total due this month
         double totalDueThisMonth = calculateTotalThisMonth(model);
-        // add it to the proper view
         TextView textDueThisMonth = root.findViewById(R.id.analytics_data_thismonth);
-        String displayText = String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth);
-        textDueThisMonth.setText(displayText);
+        textDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth));
     }
 
     /**
@@ -105,8 +102,15 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      */
     private double calculateTotalThisMonth(SharedViewModel model) {
         double totalDueThisMonth = 0;
+        ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
         for (Subscription sub : model.getFullSubscriptionList()) {
-
+            Date nextPaymentDate = sub.getNextPaymentDate();
+            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            calendarSub.setTimeToDate(nextPaymentDate);
+            if (calendarToday.getMonth() == calendarSub.getMonth() &&
+                    calendarToday.getYear() == calendarSub.getYear()) {
+                totalDueThisMonth += sub.getCost();
+            }
         }
         return totalDueThisMonth;
     }
