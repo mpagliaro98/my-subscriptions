@@ -1,5 +1,7 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -123,7 +125,22 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         } else if (mostCommonFrequency == 12) {
             textFrequency.setText(R.string.analytics_recharge_year);
         } else {
-            textFrequency.setText(R.string.NA);
+            // If there isn't one most common frequency, remove this portion from the view
+            ((ViewGroup)textFrequency.getParent()).removeView(textFrequency);
+            TextView textFrequencyStatic = root.findViewById(R.id.analytics_text_frequentrecharge);
+            ((ViewGroup)textFrequencyStatic.getParent()).removeView(textFrequencyStatic);
+            View horizontal = root.findViewById(R.id.horizontal3);
+            ((ViewGroup)horizontal.getParent()).removeView(horizontal);
+            // Re-wire the constraints in the absence of this section
+            ConstraintLayout parentLayout = root.findViewById(R.id.analytics_constr_layout);
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(parentLayout);
+            float density = getResources().getDisplayMetrics().density;
+            int marginPx = Math.round((float) 16 * density);
+            constraintSet.connect(R.id.analytics_data_mostexpensive, ConstraintSet.BOTTOM,
+                    R.id.analytics_constr_layout, ConstraintSet.BOTTOM, marginPx);
+            System.out.println(constraintSet.toString());
+            constraintSet.applyTo(parentLayout);
         }
     }
 }
