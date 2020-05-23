@@ -12,6 +12,7 @@
     <string name="yes">Yes</string>
     <string name="ok">OK</string>
     <string name="retry">RETRY</string>
+    <string name="NA">N/A</string>
     <string name="unimplemented">That feature is not yet implemented.</string>
 
     <!-- Create page strings -->
@@ -71,6 +72,12 @@
     <string name="analytics_yearly">Total due yearly:</string>
     <string name="analytics_mostexpensive">Most expensive yearly:</string>
     <string name="analytics_mostexpensive_per_year">per year</string>
+    <string name="analytics_frequentrecharge">Most subscriptions are charged</string>
+    <string name="analytics_recharge_onemonth">Every month</string>
+    <string name="analytics_recharge_twomonths">Every two months</string>
+    <string name="analytics_recharge_threemonths">Every three months</string>
+    <string name="analytics_recharge_sixmonths">Twice a year</string>
+    <string name="analytics_recharge_year">Once a year</string>
 
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>

@@ -108,5 +108,22 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
                 String.format(Locale.US, getString(R.string.cost_format), costMostExpensive) +
                 " " + getString(R.string.analytics_mostexpensive_per_year);
         textMostExpensive.setText(displayStr);
+
+        // Find the most common recharge frequency
+        int mostCommonFrequency = analyticsManager.calculateMostCommonRecharge();
+        TextView textFrequency = root.findViewById(R.id.analytics_data_frequentrecharge);
+        if (mostCommonFrequency == 1) {
+            textFrequency.setText(R.string.analytics_recharge_onemonth);
+        } else if (mostCommonFrequency == 2) {
+            textFrequency.setText(R.string.analytics_recharge_twomonths);
+        } else if (mostCommonFrequency == 3) {
+            textFrequency.setText(R.string.analytics_recharge_threemonths);
+        } else if (mostCommonFrequency == 6) {
+            textFrequency.setText(R.string.analytics_recharge_sixmonths);
+        } else if (mostCommonFrequency == 12) {
+            textFrequency.setText(R.string.analytics_recharge_year);
+        } else {
+            textFrequency.setText(R.string.NA);
+        }
     }
 }

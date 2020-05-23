@@ -1,6 +1,8 @@
 package com.mpagliaro98.mysubscriptions.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The class that computes analytics given a model full of subscriptions.
@@ -90,5 +92,46 @@ public class AnalyticsManager {
             }
         }
         return nameMostExpensive;
+    }
+
+    /**
+     * Calculates the most common recharge frequency amongst all the subscriptions, and
+     * returns the number of months that is most commonly found.
+     * @return the number of months most commonly used as a recharge rate, or 0 if there are
+     *         no subscriptions or no one rate is the maximum
+     */
+    public int calculateMostCommonRecharge() {
+        // Record each frequency that exists and how many times it appears
+        HashMap<Integer, Integer> frequencyMap = new HashMap<>();
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            if (frequencyMap.containsKey(sub.getRechargeFrequency())) {
+                frequencyMap.put(sub.getRechargeFrequency(), frequencyMap.get(sub.getRechargeFrequency()) + 1);
+            } else {
+                frequencyMap.put(sub.getRechargeFrequency(), 1);
+            }
+        }
+
+        // Initialize values needed when analyzing the data
+        boolean tieExists = false;
+        int highestFrequency = 0;
+        int highestFrequencyNumber = 0;
+
+        // Check each number of times a frequency appears and find the maximum
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            if (entry.getValue() > highestFrequencyNumber) {
+                highestFrequencyNumber = entry.getValue();
+                highestFrequency = entry.getKey();
+                tieExists = false;
+            } else if (entry.getValue() == highestFrequencyNumber) {
+                tieExists = true;
+            }
+        }
+
+        // Return zero if no frequencies or a tie exists, and return the maximum otherwise
+        if (frequencyMap.isEmpty() || tieExists) {
+            return 0;
+        } else {
+            return highestFrequency;
+        }
     }
 }
