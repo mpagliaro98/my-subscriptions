@@ -91,18 +91,18 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      */
     private void calculateAnalytics(View root, AnalyticsManager analyticsManager) {
         // Calculate the total due this month
-        double totalDueThisMonth = analyticsManager.calculateTotalThisMonth();
+        double totalDueThisMonth = analyticsManager.getTotalDueThisMonth();
         TextView textDueThisMonth = root.findViewById(R.id.analytics_data_thismonth);
         textDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth));
 
         // Calculate the total due yearly
-        double totalDueYearly = analyticsManager.calculateTotalDueYearly();
+        double totalDueYearly = analyticsManager.getTotalDueYearly();
         TextView textDueYearly = root.findViewById(R.id.analytics_data_yearly);
         textDueYearly.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueYearly));
 
         // Find the most expensive yearly subscription
-        double costMostExpensive = analyticsManager.calculateMostExpensiveCost();
-        String nameMostExpensive = analyticsManager.getMostExpensiveName();
+        double costMostExpensive = analyticsManager.getCostMostExpensive();
+        String nameMostExpensive = analyticsManager.getNameMostExpensive();
         TextView textMostExpensive = root.findViewById(R.id.analytics_data_mostexpensive);
         String displayStr = nameMostExpensive + ": " +
                 String.format(Locale.US, getString(R.string.cost_format), costMostExpensive) +
@@ -110,7 +110,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         textMostExpensive.setText(displayStr);
 
         // Find the most common recharge frequency
-        int mostCommonFrequency = analyticsManager.calculateMostCommonRecharge();
+        int mostCommonFrequency = analyticsManager.getMostCommonRecharge();
         TextView textFrequency = root.findViewById(R.id.analytics_data_frequentrecharge);
         if (mostCommonFrequency == 1) {
             textFrequency.setText(R.string.analytics_recharge_onemonth);

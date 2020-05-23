@@ -12,6 +12,13 @@ public class AnalyticsManager {
     // The model that contains all subscription data
     private SharedViewModel model;
 
+    // The analytics values we want to keep track of
+    private double totalDueThisMonth;
+    private double totalDueYearly;
+    private double costMostExpensive;
+    private String nameMostExpensive;
+    private int mostCommonRecharge;
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -23,13 +30,77 @@ public class AnalyticsManager {
      */
     public AnalyticsManager(SharedViewModel model) {
         this.model = model;
+        calculateAnalytics();
+    }
+
+    /**
+     * Run the suite of analytics again and update the internal values.
+     */
+    public void regenerateAnalytics() {
+        calculateAnalytics();
+    }
+
+    /**
+     * Get the total dollar amount due in the current month.
+     * @return the total due this month as a double
+     */
+    public double getTotalDueThisMonth() {
+        return totalDueThisMonth;
+    }
+
+    /**
+     * Get the total dollar amount of all subscriptions due during the upcoming year.
+     * @return the total yearly due as a double
+     */
+    public double getTotalDueYearly() {
+        return totalDueYearly;
+    }
+
+    /**
+     * Get the cost of the most expensive yearly subscription.
+     * @return the most expensive yearly cost as a double
+     */
+    public double getCostMostExpensive() {
+        return costMostExpensive;
+    }
+
+    /**
+     * Get the name of the most expensive yearly subscription.
+     * @return the name of the most expensive yearly subscription as a string
+     */
+    public String getNameMostExpensive() {
+        return nameMostExpensive;
+    }
+
+    /**
+     * Get the recharge frequency that is used most commonly, which will be the number
+     * of months between charges, or 0 if there are no subscriptions or no one frequency
+     * is the most common
+     * @return the most common number of months between charges as an integer
+     */
+    public int getMostCommonRecharge() {
+        return mostCommonRecharge;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Run the whole suite of analytics, where each method called will save a computed value
+     * to a field of this class.
+     */
+    private void calculateAnalytics() {
+        calculateTotalThisMonth();
+        calculateTotalDueYearly();
+        calculateMostExpensive();
+        calculateMostCommonRecharge();
     }
 
     /**
      * Calculates the analytic for total amount due in the current month.
-     * @return the total dollar amount due this month as a double
      */
-    public double calculateTotalThisMonth() {
+    private void calculateTotalThisMonth() {
         double totalDueThisMonth = 0;
         ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
         for (Subscription sub : model.getFullSubscriptionList()) {
@@ -41,46 +112,27 @@ public class AnalyticsManager {
                 totalDueThisMonth += sub.getCost();
             }
         }
-        return totalDueThisMonth;
+        this.totalDueThisMonth = totalDueThisMonth;
     }
 
     /**
      * Calculates the analytic for total amount due per year, which also finds the yearly
      * total for subscriptions that aren't explicitly yearly.
-     * @return the total dollar amount due yearly as a double
      */
-    public double calculateTotalDueYearly() {
+    private void calculateTotalDueYearly() {
         double totalDueYearly = 0;
         for (Subscription sub : model.getFullSubscriptionList()) {
             int multiplier = 12 / sub.getRechargeFrequency();
             totalDueYearly += sub.getCost() * multiplier;
         }
-        return totalDueYearly;
+        this.totalDueYearly = totalDueYearly;
     }
 
     /**
-     * Calculates the analytic for the most expensive subscription per year, and returns
-     * the highest amount per year a single subscription is worth.
-     * @return the total dollar amount of the most expensive yearly subscription as a double
+     * Calculates the most expensive subscription per year, and saves the name of that
+     * subscription along with the yearly cost of it.
      */
-    public double calculateMostExpensiveCost() {
-        double costMostExpensive = 0;
-        for (Subscription sub : model.getFullSubscriptionList()) {
-            int multiplier = 12 / sub.getRechargeFrequency();
-            double totalDueYearly = sub.getCost() * multiplier;
-            if (totalDueYearly > costMostExpensive) {
-                costMostExpensive = totalDueYearly;
-            }
-        }
-        return costMostExpensive;
-    }
-
-    /**
-     * Calculates the most expensive subscription per year, and returns the name of that
-     * subscription.
-     * @return the name of the most expensive yearly subscription as a string
-     */
-    public String getMostExpensiveName() {
+    private void calculateMostExpensive() {
         double costMostExpensive = 0;
         String nameMostExpensive = "";
         for (Subscription sub : model.getFullSubscriptionList()) {
@@ -91,16 +143,16 @@ public class AnalyticsManager {
                 nameMostExpensive = sub.getName();
             }
         }
-        return nameMostExpensive;
+        this.costMostExpensive = costMostExpensive;
+        this.nameMostExpensive = nameMostExpensive;
     }
 
     /**
      * Calculates the most common recharge frequency amongst all the subscriptions, and
-     * returns the number of months that is most commonly found.
-     * @return the number of months most commonly used as a recharge rate, or 0 if there are
-     *         no subscriptions or no one rate is the maximum
+     * saves the number of months that is most commonly found. It will be 0 if there are
+     * no subscriptions or no one rate is the maximum.
      */
-    public int calculateMostCommonRecharge() {
+    private void calculateMostCommonRecharge() {
         // Record each frequency that exists and how many times it appears
         HashMap<Integer, Integer> frequencyMap = new HashMap<>();
         for (Subscription sub : model.getFullSubscriptionList()) {
@@ -127,11 +179,11 @@ public class AnalyticsManager {
             }
         }
 
-        // Return zero if no frequencies or a tie exists, and return the maximum otherwise
+        // Save zero if no frequencies or a tie exists, and save the maximum otherwise
         if (frequencyMap.isEmpty() || tieExists) {
-            return 0;
+            this.mostCommonRecharge = 0;
         } else {
-            return highestFrequency;
+            this.mostCommonRecharge = highestFrequency;
         }
     }
 }
