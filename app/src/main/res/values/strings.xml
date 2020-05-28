@@ -78,6 +78,11 @@
     <string name="analytics_recharge_threemonths">Every three months</string>
     <string name="analytics_recharge_sixmonths">Twice a year</string>
     <string name="analytics_recharge_year">Once a year</string>
+    <string name="array_breakdown_one_month">This Month</string>
+    <string name="array_breakdown_two_months">Next Two Months</string>
+    <string name="array_breakdown_three_months">Next Three Months</string>
+    <string name="array_breakdown_six_months">Next Six Months</string>
+    <string name="array_breakdown_one_year">Next Twelve Months</string>
 
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>
@@ -117,5 +122,12 @@
         <item>@string/array_notif_two_days</item>
         <item>@string/array_notif_three_days</item>
         <item>@string/array_notif_week</item>
+    </string-array>
+    <string-array name="array_breakdown_dropdown">
+        <item>@string/array_breakdown_one_month</item>
+        <item>@string/array_breakdown_two_months</item>
+        <item>@string/array_breakdown_three_months</item>
+        <item>@string/array_breakdown_six_months</item>
+        <item>@string/array_breakdown_one_year</item>
     </string-array>
 </resources>
