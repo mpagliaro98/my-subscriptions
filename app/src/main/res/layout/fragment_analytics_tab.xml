@@ -134,6 +134,43 @@
                     app:layout_constraintTop_toBottomOf="@+id/analytics_data_restofmonth" />
 
                 <TextView
+                    android:id="@+id/analytics_text_nextmonth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="@string/analytics_nextmonth"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/analytics_data_nextmonth"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/analytics_data_nextmonth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:gravity="end"
+                    android:textColor="@color/solid_black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/analytics_text_nextmonth"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal2" />
+
+                <View
+                    android:id="@+id/horizontal3"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_data_nextmonth" />
+
+                <TextView
                     android:id="@+id/analytics_text_yearly"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -158,10 +195,10 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_yearly"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal2" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal3" />
 
                 <View
-                    android:id="@+id/horizontal3"
+                    android:id="@+id/horizontal4"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -196,10 +233,10 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_mostexpensive"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal3" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal4" />
 
                 <View
-                    android:id="@+id/horizontal4"
+                    android:id="@+id/horizontal5"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -235,7 +272,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/analytics_text_frequentrecharge"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal4" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal5" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

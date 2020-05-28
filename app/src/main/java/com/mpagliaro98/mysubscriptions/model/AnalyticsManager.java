@@ -15,6 +15,7 @@ public class AnalyticsManager {
     // The analytics values we want to keep track of
     private double totalDueThisMonth;
     private double restDueThisMonth;
+    private double totalDueNextMonth;
     private double totalDueYearly;
     private double costMostExpensive;
     private String nameMostExpensive;
@@ -102,6 +103,14 @@ public class AnalyticsManager {
     }
 
     /**
+     * Get the total dollar amount due in the next month.
+     * @return the total due next month as a double
+     */
+    public double getTotalDueNextMonth() {
+        return totalDueNextMonth;
+    }
+
+    /**
      * Get the total dollar amount of all subscriptions due during the upcoming year.
      * @return the total yearly due as a double
      */
@@ -146,6 +155,7 @@ public class AnalyticsManager {
     private void calculateAnalytics() {
         calculateTotalThisMonth();
         calculateRestDueThisMonth();
+        calculateTotalDueNextMonth();
         calculateTotalDueYearly();
         calculateMostExpensive();
         calculateMostCommonRecharge();
@@ -197,6 +207,29 @@ public class AnalyticsManager {
             }
         }
         this.restDueThisMonth = restDueThisMonth;
+    }
+
+    /**
+     * Calculates the analytic for the total amount due next month.
+     */
+    private void calculateTotalDueNextMonth() {
+        double totalDueNextMonth = 0;
+        ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
+        ZeroTimeCalendar calendarNextMonth = new ZeroTimeCalendar();
+        calendarNextMonth.addMonths(1);
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            Date nextPaymentDate = sub.getNextPaymentDate();
+            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            calendarSub.setTimeToDate(nextPaymentDate);
+            if ((calendarNextMonth.getMonth() == calendarSub.getMonth() &&
+                  calendarNextMonth.getYear() == calendarSub.getYear()) ||
+                    (calendarToday.getMonth() == calendarSub.getMonth() &&
+                      calendarToday.getYear() == calendarSub.getYear() &&
+                   sub.getRechargeFrequency() == 1)) {
+                totalDueNextMonth += sub.getCost();
+            }
+        }
+        this.totalDueNextMonth = totalDueNextMonth;
     }
 
     /**
