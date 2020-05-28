@@ -12,11 +12,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.AnalyticsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -57,6 +66,16 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         View root = inflater.inflate(R.layout.fragment_analytics_tab, container, false);
         AnalyticsManager analyticsManager = new AnalyticsManager(model);
         calculateAnalytics(root, analyticsManager);
+
+        PieChart pieChart = root.findViewById(R.id.analytics_pie_chart);
+        pieChart.setUsePercentValues(true);
+        List<PieEntry> value = new ArrayList<>();
+        value.add(new PieEntry(40f, "1"));
+        value.add(new PieEntry(60f, "2"));
+        PieDataSet pieDataSet = new PieDataSet(value, "Data set");
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
         Spinner breakdownDropdown = root.findViewById(R.id.analytics_breakdown_dropdown);
         addBreakdownDropdownListener(breakdownDropdown, root, analyticsManager);
