@@ -9,15 +9,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.AnalyticsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
-import com.mpagliaro98.mysubscriptions.model.Subscription;
-import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -56,7 +55,11 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_analytics_tab, container, false);
-        calculateAnalytics(root, new AnalyticsManager(model));
+        AnalyticsManager analyticsManager = new AnalyticsManager(model);
+        calculateAnalytics(root, analyticsManager);
+
+        Spinner breakdownDropdown = root.findViewById(R.id.analytics_breakdown_dropdown);
+        addBreakdownDropdownListener(breakdownDropdown, root, analyticsManager);
         return root;
     }
 
@@ -142,5 +145,36 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             System.out.println(constraintSet.toString());
             constraintSet.applyTo(parentLayout);
         }
+    }
+
+    /**
+     * Adds a listener to the category breakdown dropdown list, which each time it's updated,
+     * will re-calculate how much is owed in the selected time period for each category.
+     * @param breakdownDropdown the dropdown list
+     * @param root the root view of this tab
+     * @param analyticsManager the analytics manager
+     */
+    private void addBreakdownDropdownListener(Spinner breakdownDropdown, final View root,
+                                              final AnalyticsManager analyticsManager) {
+        breakdownDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sortOption = (String)parent.getSelectedItem();
+                if (sortOption.equals(getString(R.string.array_breakdown_one_month))) {
+                    analyticsManager.createMonthlyBreakdown(1);
+                } else if (sortOption.equals(getString(R.string.array_breakdown_two_months))) {
+                    analyticsManager.createMonthlyBreakdown(2);
+                } else if (sortOption.equals(getString(R.string.array_breakdown_three_months))) {
+                    analyticsManager.createMonthlyBreakdown(3);
+                } else if (sortOption.equals(getString(R.string.array_breakdown_six_months))) {
+                    analyticsManager.createMonthlyBreakdown(6);
+                } else if (sortOption.equals(getString(R.string.array_breakdown_one_year))) {
+                    analyticsManager.createMonthlyBreakdown(12);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 }

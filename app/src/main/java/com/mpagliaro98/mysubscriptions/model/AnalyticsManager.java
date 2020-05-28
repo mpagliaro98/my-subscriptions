@@ -18,6 +18,7 @@ public class AnalyticsManager {
     private double costMostExpensive;
     private String nameMostExpensive;
     private int mostCommonRecharge;
+    private HashMap<Category, Double> breakdown;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,49 @@ public class AnalyticsManager {
      */
     public void regenerateAnalytics() {
         calculateAnalytics();
+    }
+
+    /**
+     * Create the category breakdown HashMap, and fill it with the values it needs pertaining
+     * to the length of the period passed in. This will calculate how much is owed for each
+     * category over a period of several months, starting from the current month.
+     * @param months the amount of months (starting with this month) to look at into the future
+     */
+    public void createMonthlyBreakdown(int months) {
+        this.breakdown = new HashMap<>();
+        ZeroTimeCalendar calendarToday;
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            calendarToday = new ZeroTimeCalendar();
+            Date subStartDate = sub.getStartDate();
+            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            calendarSub.setTimeToDate(subStartDate);
+            calendarToday.setTime(calendarToday.getYear(), calendarToday.getMonth(), 1);
+            calendarSub.setTime(calendarSub.getYear(), calendarSub.getMonth(), 1);
+
+            // Calculate the first potential payment date within the given period
+            while (calendarSub.getCurrentDate().before(calendarToday.getCurrentDate())) {
+                calendarSub.addMonths(sub.getRechargeFrequency());
+            }
+
+            // Set this date to the end date of the period
+            calendarToday.addMonths(months);
+
+            // Count how many times the subscription gets charged in this period
+            double subPeriodCost = 0.0;
+            while (calendarSub.getCurrentDate().before(calendarToday.getCurrentDate())) {
+                calendarSub.addMonths(sub.getRechargeFrequency());
+                subPeriodCost += sub.getCost();
+            }
+
+            // Put that calculated cost into the map
+            if (subPeriodCost > 0) {
+                if (breakdown.containsKey(sub.getCategory())) {
+                    breakdown.put(sub.getCategory(), breakdown.get(sub.getCategory()) + subPeriodCost);
+                } else {
+                    breakdown.put(sub.getCategory(), subPeriodCost);
+                }
+            }
+        }
     }
 
     /**

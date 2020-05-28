@@ -71,4 +71,14 @@ public class Category implements Serializable {
             return false;
         }
     }
+
+    /**
+     * Return the hashcode of this category to use in lookups, which is just the
+     * integer value of its color.
+     * @return the hashcode as an integer
+     */
+    @Override
+    public int hashCode() {
+        return this.color;
+    }
 }
