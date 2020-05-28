@@ -148,11 +148,20 @@ public class AnalyticsManager {
         double totalDueThisMonth = 0;
         ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
         for (Subscription sub : model.getFullSubscriptionList()) {
-            Date nextPaymentDate = sub.getNextPaymentDate();
+            Date subStartDate = sub.getStartDate();
             ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
-            calendarSub.setTimeToDate(nextPaymentDate);
-            if (calendarToday.getMonth() == calendarSub.getMonth() &&
-                    calendarToday.getYear() == calendarSub.getYear()) {
+            calendarSub.setTimeToDate(subStartDate);
+            calendarToday.setTime(calendarToday.getYear(), calendarToday.getMonth(), 1);
+            calendarSub.setTime(calendarSub.getYear(), calendarSub.getMonth(), 1);
+
+            // Calculate the first potential payment date on or after this month
+            while (calendarSub.getCurrentDate().before(calendarToday.getCurrentDate())) {
+                calendarSub.addMonths(sub.getRechargeFrequency());
+            }
+
+            // If this sub had or will have a payment due this month, add its cost to the total
+            if (calendarSub.getMonth() == calendarToday.getMonth() &&
+                    calendarSub.getYear() == calendarToday.getYear()) {
                 totalDueThisMonth += sub.getCost();
             }
         }
