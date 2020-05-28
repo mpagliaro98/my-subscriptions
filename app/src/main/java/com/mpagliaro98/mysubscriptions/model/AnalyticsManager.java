@@ -14,6 +14,7 @@ public class AnalyticsManager {
 
     // The analytics values we want to keep track of
     private double totalDueThisMonth;
+    private double restDueThisMonth;
     private double totalDueYearly;
     private double costMostExpensive;
     private String nameMostExpensive;
@@ -93,6 +94,14 @@ public class AnalyticsManager {
     }
 
     /**
+     * Get the total dollar amount due for the rest of the current month
+     * @return the total due in the rest of the month as a double
+     */
+    public double getRestDueThisMonth() {
+        return restDueThisMonth;
+    }
+
+    /**
      * Get the total dollar amount of all subscriptions due during the upcoming year.
      * @return the total yearly due as a double
      */
@@ -136,6 +145,7 @@ public class AnalyticsManager {
      */
     private void calculateAnalytics() {
         calculateTotalThisMonth();
+        calculateRestDueThisMonth();
         calculateTotalDueYearly();
         calculateMostExpensive();
         calculateMostCommonRecharge();
@@ -166,6 +176,27 @@ public class AnalyticsManager {
             }
         }
         this.totalDueThisMonth = totalDueThisMonth;
+    }
+
+    /**
+     * Calculates the analytic for the total amount due during the rest of the current month.
+     * If subscriptions were due earlier this month, but their date already passed, they are
+     * ignored here, this just counts ones with next payment dates still during the current
+     * month.
+     */
+    private void calculateRestDueThisMonth() {
+        double restDueThisMonth = 0;
+        ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
+        for (Subscription sub : model.getFullSubscriptionList()) {
+            Date nextPaymentDate = sub.getNextPaymentDate();
+            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            calendarSub.setTimeToDate(nextPaymentDate);
+            if (calendarToday.getMonth() == calendarSub.getMonth() &&
+                    calendarToday.getYear() == calendarSub.getYear()) {
+                restDueThisMonth += sub.getCost();
+            }
+        }
+        this.restDueThisMonth = restDueThisMonth;
     }
 
     /**

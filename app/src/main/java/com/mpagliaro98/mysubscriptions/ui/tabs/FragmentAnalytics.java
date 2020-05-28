@@ -119,6 +119,11 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         TextView textDueThisMonth = root.findViewById(R.id.analytics_data_thismonth);
         textDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth));
 
+        // Calculate the rest due this month
+        double restDueThisMonth = analyticsManager.getRestDueThisMonth();
+        TextView textRestDueThisMonth = root.findViewById(R.id.analytics_data_restofmonth);
+        textRestDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), restDueThisMonth));
+
         // Calculate the total due yearly
         double totalDueYearly = analyticsManager.getTotalDueYearly();
         TextView textDueYearly = root.findViewById(R.id.analytics_data_yearly);
@@ -151,7 +156,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             ((ViewGroup)textFrequency.getParent()).removeView(textFrequency);
             TextView textFrequencyStatic = root.findViewById(R.id.analytics_text_frequentrecharge);
             ((ViewGroup)textFrequencyStatic.getParent()).removeView(textFrequencyStatic);
-            View horizontal = root.findViewById(R.id.horizontal3);
+            View horizontal = root.findViewById(R.id.horizontal4);
             ((ViewGroup)horizontal.getParent()).removeView(horizontal);
             // Re-wire the constraints in the absence of this section
             ConstraintLayout parentLayout = root.findViewById(R.id.analytics_constr_layout);
