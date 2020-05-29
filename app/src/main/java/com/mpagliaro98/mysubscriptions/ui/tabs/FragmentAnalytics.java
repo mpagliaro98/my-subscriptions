@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -208,6 +209,8 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         PieChart pieChart = root.findViewById(R.id.analytics_pie_chart);
         pieChart.clear();
         pieChart.getDescription().setEnabled(false);
+        pieChart.setRotationEnabled(false);
+        pieChart.setHoleColor(getResources().getColor(R.color.colorLightGreyBG));
         pieChart.setEntryLabelColor(R.color.solid_black);
         List<PieEntry> chartValues = new ArrayList<>();
         List<Integer> chartColors = new ArrayList<>();
@@ -218,9 +221,15 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             chartColors.add(getResources().getColor(entry.getKey().getColor()));
         }
 
-        // Set all the chart data
-        PieDataSet pieDataSet = new PieDataSet(chartValues, "Categories");
+        // Set all the chart data and legend properties
+        PieDataSet pieDataSet = new PieDataSet(chartValues, getString(R.string.analytics_legend_title));
         pieDataSet.setColors(chartColors);
+        Legend legend = pieChart.getLegend();
+        legend.setWordWrapEnabled(true);
+        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
+
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
     }

@@ -80,6 +80,7 @@
     <string name="analytics_recharge_threemonths">Every three months</string>
     <string name="analytics_recharge_sixmonths">Twice a year</string>
     <string name="analytics_recharge_year">Once a year</string>
+    <string name="analytics_legend_title">Categories</string>
     <string name="array_breakdown_one_month">This Month</string>
     <string name="array_breakdown_two_months">Next Two Months</string>
     <string name="array_breakdown_three_months">Next Three Months</string>
