@@ -1,7 +1,11 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +38,7 @@ public class AnalyticsManager {
     public AnalyticsManager(SharedViewModel model) {
         this.model = model;
         calculateAnalytics();
+        createMonthlyBreakdown(1);
     }
 
     /**
@@ -142,6 +147,27 @@ public class AnalyticsManager {
      */
     public int getMostCommonRecharge() {
         return mostCommonRecharge;
+    }
+
+    /**
+     * After a category breakdown has been generated, return a list of every value in the
+     * breakdown as key-value pairs, with the key being the Category object and the value being
+     * the total dollar amount of that category as a double. The list will be sorted with the
+     * highest amount being first.
+     * @return a sorted list of key-value pairs of categories and doubles
+     */
+    public List<Map.Entry<Category, Double>> getBreakdownList() {
+        List<Map.Entry<Category, Double>> breakdownList = new ArrayList<>(breakdown.entrySet());
+        Collections.sort(breakdownList, new Comparator<Map.Entry<Category, Double>>() {
+            @Override
+            public int compare(Map.Entry<Category, Double> o1, Map.Entry<Category, Double> o2) {
+                if (o1.getValue().equals(o2.getValue()))
+                    return o1.getKey().getName().compareToIgnoreCase(o2.getKey().getName());
+                else
+                    return o1.getValue() > o2.getValue() ? -1 : 1;
+            }
+        });
+        return breakdownList;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
