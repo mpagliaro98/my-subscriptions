@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.PieChart;
@@ -35,10 +36,29 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
 
     // The model shared by the three main tabs
     private SharedViewModel model;
+    // Any saved state from previously in the application to apply when loading the view
+    private Bundle savedState;
+
+    // Keys for the saved state of the analytics fragment when returning
+    public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.A_SAVED_SCROLL";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Create this fragment object and set its saved state bundle to be used later.
+     * @param savedState bundle of saved state
+     */
+    public FragmentAnalytics(Bundle savedState) {
+        super();
+        this.savedState = savedState;
+    }
+
+    /**
+     * Default empty constructor for this fragment.
+     */
+    public FragmentAnalytics() {}
 
     /**
      * Initializes the model for the analytics tab.
@@ -70,6 +90,11 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         Spinner breakdownDropdown = root.findViewById(R.id.analytics_breakdown_dropdown);
         addBreakdownDropdownListener(breakdownDropdown, root, analyticsManager);
         updatePieChart(root, analyticsManager);
+
+        // Apply the values from the saved state to the page
+        if (savedState != null) {
+            applySavedState(savedState, root);
+        }
         return root;
     }
 
@@ -79,7 +104,10 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      */
     @Override
     public void fillBundleWithSavedState(Bundle bundle) {
-
+        View view = getView();
+        assert view != null;
+        ScrollView scrollView = view.findViewById(R.id.analytics_scroll_view);
+        bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
     }
 
     /**
@@ -90,7 +118,15 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      */
     @Override
     public void applySavedState(@NonNull final Bundle savedState, View root) {
-
+        if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
+            final ScrollView scrollView = root.findViewById(R.id.analytics_scroll_view);
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.scrollTo(0, savedState.getInt(SAVED_STATE_SCROLL_MESSAGE));
+                }
+            });
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
