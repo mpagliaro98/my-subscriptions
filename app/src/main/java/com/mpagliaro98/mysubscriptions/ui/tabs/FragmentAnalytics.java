@@ -41,6 +41,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
 
     // Keys for the saved state of the analytics fragment when returning
     public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.A_SAVED_SCROLL";
+    public static final String SAVED_STATE_DROPDOWN_MESSAGE = "com.mpagliaro98.mysubscriptions.A_SAVED_DROPDOWN";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -106,6 +107,8 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
     public void fillBundleWithSavedState(Bundle bundle) {
         View view = getView();
         assert view != null;
+        Spinner breakdownDropdown = view.findViewById(R.id.analytics_breakdown_dropdown);
+        bundle.putInt(SAVED_STATE_DROPDOWN_MESSAGE, breakdownDropdown.getSelectedItemPosition());
         ScrollView scrollView = view.findViewById(R.id.analytics_scroll_view);
         bundle.putInt(SAVED_STATE_SCROLL_MESSAGE, scrollView.getScrollY());
     }
@@ -118,6 +121,10 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      */
     @Override
     public void applySavedState(@NonNull final Bundle savedState, View root) {
+        if (savedState.containsKey(SAVED_STATE_DROPDOWN_MESSAGE)) {
+            Spinner breakdownDropdown = root.findViewById(R.id.analytics_breakdown_dropdown);
+            breakdownDropdown.setSelection(savedState.getInt(SAVED_STATE_DROPDOWN_MESSAGE));
+        }
         if (savedState.containsKey(SAVED_STATE_SCROLL_MESSAGE)) {
             final ScrollView scrollView = root.findViewById(R.id.analytics_scroll_view);
             scrollView.post(new Runnable() {
