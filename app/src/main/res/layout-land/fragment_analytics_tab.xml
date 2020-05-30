@@ -6,44 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ui.tabs.FragmentHome">
 
+    <Spinner
+        android:id="@+id/analytics_breakdown_dropdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/array_breakdown_dropdown"
+        android:gravity="end"
+        android:textAlignment="textEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/analytics_scroll_view"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/analytics_pie_chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/analytics_scroll_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/analytics_breakdown_dropdown" />
+
     <ScrollView
         android:id="@+id/analytics_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/analytics_pie_chart"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <Spinner
-                android:id="@+id/analytics_breakdown_dropdown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:entries="@array/array_breakdown_dropdown"
-                android:gravity="end"
-                android:textAlignment="textEnd"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/analytics_pie_chart"
-                android:layout_width="0dp"
-                android:layout_height="300dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/analytics_breakdown_dropdown" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/analytics_constr_layout"
@@ -58,7 +60,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/analytics_space"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/analytics_pie_chart">
+                app:layout_constraintTop_toBottomOf="parent">
 
                 <TextView
                     android:id="@+id/analytics_text_thismonth"
