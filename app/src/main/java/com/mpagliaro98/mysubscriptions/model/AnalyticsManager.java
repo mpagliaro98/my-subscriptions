@@ -16,6 +16,9 @@ public class AnalyticsManager {
     // The model that contains all subscription data
     private SharedViewModel model;
 
+    // A base calendar that each method will clone from to get the time
+    private ZeroTimeCalendar baseZTC;
+
     // The analytics values we want to keep track of
     private double totalDueThisMonth;
     private double restDueThisMonth;
@@ -31,12 +34,27 @@ public class AnalyticsManager {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Create the analytics manager, and save in it the model it will use to
-     * calculate analytics later on.
+     * Create the analytics manager and calculate the suite of analytics using the given
+     * model. This will also create a default breakdown using one month.
      * @param model the model containing all subscription data
      */
     public AnalyticsManager(SharedViewModel model) {
         this.model = model;
+        this.baseZTC = new ZeroTimeCalendar();
+        calculateAnalytics();
+        createMonthlyBreakdown(1);
+    }
+
+    /**
+     * Create the analytics manager and calculate the suite of analytics using the given
+     * model. This will also create a default breakdown using one month.
+     * @param model the model containing all subscription data
+     * @param zeroTimeCalendar a zero time calendar set to the date that should be considered
+     *                         today's date. This is primarily used for testing.
+     */
+    public AnalyticsManager(SharedViewModel model, ZeroTimeCalendar zeroTimeCalendar) {
+        this.model = model;
+        this.baseZTC = zeroTimeCalendar;
         calculateAnalytics();
         createMonthlyBreakdown(1);
     }
@@ -58,9 +76,9 @@ public class AnalyticsManager {
         this.breakdown = new HashMap<>();
         ZeroTimeCalendar calendarToday;
         for (Subscription sub : model.getFullSubscriptionList()) {
-            calendarToday = new ZeroTimeCalendar();
+            calendarToday = baseZTC.copyCalendar();
             Date subStartDate = sub.getStartDate();
-            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            ZeroTimeCalendar calendarSub = baseZTC.copyCalendar();
             calendarSub.setTimeToDate(subStartDate);
             calendarToday.setTime(calendarToday.getYear(), calendarToday.getMonth(), 1);
             calendarSub.setTime(calendarSub.getYear(), calendarSub.getMonth(), 1);
@@ -192,10 +210,10 @@ public class AnalyticsManager {
      */
     private void calculateTotalThisMonth() {
         double totalDueThisMonth = 0;
-        ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
+        ZeroTimeCalendar calendarToday = baseZTC.copyCalendar();
         for (Subscription sub : model.getFullSubscriptionList()) {
             Date subStartDate = sub.getStartDate();
-            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            ZeroTimeCalendar calendarSub = baseZTC.copyCalendar();
             calendarSub.setTimeToDate(subStartDate);
             calendarToday.setTime(calendarToday.getYear(), calendarToday.getMonth(), 1);
             calendarSub.setTime(calendarSub.getYear(), calendarSub.getMonth(), 1);
@@ -222,10 +240,10 @@ public class AnalyticsManager {
      */
     private void calculateRestDueThisMonth() {
         double restDueThisMonth = 0;
-        ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
+        ZeroTimeCalendar calendarToday = baseZTC.copyCalendar();
         for (Subscription sub : model.getFullSubscriptionList()) {
             Date nextPaymentDate = sub.getNextPaymentDate();
-            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            ZeroTimeCalendar calendarSub = baseZTC.copyCalendar();
             calendarSub.setTimeToDate(nextPaymentDate);
             if (calendarToday.getMonth() == calendarSub.getMonth() &&
                     calendarToday.getYear() == calendarSub.getYear()) {
@@ -240,12 +258,12 @@ public class AnalyticsManager {
      */
     private void calculateTotalDueNextMonth() {
         double totalDueNextMonth = 0;
-        ZeroTimeCalendar calendarToday = new ZeroTimeCalendar();
-        ZeroTimeCalendar calendarNextMonth = new ZeroTimeCalendar();
+        ZeroTimeCalendar calendarToday = baseZTC.copyCalendar();
+        ZeroTimeCalendar calendarNextMonth = baseZTC.copyCalendar();
         calendarNextMonth.addMonths(1);
         for (Subscription sub : model.getFullSubscriptionList()) {
             Date nextPaymentDate = sub.getNextPaymentDate();
-            ZeroTimeCalendar calendarSub = new ZeroTimeCalendar();
+            ZeroTimeCalendar calendarSub = baseZTC.copyCalendar();
             calendarSub.setTimeToDate(nextPaymentDate);
             if ((calendarNextMonth.getMonth() == calendarSub.getMonth() &&
                   calendarNextMonth.getYear() == calendarSub.getYear()) ||
