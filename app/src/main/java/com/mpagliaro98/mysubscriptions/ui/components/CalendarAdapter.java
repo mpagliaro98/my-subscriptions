@@ -1,8 +1,11 @@
 package com.mpagliaro98.mysubscriptions.ui.components;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +85,25 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
         // Inflate the item if it does not exist yet
         if (view == null)
             view = inflater.inflate(R.layout.component_subscriptioncalendar_day, parent, false);
+
+        // Put a minimum height of 35dp on each cell if the phone is in portrait orientation
+        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            float pxHeight = 35 * ((float) getContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+            view.setMinimumHeight((int)Math.ceil(pxHeight));
+        }
+        // Otherwise, use the screen height to estimate a proper min height in dp
+        else {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenHeightPx = displayMetrics.heightPixels;
+            float screenHeightDp = screenHeightPx / ((float) getContext().getResources().getDisplayMetrics().densityDpi /
+                    DisplayMetrics.DENSITY_DEFAULT);
+            double gridSizeEstimate = (screenHeightDp * 0.66) - 90;
+            int cellHeight = (int)Math.floor(gridSizeEstimate / 6);
+            System.out.println("USING CELL HEIGHT OF " + cellHeight);
+            float pxHeight = cellHeight * ((float) getContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+            view.setMinimumHeight((int)Math.ceil(pxHeight));
+        }
 
         // If this day has an event, specify event image
         view.setBackgroundResource(0);

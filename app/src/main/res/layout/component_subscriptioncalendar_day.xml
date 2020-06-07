@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/reminder"
     android:gravity="center"
-    android:minHeight="35dp"
     android:text="@string/calendar_day_text_default"
     android:textAlignment="center"
     android:textAppearance="@android:style/TextAppearance.Medium" />
