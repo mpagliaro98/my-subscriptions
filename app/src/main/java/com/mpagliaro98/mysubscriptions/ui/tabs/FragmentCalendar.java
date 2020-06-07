@@ -90,7 +90,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         List<Subscription> subList = model.getFullSubscriptionList();
         HashSet<Date> nextPaymentDates = new HashSet<>();
         for (Subscription sub : subList) {
-            nextPaymentDates.addAll(sub.getNextPaymentList());
+            if (sub.getNextPaymentList() != null) {
+                nextPaymentDates.addAll(sub.getNextPaymentList());
+            }
         }
 
         // Update the calendar using the set of next payment dates as the events

@@ -170,10 +170,12 @@ public class SharedViewModel extends ViewModel {
     public List<Subscription> getSubsDueOnDate(Date date) {
         List<Subscription> subsDueList = new ArrayList<>();
         for (Subscription sub : fullSubscriptionList) {
-            for (Date paymentDate : sub.getNextPaymentList()) {
-                if (paymentDate.equals(date)) {
-                    subsDueList.add(sub);
-                    break;
+            if (sub.getNextPaymentList() != null) {
+                for (Date paymentDate : sub.getNextPaymentList()) {
+                    if (paymentDate.equals(date)) {
+                        subsDueList.add(sub);
+                        break;
+                    }
                 }
             }
         }
