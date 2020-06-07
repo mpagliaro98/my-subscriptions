@@ -18,6 +18,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.AnalyticsManager;
 import com.mpagliaro98.mysubscriptions.model.Category;
@@ -266,6 +267,12 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
 
         // Set all the chart data and legend properties
         PieDataSet pieDataSet = new PieDataSet(chartValues, getString(R.string.analytics_legend_title));
+        pieDataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format(Locale.US, getString(R.string.cost_format), value);
+            }
+        });
         pieDataSet.setColors(chartColors);
         Legend legend = pieChart.getLegend();
         legend.setWordWrapEnabled(true);
@@ -274,6 +281,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
 
         PieData pieData = new PieData(pieDataSet);
+        pieData.setValueTextSize(12f);
         pieChart.setData(pieData);
     }
 }
