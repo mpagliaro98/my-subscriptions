@@ -234,6 +234,13 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      */
     private void updateCalendarTabOnDayPress(Date date, View root) {
         updateSubList(root, date);
+        final ScrollView scrollView = root.findViewById(R.id.calendar_scroll_view);
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.scrollTo(0, 0);
+            }
+        });
         TextView dateText = root.findViewById(R.id.calendar_date_text_view);
         String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
                 new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
