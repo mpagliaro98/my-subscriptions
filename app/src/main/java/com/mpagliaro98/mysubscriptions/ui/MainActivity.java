@@ -184,7 +184,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         // When the settings item is pressed, launch the settings page
         if (id == R.id.menu_settings) {
-            System.out.println("SETTINGS");
+            // Build the saved state bundle and have each fragment fill it with its necessary info
+            Bundle savedState = gatherSavedState();
+
+            // Build the intent and start the activity
+            Intent intent = SettingsActivity.buildGeneralSettingsIntent(this, savedState);
+            startActivity(intent);
         }
         // When the about item is pressed, launch a dialog with about info
         else if (id == R.id.menu_about) {
