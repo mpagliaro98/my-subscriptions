@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -159,19 +160,42 @@ public class MainActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+    /**
+     * Creates the options menu for the main tab, which displays the dropdown list with
+     * settings and about options in the top right corner.
+     * @param menu the menu to inflate
+     * @return true if it succeeded, false otherwise
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Called when a menu item is selected. For the main activity, this will either be the
+     * settings or the about option. When settings is pressed, it will launch the settings
+     * page, and when about is pressed, it will launch a dialog.
+     * @param item the item that was selected on the menu
+     * @return true if it succeeded, false otherwise
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        // When the settings item is pressed, launch the settings page
         if (id == R.id.menu_settings) {
             System.out.println("SETTINGS");
-        } else if (id == R.id.menu_about) {
-            System.out.println("ABOUT");
+        }
+        // When the about item is pressed, launch a dialog with about info
+        else if (id == R.id.menu_about) {
+            String message = getString(R.string.menu_about_text1) + "\n\n" + getString(R.string.menu_about_text2) +
+                    "\n" + getString(R.string.menu_about_text3) + "\n" + getString(R.string.menu_about_text4) +
+                    "\n" + getString(R.string.menu_about_text5);
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.menu_about)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.close, null)
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }

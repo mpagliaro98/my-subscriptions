@@ -12,11 +12,21 @@
     <string name="yes">Yes</string>
     <string name="ok">OK</string>
     <string name="retry">RETRY</string>
+    <string name="close">Close</string>
     <string name="unimplemented">That feature is not yet implemented.</string>
 
     <!-- Menu item strings -->
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>
+    <string name="menu_about_text1">This app was created as an educational experience and is not intended for commercial use.
+        The entire project is available for free and open source on https://github.com/mpagliaro98/my-subscriptions.
+        See the Github link above for specific license details.</string>
+    <string name="menu_about_text2">Author: Michael Pagliaro</string>
+    <string name="menu_about_text3">Extra Credits:</string>
+    <string name="menu_about_text4">Ahmed Al-Amir - Code was adapted from a tutorial of his to create the calendar tab
+        (https://github.com/ahmed-alamir/CalendarView)</string>
+    <string name="menu_about_text5">Philipp Jahoda - MPAndroidChart was used for the analytics tab
+        (https://github.com/PhilJay/MPAndroidChart)</string>
 
     <!-- Create page strings -->
     <string name="create_button">Create Subscription</string>
