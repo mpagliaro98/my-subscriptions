@@ -11,7 +11,10 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import androidx.appcompat.widget.Toolbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
@@ -67,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
+
+        // Set the toolbar at the top of the main activity
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
 
         // Create the ViewPager, which handles this activity's child fragments
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -150,6 +157,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_items, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_settings) {
+            System.out.println("SETTINGS");
+        } else if (id == R.id.menu_about) {
+            System.out.println("ABOUT");
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
