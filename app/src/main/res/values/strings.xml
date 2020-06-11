@@ -84,9 +84,17 @@
     <!-- Settings page strings -->
     <string name="settings_title">Settings</string>
     <string name="settings_snackbar_ioexception">Something went wrong accessing the settings.</string>
+    <string name="settings_snackbar_success">Successfully saved settings.</string>
     <string name="settings_text_notifications">Notifications</string>
     <string name="settings_text_notiftime">Time when notifications fire</string>
+    <string name="settings_text_currency">Currency symbol</string>
     <string name="settings_save_button">Save Settings</string>
+    <!-- Currency symbols -->
+    <string name="currency_us">$</string>
+    <string name="currency_uk">£</string>
+    <string name="currency_eu">€</string>
+    <string name="currency_ko">₩</string>
+    <string name="currency_jp">¥</string>
 
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>
@@ -126,5 +134,12 @@
         <item>@string/array_notif_two_days</item>
         <item>@string/array_notif_three_days</item>
         <item>@string/array_notif_week</item>
+    </string-array>
+    <string-array name="array_currency">
+        <item>@string/currency_us</item>
+        <item>@string/currency_uk</item>
+        <item>@string/currency_eu</item>
+        <item>@string/currency_ko</item>
+        <item>@string/currency_jp</item>
     </string-array>
 </resources>

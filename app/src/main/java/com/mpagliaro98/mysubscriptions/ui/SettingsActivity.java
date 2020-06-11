@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -60,12 +60,18 @@ public class SettingsActivity extends AppCompatActivity {
         Switch notifSwitch = findViewById(R.id.settings_notifications);
         ImageView timePicker = findViewById(R.id.settings_time_picker);
         final TextView time = findViewById(R.id.settings_result_notiftime);
+        Spinner currencyDropdown = findViewById(R.id.settings_currency_dropdown);
         try {
             final SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+
+            // Set notifications to be on or off
             notifSwitch.setChecked(settingsManager.getNotificationsOn());
+
+            // Create a time picker to be able to select the time notifications fire
             timePicker.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // This calendar holds the hour and minute the time picker initializes to
                     final Calendar calendar = Calendar.getInstance();
                     try {
                         Date notifTime = new SimpleDateFormat(getString(R.string.time_format), Locale.US).parse(time.getText().toString());
@@ -76,10 +82,12 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     int hour = calendar.get(Calendar.HOUR_OF_DAY);
                     int minute = calendar.get(Calendar.MINUTE);
+                    // Make the time picker
                     TimePickerDialog picker = new TimePickerDialog(SettingsActivity.this,
                             new TimePickerDialog.OnTimeSetListener() {
                                 @Override
                                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                    // Update the time text field when the time picker is used
                                     Calendar newCalendar = Calendar.getInstance();
                                     newCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                     newCalendar.set(Calendar.MINUTE, minute);
@@ -95,6 +103,14 @@ public class SettingsActivity extends AppCompatActivity {
             });
             time.setText(new SimpleDateFormat(getString(R.string.time_format),
                     Locale.US).format(settingsManager.getNotificationTime()));
+
+            // Set the initial selection in the dropdown for currency symbols
+            String[] currencyArray = getResources().getStringArray(R.array.array_currency);
+            for (int i = 0; i < currencyArray.length; i++) {
+                if (settingsManager.getCurrencySymbol().equals(currencyArray[i])) {
+                    currencyDropdown.setSelection(i);
+                }
+            }
         } catch (IOException e) {
             showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
         }
@@ -133,9 +149,13 @@ public class SettingsActivity extends AppCompatActivity {
      */
     public void saveSettings(View view) {
         try {
+            // Get the settings manager and the UI elements holding the settings
             SettingsManager settingsManager = new SettingsManager(getApplicationContext());
             Switch notifSwitch = findViewById(R.id.settings_notifications);
             TextView time = findViewById(R.id.settings_result_notiftime);
+            Spinner currencyDropdown = findViewById(R.id.settings_currency_dropdown);
+
+            // Get the values from the UI
             boolean notificationsOn = notifSwitch.isChecked();
             Date notifTime;
             try {
@@ -148,8 +168,14 @@ public class SettingsActivity extends AppCompatActivity {
                 calendar.set(Calendar.MILLISECOND, 0);
                 notifTime = calendar.getTime();
             }
-            settingsManager.setSettings(notificationsOn, notifTime,
-                    "$", getApplicationContext());
+            String currencySymbol = (String)currencyDropdown.getSelectedItem();
+
+            // Save the settings and display a success message if it works
+            settingsManager.setSettings(notificationsOn, notifTime, currencySymbol,
+                    getApplicationContext());
+            Snackbar successBar = Snackbar.make(findViewById(android.R.id.content),
+                    R.string.settings_snackbar_success, Snackbar.LENGTH_LONG);
+            successBar.show();
         } catch (IOException e) {
             showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
         }
