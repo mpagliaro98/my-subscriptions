@@ -55,10 +55,47 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/settings_text_notiftime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/settings_text_notiftime"
+                    android:textColor="@color/solid_black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@+id/settings_time_picker"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/settings_result_notiftime" />
+
+                <ImageView
+                    android:id="@+id/settings_time_picker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/settings_result_notiftime"
+                    app:layout_constraintEnd_toStartOf="@+id/settings_result_notiftime"
+                    app:srcCompat="@drawable/ic_date_range_grey_24dp" />
+
+                <TextView
+                    android:id="@+id/settings_result_notiftime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/solid_black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/settings_notifications" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button

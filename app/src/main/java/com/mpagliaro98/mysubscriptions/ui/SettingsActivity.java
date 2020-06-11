@@ -1,18 +1,27 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * The activity for managing settings. This will allow the settings to be modified and
@@ -49,9 +58,43 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Set the UI elements to their starting values based on existing settings
         Switch notifSwitch = findViewById(R.id.settings_notifications);
+        ImageView timePicker = findViewById(R.id.settings_time_picker);
+        final TextView time = findViewById(R.id.settings_result_notiftime);
         try {
-            SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            final SettingsManager settingsManager = new SettingsManager(getApplicationContext());
             notifSwitch.setChecked(settingsManager.getNotificationsOn());
+            timePicker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Calendar calendar = Calendar.getInstance();
+                    try {
+                        Date notifTime = new SimpleDateFormat(getString(R.string.time_format), Locale.US).parse(time.getText().toString());
+                        assert notifTime != null;
+                        calendar.setTime(notifTime);
+                    } catch (ParseException p) {
+                        calendar.setTime(settingsManager.getNotificationTime());
+                    }
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    TimePickerDialog picker = new TimePickerDialog(SettingsActivity.this,
+                            new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                    Calendar newCalendar = Calendar.getInstance();
+                                    newCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                    newCalendar.set(Calendar.MINUTE, minute);
+                                    newCalendar.set(Calendar.SECOND, 0);
+                                    newCalendar.set(Calendar.MILLISECOND, 0);
+                                    Date enteredTime = newCalendar.getTime();
+                                    time.setText(new SimpleDateFormat(getString(R.string.time_format),
+                                            Locale.US).format(enteredTime));
+                                }
+                            }, hour, minute, true);
+                    picker.show();
+                }
+            });
+            time.setText(new SimpleDateFormat(getString(R.string.time_format),
+                    Locale.US).format(settingsManager.getNotificationTime()));
         } catch (IOException e) {
             showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
         }
@@ -92,8 +135,20 @@ public class SettingsActivity extends AppCompatActivity {
         try {
             SettingsManager settingsManager = new SettingsManager(getApplicationContext());
             Switch notifSwitch = findViewById(R.id.settings_notifications);
+            TextView time = findViewById(R.id.settings_result_notiftime);
             boolean notificationsOn = notifSwitch.isChecked();
-            settingsManager.setSettings(notificationsOn, Calendar.getInstance().getTime(),
+            Date notifTime;
+            try {
+                notifTime = new SimpleDateFormat(getString(R.string.time_format), Locale.US).parse(time.getText().toString());
+            } catch (ParseException p) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, 6);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                notifTime = calendar.getTime();
+            }
+            settingsManager.setSettings(notificationsOn, notifTime,
                     "$", getApplicationContext());
         } catch (IOException e) {
             showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));

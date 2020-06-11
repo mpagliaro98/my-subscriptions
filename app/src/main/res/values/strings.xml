@@ -6,6 +6,7 @@
     <string name="tab_text_home">Home</string>
     <string name="tab_text_analytics">Analytics</string>
     <string name="date_format">MM/dd/yyyy</string>
+    <string name="time_format">HH:mm:ss</string>
     <string name="cost_format">$%.2f</string>
     <string name="currency">$</string>
     <string name="no">No</string>
@@ -84,6 +85,7 @@
     <string name="settings_title">Settings</string>
     <string name="settings_snackbar_ioexception">Something went wrong accessing the settings.</string>
     <string name="settings_text_notifications">Notifications</string>
+    <string name="settings_text_notiftime">Time when notifications fire</string>
     <string name="settings_save_button">Save Settings</string>
 
     <!-- Notification strings -->
