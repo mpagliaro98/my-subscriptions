@@ -81,7 +81,7 @@
                     android:layout_marginRight="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/settings_result_notiftime"
                     app:layout_constraintEnd_toStartOf="@+id/settings_result_notiftime"
-                    app:srcCompat="@drawable/ic_date_range_grey_24dp" />
+                    app:srcCompat="@drawable/ic_time_grey_24dp" />
 
                 <TextView
                     android:id="@+id/settings_result_notiftime"
