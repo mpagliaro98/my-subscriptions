@@ -82,6 +82,9 @@
 
     <!-- Settings page strings -->
     <string name="settings_title">Settings</string>
+    <string name="settings_snackbar_ioexception">Something went wrong accessing the settings.</string>
+    <string name="settings_text_notifications">Notifications</string>
+    <string name="settings_save_button">Save Settings</string>
 
     <!-- Notification strings -->
     <string name="notification_channel_name">Subscription Notifications</string>
