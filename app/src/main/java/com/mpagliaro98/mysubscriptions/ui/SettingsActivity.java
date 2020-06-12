@@ -126,6 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Save the settings and display a success message if it works
             settingsManager.setSettings(notificationsOn, notifTime, currencySymbol,
                     getApplicationContext());
+            MainActivity.setRecurringAlarm(getApplicationContext());
             Snackbar successBar = Snackbar.make(findViewById(android.R.id.content),
                     R.string.settings_snackbar_success, Snackbar.LENGTH_LONG);
             successBar.show();
@@ -151,6 +152,7 @@ public class SettingsActivity extends AppCompatActivity {
                             try {
                                 settingsManager.resetToDefaults(getApplicationContext());
                                 initializeUI(settingsManager);
+                                MainActivity.setRecurringAlarm(getApplicationContext());
                             } catch (IOException e) {
                                 showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
                             }
