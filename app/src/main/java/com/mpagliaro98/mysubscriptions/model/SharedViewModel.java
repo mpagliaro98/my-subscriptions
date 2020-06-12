@@ -46,7 +46,7 @@ public class SharedViewModel extends ViewModel {
     // The viewable list is the top level list, its contents are shown in the UI
     private ArrayList<Subscription> viewableSubscriptionList = fullSubscriptionList;
     // The filename the data is kept in
-    private static final String filename = "subscriptions.dat";
+    public static final String SUBSCRIPTIONS_FILENAME = "subscriptions.dat";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -200,7 +200,7 @@ public class SharedViewModel extends ViewModel {
      */
     public void loadFromFile(Context context) throws IOException {
         // Don't do anything if the internal file doesn't exist
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(context.getFilesDir(), SUBSCRIPTIONS_FILENAME);
         if (!file.exists()) {
             return;
         }
@@ -208,7 +208,7 @@ public class SharedViewModel extends ViewModel {
         // Clear the subscriptions so we can populate the list, then make the reader
         fullSubscriptionList.clear();
         Gson gson = new Gson();
-        FileInputStream fis = context.openFileInput(filename);
+        FileInputStream fis = context.openFileInput(SUBSCRIPTIONS_FILENAME);
         InputStreamReader inputStreamReader = new InputStreamReader(fis);
         BufferedReader reader = new BufferedReader(inputStreamReader);
 
@@ -241,7 +241,7 @@ public class SharedViewModel extends ViewModel {
 
         // Refresh the file so we write to it from scratch
         Gson gson = new Gson();
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(context.getFilesDir(), SUBSCRIPTIONS_FILENAME);
         if (file.exists()) {
             if (!file.delete()) {
                 throw new IOException();
@@ -252,7 +252,7 @@ public class SharedViewModel extends ViewModel {
         }
 
         // Convert each subscription to json, then add it to the file line by line
-        FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+        FileOutputStream fos = context.openFileOutput(SUBSCRIPTIONS_FILENAME, Context.MODE_PRIVATE);
         for (int i = 0; i < fullSubscriptionList.size(); i++) {
             Subscription subscription = fullSubscriptionList.get(i);
             String line = gson.toJson(subscription) + "\n";

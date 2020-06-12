@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SettingsManager;
+import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -166,7 +168,21 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view the current application view
      */
     public void deleteData(View view) {
-
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.settings_delete_button))
+                .setMessage(getString(R.string.settings_delete_message))
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File file = new File(getApplicationContext().getFilesDir(), SharedViewModel.SUBSCRIPTIONS_FILENAME);
+                        if (file.exists()) {
+                            if (!file.delete()) {
+                                showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_delete_error));
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.no, null).show();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////

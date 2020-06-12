@@ -84,6 +84,7 @@
     <!-- Settings page strings -->
     <string name="settings_title">Settings</string>
     <string name="settings_snackbar_ioexception">Something went wrong accessing the settings.</string>
+    <string name="settings_snackbar_delete_error">Something went wrong trying to delete your data.</string>
     <string name="settings_snackbar_success">Successfully saved settings.</string>
     <string name="settings_text_notifications">Notifications</string>
     <string name="settings_text_notiftime">Time when notifications fire</string>
@@ -92,6 +93,7 @@
     <string name="settings_reset_button">Reset Settings</string>
     <string name="settings_reset_message">Would you like to set your settings to their default values?</string>
     <string name="settings_delete_button">Delete Data</string>
+    <string name="settings_delete_message">Would you like to delete all your subscription data?</string>
     <!-- Currency symbols -->
     <string name="currency_us">$</string>
     <string name="currency_uk">£</string>
