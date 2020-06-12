@@ -3,9 +3,7 @@ package com.mpagliaro98.mysubscriptions.notifications;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
-import androidx.annotation.RequiresApi;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 
 /**
@@ -30,7 +28,6 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param intent The pending intent (either from MainActivity or when boot completes)
      */
     @Override
-    @RequiresApi(Build.VERSION_CODES.O)
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Receiver called");
         if (intent.getAction() != null) {
