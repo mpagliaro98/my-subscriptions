@@ -2,6 +2,7 @@ package com.mpagliaro98.mysubscriptions.ui;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
@@ -57,60 +59,9 @@ public class SettingsActivity extends AppCompatActivity {
         setTitle(R.string.settings_title);
 
         // Set the UI elements to their starting values based on existing settings
-        Switch notifSwitch = findViewById(R.id.settings_notifications);
-        ImageView timePicker = findViewById(R.id.settings_time_picker);
-        final TextView time = findViewById(R.id.settings_result_notiftime);
-        Spinner currencyDropdown = findViewById(R.id.settings_currency_dropdown);
         try {
-            final SettingsManager settingsManager = new SettingsManager(getApplicationContext());
-
-            // Set notifications to be on or off
-            notifSwitch.setChecked(settingsManager.getNotificationsOn());
-
-            // Create a time picker to be able to select the time notifications fire
-            timePicker.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // This calendar holds the hour and minute the time picker initializes to
-                    final Calendar calendar = Calendar.getInstance();
-                    try {
-                        Date notifTime = new SimpleDateFormat(getString(R.string.time_format), Locale.US).parse(time.getText().toString());
-                        assert notifTime != null;
-                        calendar.setTime(notifTime);
-                    } catch (ParseException p) {
-                        calendar.setTime(settingsManager.getNotificationTime());
-                    }
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-                    // Make the time picker
-                    TimePickerDialog picker = new TimePickerDialog(SettingsActivity.this,
-                            new TimePickerDialog.OnTimeSetListener() {
-                                @Override
-                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                    // Update the time text field when the time picker is used
-                                    Calendar newCalendar = Calendar.getInstance();
-                                    newCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                    newCalendar.set(Calendar.MINUTE, minute);
-                                    newCalendar.set(Calendar.SECOND, 0);
-                                    newCalendar.set(Calendar.MILLISECOND, 0);
-                                    Date enteredTime = newCalendar.getTime();
-                                    time.setText(new SimpleDateFormat(getString(R.string.time_format),
-                                            Locale.US).format(enteredTime));
-                                }
-                            }, hour, minute, true);
-                    picker.show();
-                }
-            });
-            time.setText(new SimpleDateFormat(getString(R.string.time_format),
-                    Locale.US).format(settingsManager.getNotificationTime()));
-
-            // Set the initial selection in the dropdown for currency symbols
-            String[] currencyArray = getResources().getStringArray(R.array.array_currency);
-            for (int i = 0; i < currencyArray.length; i++) {
-                if (settingsManager.getCurrencySymbol().equals(currencyArray[i])) {
-                    currencyDropdown.setSelection(i);
-                }
-            }
+            SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            initializeUI(settingsManager);
         } catch (IOException e) {
             showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
         }
@@ -187,7 +138,26 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view the current application view
      */
     public void resetDefaults(View view) {
-
+        try {
+            final SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.settings_reset_button))
+                    .setMessage(getString(R.string.settings_reset_message))
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                settingsManager.resetToDefaults(getApplicationContext());
+                                initializeUI(settingsManager);
+                            } catch (IOException e) {
+                                showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null).show();
+        } catch (IOException e) {
+            showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
+        }
     }
 
     /**
@@ -238,5 +208,65 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
         ioExceptionBar.show();
+    }
+
+    /**
+     * Initialize all the UI components for settings values to the values that they are currently
+     * set to in the settings manager.
+     * @param settingsManager the settings manager object
+     */
+    private void initializeUI(final SettingsManager settingsManager) {
+        Switch notifSwitch = findViewById(R.id.settings_notifications);
+        ImageView timePicker = findViewById(R.id.settings_time_picker);
+        final TextView time = findViewById(R.id.settings_result_notiftime);
+        Spinner currencyDropdown = findViewById(R.id.settings_currency_dropdown);
+
+        // Set notifications to be on or off
+        notifSwitch.setChecked(settingsManager.getNotificationsOn());
+
+        // Create a time picker to be able to select the time notifications fire
+        timePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // This calendar holds the hour and minute the time picker initializes to
+                final Calendar calendar = Calendar.getInstance();
+                try {
+                    Date notifTime = new SimpleDateFormat(getString(R.string.time_format), Locale.US).parse(time.getText().toString());
+                    assert notifTime != null;
+                    calendar.setTime(notifTime);
+                } catch (ParseException p) {
+                    calendar.setTime(settingsManager.getNotificationTime());
+                }
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                // Make the time picker
+                TimePickerDialog picker = new TimePickerDialog(SettingsActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                // Update the time text field when the time picker is used
+                                Calendar newCalendar = Calendar.getInstance();
+                                newCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                newCalendar.set(Calendar.MINUTE, minute);
+                                newCalendar.set(Calendar.SECOND, 0);
+                                newCalendar.set(Calendar.MILLISECOND, 0);
+                                Date enteredTime = newCalendar.getTime();
+                                time.setText(new SimpleDateFormat(getString(R.string.time_format),
+                                        Locale.US).format(enteredTime));
+                            }
+                        }, hour, minute, true);
+                picker.show();
+            }
+        });
+        time.setText(new SimpleDateFormat(getString(R.string.time_format),
+                Locale.US).format(settingsManager.getNotificationTime()));
+
+        // Set the initial selection in the dropdown for currency symbols
+        String[] currencyArray = getResources().getStringArray(R.array.array_currency);
+        for (int i = 0; i < currencyArray.length; i++) {
+            if (settingsManager.getCurrencySymbol().equals(currencyArray[i])) {
+                currencyDropdown.setSelection(i);
+            }
+        }
     }
 }
