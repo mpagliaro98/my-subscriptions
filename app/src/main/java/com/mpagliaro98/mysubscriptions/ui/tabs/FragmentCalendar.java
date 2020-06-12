@@ -52,8 +52,6 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_calendar_tab, container, false);
-        int size = model.numSubscriptionsTotal();
-        System.out.println("IN CALENDAR TAB: " + size);
         final TextView textView = root.findViewById(R.id.section_label);
         model.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

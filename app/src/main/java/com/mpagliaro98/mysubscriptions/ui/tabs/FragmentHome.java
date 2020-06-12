@@ -113,8 +113,6 @@ public class FragmentHome extends Fragment implements OnDataListenerReceived, Sa
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_home_tab, container, false);
-        int size = model.numSubscriptionsTotal();
-        System.out.println("IN HOME TAB: " + size);
         if (errorFlag) {
             FragmentActivity activity = getActivity();
             assert activity != null;
