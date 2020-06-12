@@ -17,11 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import androidx.appcompat.widget.Toolbar;
 import com.mpagliaro98.mysubscriptions.R;
+import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnDataListenerReceived;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
+
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -218,10 +221,23 @@ public class MainActivity extends AppCompatActivity {
         // Since "now" needs to have the current time, we won't use a zero time calendar here
         Calendar alarmTime = Calendar.getInstance();
         Date now = alarmTime.getTime();
-        alarmTime.set(Calendar.HOUR_OF_DAY, 6);
-        alarmTime.set(Calendar.MINUTE, 0);
-        alarmTime.set(Calendar.SECOND, 0);
-        alarmTime.set(Calendar.MILLISECOND, 0);
+
+        // Set the alarm time to the value in settings - if it fails, default to 6am
+        try {
+            SettingsManager settingsManager = new SettingsManager(context);
+            Date alarmDate = settingsManager.getNotificationTime();
+            Calendar tempCalendar = Calendar.getInstance();
+            tempCalendar.setTime(alarmDate);
+            alarmTime.set(Calendar.HOUR_OF_DAY, tempCalendar.get(Calendar.HOUR_OF_DAY));
+            alarmTime.set(Calendar.MINUTE, tempCalendar.get(Calendar.MINUTE));
+            alarmTime.set(Calendar.SECOND, 0);
+            alarmTime.set(Calendar.MILLISECOND, 0);
+        } catch (IOException e){
+            alarmTime.set(Calendar.HOUR_OF_DAY, 6);
+            alarmTime.set(Calendar.MINUTE, 0);
+            alarmTime.set(Calendar.SECOND, 0);
+            alarmTime.set(Calendar.MILLISECOND, 0);
+        }
         if (now.after(alarmTime.getTime())) {
             alarmTime.add(Calendar.DATE, 1);
         }
@@ -236,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
+        alarmManager.cancel(pendingIntent);
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + timeUntilAlarm,
                 AlarmManager.INTERVAL_DAY, pendingIntent);
