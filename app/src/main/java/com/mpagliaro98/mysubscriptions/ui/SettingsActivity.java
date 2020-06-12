@@ -181,6 +181,24 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the reset settings button is pressed, will display a dialog that when
+     * confirmed, will set all the settings to their default values.
+     * @param view the current application view
+     */
+    public void resetDefaults(View view) {
+
+    }
+
+    /**
+     * Called when the delete button is pressed, will display a dialog that when confirmed,
+     * will delete all the user data (subscriptions) that the user has saved.
+     * @param view the current application view
+     */
+    public void deleteData(View view) {
+
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // STATIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////

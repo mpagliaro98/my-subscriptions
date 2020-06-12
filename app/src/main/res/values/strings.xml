@@ -89,6 +89,8 @@
     <string name="settings_text_notiftime">Time when notifications fire</string>
     <string name="settings_text_currency">Currency symbol</string>
     <string name="settings_save_button">Save Settings</string>
+    <string name="settings_reset_button">Reset Settings</string>
+    <string name="settings_delete_button">Delete Data</string>
     <!-- Currency symbols -->
     <string name="currency_us">$</string>
     <string name="currency_uk">£</string>
