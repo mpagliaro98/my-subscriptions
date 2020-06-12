@@ -232,7 +232,7 @@ public class NotificationService {
             stringBuilder.append(' ');
             stringBuilder.append(context.getString(R.string.notification_content_build_1));
             stringBuilder.append(' ');
-            stringBuilder.append(sub.getCostString(context.getResources()));
+            stringBuilder.append(sub.getCostString(context));
             stringBuilder.append(' ');
             stringBuilder.append(context.getString(R.string.notification_content_build_2));
             stringBuilder.append(' ');

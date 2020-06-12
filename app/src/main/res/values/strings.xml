@@ -7,8 +7,8 @@
     <string name="tab_text_analytics">Analytics</string>
     <string name="date_format">MM/dd/yyyy</string>
     <string name="time_format">HH:mm:ss</string>
-    <string name="cost_format">$%.2f</string>
-    <string name="currency">$</string>
+    <string name="cost_format">%.2f</string>
+    <string name="currency_default">$</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="ok">OK</string>
@@ -37,7 +37,8 @@
     <string name="create_name">Name</string>
     <string name="create_cost">XX.XX</string>
     <string name="create_note">Any additional notes</string>
-    <string name="create_text_cost">Cost ($):</string>
+    <string name="create_text_cost1">Cost (</string>
+    <string name="create_text_cost2">):</string>
     <string name="create_text_date">Start Date:</string>
     <string name="create_text_freq">You get charged</string>
     <string name="create_text_category">Category:</string>

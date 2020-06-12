@@ -1,7 +1,10 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import android.content.Context;
 import android.content.res.Resources;
 import com.mpagliaro98.mysubscriptions.R;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -182,12 +185,22 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Get a string representation of the cost based on how cost_format is set.
-     * @param resources the resources containing the cost_format string
+     * Get a string representation of the cost based on how cost_format is set. This will use the
+     * currency symbol used in the settings, but if that fails, will default to $.
+     * @param context the current application context, containing the resources that has
+     *                the cost_format string
      * @return a string representation of the cost
      */
-    public String getCostString(Resources resources) {
-        return String.format(Locale.US, resources.getString(R.string.cost_format), cost);
+    public String getCostString(Context context) {
+        String currencySymbol;
+        try {
+            SettingsManager settingsManager = new SettingsManager(context);
+            currencySymbol = settingsManager.getCurrencySymbol();
+        } catch (IOException e) {
+            currencySymbol = context.getResources().getString(R.string.currency_default);
+        }
+        String costString = String.format(Locale.US, context.getResources().getString(R.string.cost_format), cost);
+        return currencySymbol + costString;
     }
 
     /**

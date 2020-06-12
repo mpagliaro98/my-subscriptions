@@ -22,9 +22,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
+import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.Category;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,6 +106,19 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         final ImageView catColor = findViewById(R.id.create_category_color);
         final Spinner category = findViewById(R.id.create_category_dropdown);
         Spinner notifications = findViewById(R.id.create_notif_dropdown);
+
+        // Set the settings-defined currency symbol in the cost text field
+        TextView costText = findViewById(R.id.create_text_cost);
+        String currencySymbol;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            currencySymbol = settingsManager.getCurrencySymbol();
+        } catch (IOException e) {
+            currencySymbol = getString(R.string.currency_default);
+        }
+        String costTextStr = costText.getText() + currencySymbol +
+                getString(R.string.create_text_cost2);
+        costText.setText(costTextStr);
 
         // Set the list of items in the category dropdown
         ArrayAdapter<Category> adapter = new ArrayAdapter<>(
@@ -208,7 +223,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
             // Fill every field with the values of the subscription to view
             name.setText(sub.getName());
-            cost.setText(sub.getCostString(getResources()));
+            cost.setText(sub.getCostString(getApplicationContext()));
             date.setText(sub.getStartDateString(getResources()));
             note.setText(sub.getNote());
         }
@@ -416,8 +431,15 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from cost and validate it, remove the currency symbol if it's there
         double cost;
         String costTemp = costText.getText().toString();
-        if (costTemp.startsWith(getString(R.string.currency))) {
-            costTemp = costTemp.substring(1);
+        String currencySymbol;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            currencySymbol = settingsManager.getCurrencySymbol();
+        } catch (IOException e) {
+            currencySymbol = getString(R.string.currency_default);
+        }
+        if (costTemp.startsWith(currencySymbol)) {
+            costTemp = costTemp.substring(currencySymbol.length());
         }
         try {
             cost = Double.parseDouble(costTemp);

@@ -70,7 +70,7 @@ public class SubscriptionView extends LinearLayout {
         textName.setText(subscription.getName());
 
         // Set the text of the subscription cost and recharge frequency
-        String costStr = subscription.getCostString(context.getResources()) + " " +
+        String costStr = subscription.getCostString(context) + " " +
                 getRechargeFrequencyString(subscription.getRechargeFrequency(), context);
         textCost.setText(costStr);
 
