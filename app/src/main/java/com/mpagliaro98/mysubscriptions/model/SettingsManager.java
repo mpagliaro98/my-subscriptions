@@ -82,9 +82,24 @@ public class SettingsManager {
     }
 
     /**
+     * Resets all the settings to their default values, then overwrites the settings
+     * file to save the changes.
+     * @param context the current application context
+     * @throws IOException thrown if there's an error writing to the file
+     */
+    public void resetToDefaults(Context context) throws IOException {
+        setDefaults();
+        saveSettingsFile(context);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
      * Reset the settings to their default values. This does not save over the file.
      */
-    public void setDefaults() {
+    private void setDefaults() {
         notificationsOn = true;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 6);
@@ -94,10 +109,6 @@ public class SettingsManager {
         notificationTime = calendar.getTime();
         currencySymbol = "$";
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Load the settings from the file and save it to this object's fields. Return before
