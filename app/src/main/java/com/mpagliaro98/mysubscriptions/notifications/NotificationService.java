@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
+import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
@@ -72,6 +73,17 @@ public class NotificationService {
         } else {
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             assert notificationManager != null;
+        }
+
+        // If the settings say notifications are off, stop here
+        try {
+            SettingsManager settingsManager = new SettingsManager(context);
+            if (!settingsManager.getNotificationsOn()) {
+                return;
+            }
+        } catch (IOException e) {
+            sendIOExceptionNotif(notificationManager);
+            return;
         }
 
         // Get the subscriptions from the file and update any dates as necessary
