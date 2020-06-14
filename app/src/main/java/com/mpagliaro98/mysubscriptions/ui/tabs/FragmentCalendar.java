@@ -1,7 +1,15 @@
 package com.mpagliaro98.mysubscriptions.ui.tabs;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
@@ -23,10 +33,12 @@ import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * A fragment containing the view for the calendar tab.
@@ -42,6 +54,18 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     public static final String SAVED_STATE_MONTH_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_MONTH";
     public static final String SAVED_STATE_SELECTED_DATE_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_SELECTED_DATE";
     public static final String SAVED_STATE_SCROLL_MESSAGE = "com.mpagliaro98.mysubscriptions.C_SAVED_SCROLL";
+
+    // The account type used to create the sync calendar
+    private static final String CALENDAR_ACCOUNT_TYPE = "com.mpagliaro98";
+    // Projection array. Creating indices for this array instead of doing dynamic lookups improves performance.
+    private static final String[] EVENT_PROJECTION = new String[] {
+            CalendarContract.Calendars._ID,                           // 0
+            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
+            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
+    };
+    // The indices for the projection array above.
+    private static final int PROJECTION_ID_INDEX = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -170,6 +194,58 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         }
     }
 
+    /**
+     * Called when the button to sync the calendar is pressed. This will assert that the app
+     * has permission to use the calendar API, then create the calendar on the system and
+     * create events on the calendar for each subscription's payment dates.
+     */
+    public void syncCalendar() {
+        Activity parentActivity = getActivity();
+        assert parentActivity != null;
+        Context context = getContext();
+        assert context != null;
+        View parentView = getView();
+        assert parentView != null;
+
+        // Request permission to access the calendar API
+        ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, 43);
+
+        // Delete the existing version of this calendar on the system and recreate it
+        deleteSyncCalendar(context);
+        createSyncCalendar(context, getString(R.string.calendar_sync_name));
+
+        // Create the query to find the created calendar and its ID
+        Cursor cur;
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
+                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
+                + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+        String[] selectionArgs = new String[] {getString(R.string.app_name), CALENDAR_ACCOUNT_TYPE,
+                getString(R.string.app_name)};
+
+        // Submit the query and get a Cursor object back
+        try {
+            cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+        } catch (SecurityException e) {
+            Snackbar.make(parentView, getString(R.string.calendar_sync_security_exception), Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        // Use the cursor to step through the returned records (should just be the one calendar)
+        assert cur != null;
+        while (cur.moveToNext()) {
+            // Get the calendar ID
+            int calID = (int)cur.getLong(PROJECTION_ID_INDEX);
+
+            // Loop through each subscription and create events for each of their payment dates
+            for (Subscription sub : model.getFullSubscriptionList()) {
+                createSyncCalendarEvents(context, calID, sub);
+            }
+        }
+        cur.close();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -246,5 +322,77 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
                 new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
                 + ":";
         dateText.setText(displayStr);
+    }
+
+    /**
+     * Create a calendar on the system calendar that this app can add events to.
+     * @param context the current application context
+     * @param name the name of the calendar
+     */
+    private void createSyncCalendar(Context context, String name) {
+        // Create the target URI
+        Uri target = Uri.parse(CalendarContract.Calendars.CONTENT_URI.toString());
+        target = target.buildUpon().appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, getString(R.string.app_name))
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, CALENDAR_ACCOUNT_TYPE).build();
+
+        // Add all the necessary values for it
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Calendars.ACCOUNT_NAME, getString(R.string.app_name));
+        values.put(CalendarContract.Calendars.ACCOUNT_TYPE, CALENDAR_ACCOUNT_TYPE);
+        values.put(CalendarContract.Calendars.NAME, name);
+        values.put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, name);
+        values.put(CalendarContract.Calendars.CALENDAR_COLOR, context.getResources().getColor(R.color.colorPrimary));
+        values.put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_ROOT);
+        values.put(CalendarContract.Calendars.OWNER_ACCOUNT, getString(R.string.app_name));
+        values.put(CalendarContract.Calendars.VISIBLE, 1);
+        values.put(CalendarContract.Calendars.SYNC_EVENTS, 1);
+        values.put(CalendarContract.Calendars.CALENDAR_TIME_ZONE, TimeZone.getDefault().toString());
+        values.put(CalendarContract.Calendars.CAN_PARTIALLY_UPDATE, 1);
+
+        // Create the calendar
+        context.getContentResolver().insert(target, values);
+    }
+
+    /**
+     * Delete the system calendar that was created by this app, if it exists. If it doesn't
+     * exist, this won't do anything.
+     * @param context the current application context
+     */
+    private void deleteSyncCalendar(Context context) {
+        Uri uri = Uri.parse(CalendarContract.Calendars.CONTENT_URI.toString());
+        uri = uri.buildUpon().appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, getString(R.string.app_name))
+                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, CALENDAR_ACCOUNT_TYPE).build();
+        context.getContentResolver().delete(uri, null, null);
+    }
+
+    /**
+     * Add a set of events to the system calendar. This will loop through the next payment dates
+     * for the given subscription and add an event to the calendar for each one.
+     * @param context the current application context
+     * @param calID the ID of the calendar the events will be added to
+     * @param subscription the subscription to get next payment dates from
+     * @throws SecurityException thrown if the app doesn't have permission to create events
+     */
+    private void createSyncCalendarEvents(Context context, int calID, Subscription subscription) throws SecurityException {
+        // TEMPORARY: create the start and end time of the event
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(2020,5, 5);
+        long startMillis = beginTime.getTimeInMillis();
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(2020,5, 6);
+        long endMillis = endTime.getTimeInMillis();
+
+        // Fill the content values with all the info needed for this event
+        ContentValues cv = new ContentValues();
+        cv.put(CalendarContract.Events.TITLE, subscription.getName());
+        cv.put(CalendarContract.Events.DTSTART, startMillis);
+        cv.put(CalendarContract.Events.DTEND, endMillis);
+        cv.put(CalendarContract.Events.CALENDAR_ID, calID);
+        cv.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().toString());
+
+        // Create the event
+        context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, cv);
     }
 }

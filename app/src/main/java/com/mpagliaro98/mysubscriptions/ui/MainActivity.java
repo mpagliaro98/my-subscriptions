@@ -17,6 +17,7 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnDataListenerReceived;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentCalendar;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 import java.util.Calendar;
 import java.util.Date;
@@ -150,6 +151,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    /**
+     * Called when the button to sync the calendar is pressed. Passes off control to the
+     * calendar fragment to do the sync.
+     * @param view the current view
+     */
+    public void syncCalendar(View view) {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof FragmentCalendar) {
+                ((FragmentCalendar) fragment).syncCalendar();
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
