@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,7 +35,6 @@ import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -66,6 +67,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
     };
     // The indices for the projection array above.
     private static final int PROJECTION_ID_INDEX = 0;
+
+    private static final int PERMISSION_READ_REQUEST_CODE = 100;
+    private static final int PERMISSION_WRITE_REQUEST_CODE = 101;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -208,7 +212,17 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         assert parentView != null;
 
         // Request permission to access the calendar API
-        ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, 43);
+        ActivityCompat.requestPermissions(parentActivity, new String[]{
+                Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, PERMISSION_READ_REQUEST_CODE);
+        /*if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // Permission is granted, so continue
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CALENDAR)) {
+            return;
+        } else {
+            ActivityCompat.requestPermissions(parentActivity, new String[]{
+                    Manifest.permission.READ_CALENDAR}, PERMISSION_READ_REQUEST_CODE);
+        }*/
 
         // Delete the existing version of this calendar on the system and recreate it
         deleteSyncCalendar(context);
@@ -376,23 +390,18 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      * @throws SecurityException thrown if the app doesn't have permission to create events
      */
     private void createSyncCalendarEvents(Context context, int calID, Subscription subscription) throws SecurityException {
-        // TEMPORARY: create the start and end time of the event
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2020,5, 5);
-        long startMillis = beginTime.getTimeInMillis();
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2020,5, 6);
-        long endMillis = endTime.getTimeInMillis();
+        for (Date paymentDate : subscription.getNextPaymentList()) {
+            // Fill the content values with all the info needed for this event
+            ContentValues cv = new ContentValues();
+            cv.put(CalendarContract.Events.TITLE, subscription.getName() + " " + getString(R.string.calendar_sync_name_suffix));
+            cv.put(CalendarContract.Events.DTSTART, paymentDate.getTime());
+            cv.put(CalendarContract.Events.DTEND, paymentDate.getTime());
+            cv.put(CalendarContract.Events.CALENDAR_ID, calID);
+            cv.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().toString());
+            cv.put(CalendarContract.Events.ALL_DAY, true);
 
-        // Fill the content values with all the info needed for this event
-        ContentValues cv = new ContentValues();
-        cv.put(CalendarContract.Events.TITLE, subscription.getName());
-        cv.put(CalendarContract.Events.DTSTART, startMillis);
-        cv.put(CalendarContract.Events.DTEND, endMillis);
-        cv.put(CalendarContract.Events.CALENDAR_ID, calID);
-        cv.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().toString());
-
-        // Create the event
-        context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, cv);
+            // Create the event
+            context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, cv);
+        }
     }
 }

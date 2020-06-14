@@ -99,6 +99,7 @@
     <string name="calendar_sync_button">Sync with System Calendar</string>
     <string name="calendar_sync_name">Subscriptions</string>
     <string name="calendar_sync_security_exception">This app does not have permission to access the calendar, so it could not complete the sync.</string>
+    <string name="calendar_sync_name_suffix">is due</string>
 
     <!-- String arrays -->
     <string-array name="array_freq_dropdown">
