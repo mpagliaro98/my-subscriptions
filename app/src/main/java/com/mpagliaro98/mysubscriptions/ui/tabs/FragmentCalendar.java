@@ -32,6 +32,7 @@ import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.OnSyncCalendarListener;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import java.util.TimeZone;
 /**
  * A fragment containing the view for the calendar tab.
  */
-public class FragmentCalendar extends Fragment implements SavedStateCompatible {
+public class FragmentCalendar extends Fragment implements SavedStateCompatible, OnSyncCalendarListener {
 
     // The model shared by the three main tabs
     private SharedViewModel model;
@@ -99,6 +100,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
         MainActivity mainActivity = (MainActivity)getActivity();
         assert mainActivity != null;
         model = new ViewModelProvider(mainActivity).get(SharedViewModel.class);
+
+        // Set this fragment as the listener for the sync calendar button
+        mainActivity.setSyncCalendarListener(this);
     }
 
     /**
@@ -203,6 +207,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible {
      * has permission to use the calendar API, then create the calendar on the system and
      * create events on the calendar for each subscription's payment dates.
      */
+    @Override
     public void syncCalendar() {
         Activity parentActivity = getActivity();
         assert parentActivity != null;
