@@ -8,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +58,9 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
 
     // The request code used when asking for permission to access the calendar
     public static final int PERMISSION_CALENDAR_REQUEST_CODE = 100;
+
+    // The sync thread handler receives a message when the thread finishes and displays a message
+    private Handler syncThreadHandler;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -199,6 +205,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
         assert context != null;
         final View parentView = getView();
         assert parentView != null;
+        final OnSyncCalendarListener caller = this;
 
         // If we don't have both read and write permissions for the calendar, request them
         // Don't continue unless we have both permissions
@@ -218,8 +225,23 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    // Set up the handler, which receives a code once the thread finishes
+                    syncThreadHandler = new Handler(Looper.getMainLooper()) {
+                        @Override
+                        public void handleMessage(@NonNull Message inputMessage) {
+                            int threadCode = inputMessage.what;
+                            if (threadCode == SYNC_THREAD_SUCCESS) {
+                                Snackbar.make(parentView, R.string.calendar_sync_success, Snackbar.LENGTH_LONG).show();
+                            } else if (threadCode == SYNC_THREAD_SECURITY_EXCEPTION) {
+                                Snackbar.make(parentView, R.string.calendar_sync_security_exception, Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(parentView, R.string.calendar_sync_unknown_error, Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+                    };
+
                     // Run the calendar sync on a separate thread so the app doesn't freeze
-                    CalendarSyncRunnable calendarSyncRunnable = new CalendarSyncRunnable(context, model);
+                    CalendarSyncRunnable calendarSyncRunnable = new CalendarSyncRunnable(context, model, caller);
                     calendarSyncRunnable.start();
                 }
             }).show();
@@ -244,6 +266,20 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
         } else {
             Snackbar.make(view, R.string.calendar_sync_permissions_denied, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * Handles the outcome of the calendar sync thread. When the process of syncing the
+     * calendar is run on a separate thread, that thread should keep an instance of this
+     * class with it and call this method when it's done. The result it sends should be
+     * one of the SYNC_THREAD_... integer codes in the interface. This implementation will
+     * send the code to this class' sync thread handler on the UI thread.
+     * @param result a sync thread code denoting how the process finished
+     */
+    @Override
+    public void handleSyncResult(int result) {
+        Message message = syncThreadHandler.obtainMessage(result);
+        message.sendToTarget();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////

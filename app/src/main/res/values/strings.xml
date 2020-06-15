@@ -96,6 +96,7 @@
     <string name="calendar_prev_btn_desc">Previous Button</string>
     <string name="calendar_next_btn_desc">Next Button</string>
     <string name="calendar_list_text_prefix">Subscriptions due on</string>
+    <!-- Calendar sync strings -->
     <string name="calendar_sync_button">Sync with System Calendar</string>
     <string name="calendar_sync_name">Subscriptions</string>
     <string name="calendar_sync_security_exception">This app does not have permission to access the calendar, so it could not complete the sync.</string>
@@ -104,6 +105,7 @@
     <string name="calendar_sync_permissions_granted">Calendar permissions successfully granted.</string>
     <string name="calendar_sync_permissions_denied">Calendar permissions were denied.</string>
     <string name="calendar_sync_success">Calendar sync was successful.</string>
+    <string name="calendar_sync_unknown_error">Something went wrong syncing your calendar. Please try again later.</string>
     <string name="calendar_sync_dialog">Would you like to sync your subscription data with your phone\'s calendar? This will only add
                 events to the calendar on your device, and will be unable to be synced with cloud services.</string>
 

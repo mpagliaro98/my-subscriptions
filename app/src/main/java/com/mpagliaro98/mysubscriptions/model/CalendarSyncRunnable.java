@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import com.mpagliaro98.mysubscriptions.R;
+import com.mpagliaro98.mysubscriptions.ui.interfaces.OnSyncCalendarListener;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -16,9 +17,10 @@ import java.util.TimeZone;
  */
 public class CalendarSyncRunnable extends Thread {
 
-    // Context and model needed to sync the calendar
+    // Context, model, and calling class needed to sync the calendar
     private Context context;
     private SharedViewModel model;
+    private OnSyncCalendarListener caller;
 
     // The account type used to create the sync calendar
     private static final String CALENDAR_ACCOUNT_TYPE = "com.mpagliaro98";
@@ -42,9 +44,10 @@ public class CalendarSyncRunnable extends Thread {
      * @param context the current application context
      * @param model the model containing all subscription data
      */
-    public CalendarSyncRunnable(Context context, SharedViewModel model) {
+    public CalendarSyncRunnable(Context context, SharedViewModel model, OnSyncCalendarListener caller) {
         this.context = context;
         this.model = model;
+        this.caller = caller;
     }
 
     /**
@@ -85,10 +88,11 @@ public class CalendarSyncRunnable extends Thread {
             }
             cur.close();
 
-            // Display a success message at the end
-            //Snackbar.make(parentView, R.string.calendar_sync_success, Snackbar.LENGTH_LONG).show();
+            // Send the success code to the caller's handler
+            caller.handleSyncResult(OnSyncCalendarListener.SYNC_THREAD_SUCCESS);
         } catch (SecurityException e) {
-            //Snackbar.make(parentView, R.string.calendar_sync_security_exception, Snackbar.LENGTH_LONG).show();
+            // If a security exception occurs, send the error code to the caller's handler
+            caller.handleSyncResult(OnSyncCalendarListener.SYNC_THREAD_SECURITY_EXCEPTION);
         }
     }
 
