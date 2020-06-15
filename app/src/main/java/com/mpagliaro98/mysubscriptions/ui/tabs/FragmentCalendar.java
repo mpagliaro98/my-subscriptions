@@ -19,7 +19,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
@@ -69,8 +68,8 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
     // The indices for the projection array above.
     private static final int PROJECTION_ID_INDEX = 0;
 
-    private static final int PERMISSION_READ_REQUEST_CODE = 100;
-    private static final int PERMISSION_WRITE_REQUEST_CODE = 101;
+    // The request code used when asking for permission to access the calendar
+    public static final int PERMISSION_CALENDAR_REQUEST_CODE = 100;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -216,25 +215,21 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
         View parentView = getView();
         assert parentView != null;
 
-        // Request permission to access the calendar API
-        ActivityCompat.requestPermissions(parentActivity, new String[]{
-                Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, PERMISSION_READ_REQUEST_CODE);
-        /*if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) ==
-                PackageManager.PERMISSION_GRANTED) {
-            // Permission is granted, so continue
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CALENDAR)) {
+        // If we don't have both read and write permissions for the calendar, request them
+        // Don't continue unless we have both permissions
+        if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        parentActivity, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestCalendarPermissions(parentActivity);
             return;
-        } else {
-            ActivityCompat.requestPermissions(parentActivity, new String[]{
-                    Manifest.permission.READ_CALENDAR}, PERMISSION_READ_REQUEST_CODE);
-        }*/
+        }
 
         // Delete the existing version of this calendar on the system and recreate it
         deleteSyncCalendar(context);
         createSyncCalendar(context, getString(R.string.calendar_sync_name));
 
         // Create the query to find the created calendar and its ID
-        Cursor cur;
         ContentResolver cr = context.getContentResolver();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
         String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
@@ -244,12 +239,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
                 getString(R.string.app_name)};
 
         // Submit the query and get a Cursor object back
-        try {
-            cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
-        } catch (SecurityException e) {
-            Snackbar.make(parentView, getString(R.string.calendar_sync_security_exception), Snackbar.LENGTH_LONG).show();
-            return;
-        }
+        Cursor cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
 
         // Use the cursor to step through the returned records (should just be the one calendar)
         assert cur != null;
@@ -263,6 +253,30 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
             }
         }
         cur.close();
+
+        // Display a success message at the end
+        Snackbar.make(parentView, R.string.calendar_sync_success, Snackbar.LENGTH_LONG).show();
+    }
+
+    /**
+     * Handles the outcome of requesting a permission. If the calendar permissions are requested,
+     * the overridden method in the parent activity will call this to handle it. This method
+     * checks to see if both permissions are granted, and calls the sync calendar method if they
+     * are; otherwise, it displays a message saying permission is denied.
+     * @param permissions an array of permissions that were requested
+     * @param grantResults an array of integers showing the results of those permission requests
+     */
+    @Override
+    public void handleRequestResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        View view = getView();
+        assert view != null;
+        if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            Snackbar.make(view, R.string.calendar_sync_permissions_granted, Snackbar.LENGTH_LONG).show();
+            syncCalendar();
+        } else {
+            Snackbar.make(view, R.string.calendar_sync_permissions_denied, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -407,6 +421,33 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
 
             // Create the event
             context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, cv);
+        }
+    }
+
+    /**
+     * Puts in a request for the read and write calendar permissions from the system, which the
+     * user must accept or deny. If indicated, this can also give additional information about
+     * why the permissions are needed before giving the option to choose.
+     * @param parentActivity the parent activity of this fragment
+     */
+    private void requestCalendarPermissions(final Activity parentActivity) {
+        // Request the read and write permissions
+        if (ActivityCompat.shouldShowRequestPermissionRationale(parentActivity, Manifest.permission.READ_CALENDAR) ||
+                ActivityCompat.shouldShowRequestPermissionRationale(parentActivity, Manifest.permission.WRITE_CALENDAR)) {
+            View view = getView();
+            assert view != null;
+            Snackbar.make(view, R.string.calendar_sync_permissions, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ActivityCompat.requestPermissions(parentActivity,
+                                    new String[]{Manifest.permission.READ_CALENDAR,
+                                    Manifest.permission.WRITE_CALENDAR}, PERMISSION_CALENDAR_REQUEST_CODE);
+                        }
+            }).show();
+        } else {
+            ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_CALENDAR,
+                    Manifest.permission.WRITE_CALENDAR}, PERMISSION_CALENDAR_REQUEST_CODE);
         }
     }
 }

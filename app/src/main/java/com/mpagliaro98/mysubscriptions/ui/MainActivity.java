@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import com.mpagliaro98.mysubscriptions.notifications.AlarmReceiver;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnDataListenerReceived;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnSyncCalendarListener;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentCalendar;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +37,7 @@ import java.util.List;
  * just the subscription's index should be sent. A saved state bundle is optional in all these
  * cases, but often times it is passed around.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     // Keys for information that new Subscription objects will have
     public static final String SUBSCRIPTION_MESSAGE = "com.mpagliaro98.mysubscriptions.SUBSCRIPTION";
@@ -154,6 +157,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    /**
+     * Called when a permission request is made. In this context, this request will be made by
+     * the sync calendar listener, and if that result is picked up here, it will be passed back
+     * to the listener for it to handle.
+     * @param requestCode the code of the permission request that was made
+     * @param permissions an array of permissions that were requested
+     * @param grantResults an array of integers showing the results of those permission requests
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == FragmentCalendar.PERMISSION_CALENDAR_REQUEST_CODE) {
+            if (syncCalendarListener != null) {
+                syncCalendarListener.handleRequestResult(permissions, grantResults);
+            }
+        }
     }
 
     /**
