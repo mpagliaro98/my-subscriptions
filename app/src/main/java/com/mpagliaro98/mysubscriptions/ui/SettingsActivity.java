@@ -1,5 +1,6 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
+import androidx.annotation.NonNull;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SettingsManager;
-import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -76,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
      * @return true if it was successful, false otherwise
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent = MainActivity.buildGeneralMainIntent(this, null,
                 null, -1, savedState);
         startActivity(intent);
@@ -172,23 +171,26 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view the current application view
      */
     public void deleteData(View view) {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.settings_delete_button))
-                .setMessage(getString(R.string.settings_delete_message))
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        File file = new File(getApplicationContext().getFilesDir(), SharedViewModel.SUBSCRIPTIONS_FILENAME);
-                        if (file.exists()) {
-                            if (!file.delete()) {
+        try {
+            final SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.settings_delete_button))
+                    .setMessage(getString(R.string.settings_delete_message))
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (settingsManager.deleteSubscriptionData(getApplicationContext())) {
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        R.string.settings_delete_success, Snackbar.LENGTH_LONG).show();
+                            } else {
                                 showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_delete_error));
                             }
                         }
-                        Snackbar.make(findViewById(android.R.id.content),
-                                R.string.settings_delete_success, Snackbar.LENGTH_LONG).show();
-                    }
-                })
-                .setNegativeButton(R.string.no, null).show();
+                    })
+                    .setNegativeButton(R.string.no, null).show();
+        } catch (IOException e) {
+            showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////

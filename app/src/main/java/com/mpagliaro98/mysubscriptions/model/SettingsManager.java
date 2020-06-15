@@ -92,6 +92,20 @@ public class SettingsManager {
         saveSettingsFile(context);
     }
 
+    /**
+     * Deletes all subscription data from the application. To do this, this method simply
+     * deletes the file containing all subscription data.
+     * @param context the current application context
+     * @return true if the delete was successful, false if something went wrong
+     */
+    public boolean deleteSubscriptionData(Context context) {
+        File file = new File(context.getFilesDir(), SharedViewModel.SUBSCRIPTIONS_FILENAME);
+        if (file.exists()) {
+            return file.delete();
+        }
+        return true;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // PRIVATE METHODS ///////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////

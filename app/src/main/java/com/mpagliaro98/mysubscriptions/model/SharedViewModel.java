@@ -46,7 +46,7 @@ public class SharedViewModel extends ViewModel {
     // The viewable list is the top level list, its contents are shown in the UI
     private ArrayList<Subscription> viewableSubscriptionList = fullSubscriptionList;
     // The filename the data is kept in
-    public static final String SUBSCRIPTIONS_FILENAME = "subscriptions.dat";
+    static final String SUBSCRIPTIONS_FILENAME = "subscriptions.dat";
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
