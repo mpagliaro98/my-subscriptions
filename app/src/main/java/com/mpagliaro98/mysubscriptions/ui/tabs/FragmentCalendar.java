@@ -2,9 +2,11 @@ package com.mpagliaro98.mysubscriptions.ui.tabs;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -208,11 +210,11 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
      */
     @Override
     public void syncCalendar() {
-        Activity parentActivity = getActivity();
+        final Activity parentActivity = getActivity();
         assert parentActivity != null;
-        Context context = getContext();
+        final Context context = getContext();
         assert context != null;
-        View parentView = getView();
+        final View parentView = getView();
         assert parentView != null;
 
         // If we don't have both read and write permissions for the calendar, request them
@@ -225,37 +227,51 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
             return;
         }
 
-        // Delete the existing version of this calendar on the system and recreate it
-        deleteSyncCalendar(context);
-        createSyncCalendar(context, getString(R.string.calendar_sync_name));
+        // Create a dialog to confirm the user wants to sync
+        new AlertDialog.Builder(context)
+            .setTitle(R.string.calendar_sync_button)
+            .setMessage(R.string.calendar_sync_dialog)
+            .setNegativeButton(R.string.no, null)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Delete the existing version of this calendar on the system and recreate it
+                    deleteSyncCalendar(context);
+                    createSyncCalendar(context, getString(R.string.calendar_sync_name));
 
-        // Create the query to find the created calendar and its ID
-        ContentResolver cr = context.getContentResolver();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
-                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
-                + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
-        String[] selectionArgs = new String[] {getString(R.string.app_name), CALENDAR_ACCOUNT_TYPE,
-                getString(R.string.app_name)};
+                    // Create the query to find the created calendar and its ID
+                    ContentResolver cr = context.getContentResolver();
+                    Uri uri = CalendarContract.Calendars.CONTENT_URI;
+                    String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
+                            + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
+                            + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+                    String[] selectionArgs = new String[] {getString(R.string.app_name), CALENDAR_ACCOUNT_TYPE,
+                            getString(R.string.app_name)};
 
-        // Submit the query and get a Cursor object back
-        Cursor cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+                    // Submit the query and get a Cursor object back
+                    try {
+                        Cursor cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
 
-        // Use the cursor to step through the returned records (should just be the one calendar)
-        assert cur != null;
-        while (cur.moveToNext()) {
-            // Get the calendar ID
-            int calID = (int)cur.getLong(PROJECTION_ID_INDEX);
+                        // Use the cursor to step through the returned records (should just be the one calendar)
+                        assert cur != null;
+                        while (cur.moveToNext()) {
+                            // Get the calendar ID
+                            int calID = (int)cur.getLong(PROJECTION_ID_INDEX);
 
-            // Loop through each subscription and create events for each of their payment dates
-            for (Subscription sub : model.getFullSubscriptionList()) {
-                createSyncCalendarEvents(context, calID, sub);
-            }
-        }
-        cur.close();
+                            // Loop through each subscription and create events for each of their payment dates
+                            for (Subscription sub : model.getFullSubscriptionList()) {
+                                createSyncCalendarEvents(context, calID, sub);
+                            }
+                        }
+                        cur.close();
 
-        // Display a success message at the end
-        Snackbar.make(parentView, R.string.calendar_sync_success, Snackbar.LENGTH_LONG).show();
+                        // Display a success message at the end
+                        Snackbar.make(parentView, R.string.calendar_sync_success, Snackbar.LENGTH_LONG).show();
+                    } catch (SecurityException e) {
+                        Snackbar.make(parentView, R.string.calendar_sync_security_exception, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            }).show();
     }
 
     /**

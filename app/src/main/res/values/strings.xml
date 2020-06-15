@@ -104,6 +104,8 @@
     <string name="calendar_sync_permissions_granted">Calendar permissions successfully granted.</string>
     <string name="calendar_sync_permissions_denied">Calendar permissions were denied.</string>
     <string name="calendar_sync_success">Calendar sync was successful.</string>
+    <string name="calendar_sync_dialog">Would you like to sync your subscription data with your phone\'s calendar? This will only add
+                events to the calendar on your device, and will be unable to be synced with cloud services.</string>
 
     <!-- String arrays -->
     <string-array name="array_freq_dropdown">
