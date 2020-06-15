@@ -93,8 +93,10 @@
     <string name="settings_save_button">Save Settings</string>
     <string name="settings_reset_button">Reset Settings</string>
     <string name="settings_reset_message">Would you like to set your settings to their default values?</string>
+    <string name="settings_reset_success">Settings were reset to their defaults and saved.</string>
     <string name="settings_delete_button">Delete Data</string>
     <string name="settings_delete_message">Would you like to delete all your subscription data?</string>
+    <string name="settings_delete_success">Your subscription data was successfully deleted.</string>
     <!-- Currency symbols -->
     <string name="currency_us">$</string>
     <string name="currency_uk">£</string>

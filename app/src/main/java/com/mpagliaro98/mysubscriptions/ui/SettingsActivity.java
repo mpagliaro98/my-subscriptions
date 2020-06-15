@@ -153,6 +153,8 @@ public class SettingsActivity extends AppCompatActivity {
                                 settingsManager.resetToDefaults(getApplicationContext());
                                 initializeUI(settingsManager);
                                 MainActivity.setRecurringAlarm(getApplicationContext());
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        R.string.settings_reset_success, Snackbar.LENGTH_LONG).show();
                             } catch (IOException e) {
                                 showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
                             }
@@ -182,6 +184,8 @@ public class SettingsActivity extends AppCompatActivity {
                                 showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_delete_error));
                             }
                         }
+                        Snackbar.make(findViewById(android.R.id.content),
+                                R.string.settings_delete_success, Snackbar.LENGTH_LONG).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null).show();
