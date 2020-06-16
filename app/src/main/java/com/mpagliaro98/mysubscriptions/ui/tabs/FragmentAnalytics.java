@@ -289,7 +289,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         // Add each category, dollar value, and color to lists to be used by the chart
         for (Map.Entry<Category, Double> entry : analyticsManager.getBreakdownList()) {
             chartValues.add(new PieEntry(entry.getValue().floatValue(), entry.getKey().getName()));
-            chartColors.add(getResources().getColor(entry.getKey().getColor()));
+            chartColors.add(entry.getKey().getColor());
         }
 
         // Get the currency symbol from settings

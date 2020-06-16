@@ -65,14 +65,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     private Bundle savedState;
 
     // List of every valid category, used to populate input fields
-    private ArrayList<Category> categoryList = new ArrayList<Category>() {
-        {
-            add(new Category(R.color.colorCategoryVideoStreaming, "Video Streaming"));
-            add(new Category(R.color.colorCategoryAudioStreaming, "Audio Streaming"));
-            add(new Category(R.color.colorCategoryGaming, "Gaming"));
-            add(new Category(R.color.colorCategoryShopping, "Online Shopping"));
-            add(new Category(R.color.colorCategoryMisc, "Misc"));
-        }};
+    private ArrayList<Category> categoryList;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
@@ -88,6 +81,9 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_subscription);
+
+        // Create each category and add them to the category list
+        initializeCategories();
 
         // Put the back button on this activity's title bar
         ActionBar actionBar = getSupportActionBar();
@@ -130,7 +126,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                catColor.setColorFilter(getResources().getColor(((Category)category.getSelectedItem()).getColor()),
+                catColor.setColorFilter(((Category)category.getSelectedItem()).getColor(),
                         PorterDuff.Mode.SRC_IN);
             }
 
@@ -584,5 +580,20 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         Intent intent = buildGeneralCreateIntent(this, PAGE_TYPE.VIEW, sub,
                 subIndex, savedState);
         startActivity(intent);
+    }
+
+    /**
+     * Create each valid category object and add them to the category list. This is initialized
+     * here and not at the category list declaration so that we can call getColor().
+     */
+    private void initializeCategories() {
+        categoryList = new ArrayList<Category>() {
+            {
+                add(new Category(getResources().getColor(R.color.colorCategoryVideoStreaming), "Video Streaming"));
+                add(new Category(getResources().getColor(R.color.colorCategoryAudioStreaming), "Audio Streaming"));
+                add(new Category(getResources().getColor(R.color.colorCategoryGaming), "Gaming"));
+                add(new Category(getResources().getColor(R.color.colorCategoryShopping), "Online Shopping"));
+                add(new Category(getResources().getColor(R.color.colorCategoryMisc), "Misc"));
+            }};
     }
 }

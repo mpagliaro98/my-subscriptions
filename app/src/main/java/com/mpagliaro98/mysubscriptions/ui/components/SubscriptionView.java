@@ -83,7 +83,7 @@ public class SubscriptionView extends LinearLayout {
         }
 
         // Set the category color
-        imageColor.setColorFilter(context.getResources().getColor(subscription.getCategory().getColor()),
+        imageColor.setColorFilter(subscription.getCategory().getColor(),
                 PorterDuff.Mode.SRC_IN);
     }
 

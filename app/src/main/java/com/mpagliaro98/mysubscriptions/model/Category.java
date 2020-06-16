@@ -20,7 +20,7 @@ public class Category implements Serializable {
 
     /**
      * Constructor for a category, takes a color and a name.
-     * @param color A color as an int (must be defined in colors.xml)
+     * @param color A color as an int (between 0x000000 and 0xFFFFFF)
      * @param name The name of this subscription
      */
     public Category(int color, String name) {
@@ -29,7 +29,8 @@ public class Category implements Serializable {
     }
 
     /**
-     * Get the color of this category.
+     * Get the color of this category. This will be the actual value of the color and not
+     * a resource value.
      * @return The color as an int
      */
     public int getColor() {
