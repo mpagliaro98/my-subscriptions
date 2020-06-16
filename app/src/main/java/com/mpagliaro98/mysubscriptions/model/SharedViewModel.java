@@ -161,6 +161,28 @@ public class SharedViewModel extends ViewModel {
     }
 
     /**
+     * Get the subscriptions that have a next payment date due on the given date, and return
+     * a list containing these subscriptions. It will check any number of payment dates in the
+     * future, not just the immediate next payment date.
+     * @param date the date to check for subscriptions on
+     * @return a list of subscription objects due on the given date
+     */
+    public List<Subscription> getSubsDueOnDate(Date date) {
+        List<Subscription> subsDueList = new ArrayList<>();
+        for (Subscription sub : fullSubscriptionList) {
+            if (sub.getNextPaymentList() != null) {
+                for (Date paymentDate : sub.getNextPaymentList()) {
+                    if (paymentDate.equals(date)) {
+                        subsDueList.add(sub);
+                        break;
+                    }
+                }
+            }
+        }
+        return subsDueList;
+    }
+
+    /**
      * Iterate through every subscription in the model and regenerate the relevant date info
      * for those whose next payment dates have passed. A new ZeroTimeCalendar instance is
      * created and used for this method.

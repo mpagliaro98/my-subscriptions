@@ -97,6 +97,108 @@ public class SubscriptionTest {
     }
 
     /**
+     * Test generation of the next payment list.
+     */
+    @Test
+    public void test_next_payment_list() {
+        zeroTimeCalendar.setTime(2021, 3, 5);
+        Date startDate = zeroTimeCalendar.getCurrentDate();
+        Category category = mock(Category.class);
+        CuT = new Subscription(0, "test", 4.33, startDate, "test note",
+                6, category, 7, zeroTimeCalendar.copyCalendar());
+        assertEquals(6, CuT.getRechargeFrequency());
+
+        // Start date is today, so first next payment date stays today
+        assertEquals(startDate, CuT.getNextPaymentList().get(0));
+        zeroTimeCalendar.addMonths(6);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(1));
+        zeroTimeCalendar.addMonths(6);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(2));
+        zeroTimeCalendar.addMonths(6);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(3));
+
+        // Start date yesterday, so advance next payment date to six months in the future
+        zeroTimeCalendar.setTime(2021, 3, 6);
+        CuT.regenerateSubInfo(zeroTimeCalendar);
+        zeroTimeCalendar.setTime(2021, 9, 5);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(0));
+        zeroTimeCalendar.addMonths(6);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(1));
+        zeroTimeCalendar.addMonths(6);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(2));
+        zeroTimeCalendar.addMonths(6);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(3));
+
+        // Test future start date
+        zeroTimeCalendar.setTime(2021, 5, 5);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2021, 3, 5);
+        CuT = new Subscription(0, "test", 4.33, startDate, "test note",
+                12, category, 7, zeroTimeCalendar.copyCalendar());
+        assertEquals(12, CuT.getRechargeFrequency());
+        assertEquals(startDate, CuT.getNextPaymentList().get(0));
+        zeroTimeCalendar.setTime(2021, 5, 5);
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(1));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(2));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(3));
+
+        // Test incrementing by one month several times
+        zeroTimeCalendar.setTime(2021, 5, 5);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        zeroTimeCalendar.setTime(2024, 3, 20);
+        CuT = new Subscription(0, "test", 4.33, startDate, "test note",
+                1, category, 7, zeroTimeCalendar.copyCalendar());
+        assertEquals(1, CuT.getRechargeFrequency());
+        zeroTimeCalendar.setTime(2024, 4, 5);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(0));
+        zeroTimeCalendar.addMonths(1);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(1));
+        zeroTimeCalendar.addMonths(1);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(2));
+        zeroTimeCalendar.addMonths(1);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(3));
+
+        // Test the list holds 5 years of data
+        zeroTimeCalendar.setTime(2021, 5, 5);
+        startDate = zeroTimeCalendar.getCurrentDate();
+        CuT = new Subscription(0, "test", 4.33, startDate, "test note",
+                12, category, 7, zeroTimeCalendar.copyCalendar());
+        assertEquals(12, CuT.getRechargeFrequency());
+        assertEquals(6, CuT.getNextPaymentList().size());
+        assertEquals(startDate, CuT.getNextPaymentList().get(0));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(1));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(2));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(3));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(4));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(5));
+
+        // Regenerate the last at a later date and ensure it still holds 5 years of data
+        zeroTimeCalendar.setTime(2022, 6, 5);
+        CuT.regenerateSubInfo(zeroTimeCalendar.copyCalendar());
+        assertEquals(6, CuT.getNextPaymentList().size());
+        zeroTimeCalendar.setTime(2023, 5, 5);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(0));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(1));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(2));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(3));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(4));
+        zeroTimeCalendar.addMonths(12);
+        assertEquals(zeroTimeCalendar.getCurrentDate(), CuT.getNextPaymentList().get(5));
+    }
+
+    /**
      * Test generation of the next notification date.
      */
     @Test

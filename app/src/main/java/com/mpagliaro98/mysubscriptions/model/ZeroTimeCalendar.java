@@ -36,6 +36,14 @@ public class ZeroTimeCalendar {
     }
 
     /**
+     * Get the day of the week this calendar is set to
+     * @return the day of the week as an int
+     */
+    public int getDayOfWeek() {
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    /**
      * Get the day of the month this calendar is set to.
      * @return the day of the month as an int
      */
