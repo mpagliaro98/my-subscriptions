@@ -110,4 +110,15 @@ public class ZeroTimeCalendar {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
     }
+
+    /**
+     * Clone this ZeroTimeCalendar and return the copy of it. The original object is
+     * not changed, and modifying the copy has no effect on the original.
+     * @return a copy of this calendar object
+     */
+    public ZeroTimeCalendar copyCalendar() {
+        ZeroTimeCalendar newCalendar = new ZeroTimeCalendar();
+        newCalendar.setTimeToDate(this.getCurrentDate());
+        return newCalendar;
+    }
 }

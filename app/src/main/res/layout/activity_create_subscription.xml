@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constrLayout"
+                android:id="@+id/create_constr_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -213,7 +213,7 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constrLayout">
+                app:layout_constraintTop_toBottomOf="@+id/create_constr_layout">
 
                 <EditText
                     android:id="@+id/create_note"

@@ -50,7 +50,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new FragmentHome(savedStateBundle);
             case 2:
-                return new FragmentAnalytics();
+                return new FragmentAnalytics(savedStateBundle);
             default:
                 return null;
         }
