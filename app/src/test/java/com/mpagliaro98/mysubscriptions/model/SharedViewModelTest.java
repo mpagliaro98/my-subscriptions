@@ -2,6 +2,8 @@ package com.mpagliaro98.mysubscriptions.model;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,6 +39,10 @@ public class SharedViewModelTest {
 
         // Create the first subscription
         Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(2022, 3, 6);
         Date date1 = calendar.getTime();
         sub1 = mock(Subscription.class);
@@ -45,6 +51,11 @@ public class SharedViewModelTest {
         when(sub1.getCost()).thenReturn(3.45);
         when(sub1.getNextPaymentDate()).thenReturn(date1);
         when(sub1.getCategory()).thenReturn(cat1);
+        ArrayList<Date> list1 = new ArrayList<>();
+        list1.add(date1);
+        calendar.add(Calendar.MONTH, 3);
+        list1.add(calendar.getTime());
+        when(sub1.getNextPaymentList()).thenReturn(list1);
 
         // Create the second subscription
         calendar.set(2022, 3, 6);
@@ -55,6 +66,9 @@ public class SharedViewModelTest {
         when(sub2.getCost()).thenReturn(3.44);
         when(sub2.getNextPaymentDate()).thenReturn(date2);
         when(sub2.getCategory()).thenReturn(cat1);
+        ArrayList<Date> list2 = new ArrayList<>();
+        list2.add(date2);
+        when(sub2.getNextPaymentList()).thenReturn(list2);
 
         // Create the third subscription
         calendar.set(2021, 3, 5);
@@ -65,6 +79,9 @@ public class SharedViewModelTest {
         when(sub3.getCost()).thenReturn(10.10101010101);
         when(sub3.getNextPaymentDate()).thenReturn(date3);
         when(sub3.getCategory()).thenReturn(cat2);
+        ArrayList<Date> list3 = new ArrayList<>();
+        list3.add(date3);
+        when(sub3.getNextPaymentList()).thenReturn(list3);
 
         // Set the calendar to have zero time
         zeroTimeCalendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -387,5 +404,39 @@ public class SharedViewModelTest {
         when(ztc.getCurrentDate()).thenReturn(zeroTimeCalendar.getTime());
         numUpdated = CuT.updateSubscriptionDates(ztc);
         assertEquals(3, numUpdated);
+    }
+
+    /**
+     * Test getting a list of subscriptions that have due dates on a certain date.
+     */
+    @Test
+    public void test_subs_due_on_date() {
+        CuT.addSubscription(sub1);
+        CuT.addSubscription(sub2);
+        CuT.addSubscription(sub3);
+
+        // Test date when 2 subs are due
+        zeroTimeCalendar.set(2022, 3, 6);
+        List<Subscription> subsDueList = CuT.getSubsDueOnDate(zeroTimeCalendar.getTime());
+        assertEquals(2, subsDueList.size());
+        assertEquals(sub1, subsDueList.get(0));
+        assertEquals(sub2, subsDueList.get(1));
+
+        // Test date when 1 sub is due
+        zeroTimeCalendar.set(2021, 3, 5);
+        subsDueList = CuT.getSubsDueOnDate(zeroTimeCalendar.getTime());
+        assertEquals(1, subsDueList.size());
+        assertEquals(sub3, subsDueList.get(0));
+
+        // Test date when none are due
+        zeroTimeCalendar.set(2020, 3, 5);
+        subsDueList = CuT.getSubsDueOnDate(zeroTimeCalendar.getTime());
+        assertEquals(0, subsDueList.size());
+
+        // Test date when 1 sub is due, but not the first next payment date
+        zeroTimeCalendar.set(2022, 6, 6);
+        subsDueList = CuT.getSubsDueOnDate(zeroTimeCalendar.getTime());
+        assertEquals(1, subsDueList.size());
+        assertEquals(sub1, subsDueList.get(0));
     }
 }

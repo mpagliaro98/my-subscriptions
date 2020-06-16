@@ -136,6 +136,7 @@ public class ZeroTimeCalendarTest {
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         assertEquals(calendar.getTime(), CuT.getCurrentDate());
+        assertEquals(calendar.get(Calendar.DAY_OF_WEEK), CuT.getDayOfWeek());
 
         // Increment by one month
         CuT.addMonths(1);
@@ -143,6 +144,7 @@ public class ZeroTimeCalendarTest {
         calendar.set(Calendar.MONTH, 1);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         assertEquals(calendar.getTime(), CuT.getCurrentDate());
+        assertEquals(calendar.get(Calendar.DAY_OF_WEEK), CuT.getDayOfWeek());
 
         // Return to the original month
         CuT.addMonths(-1);
@@ -150,6 +152,7 @@ public class ZeroTimeCalendarTest {
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         assertEquals(calendar.getTime(), CuT.getCurrentDate());
+        assertEquals(calendar.get(Calendar.DAY_OF_WEEK), CuT.getDayOfWeek());
 
         // Decrement by one to go back a year
         CuT.addMonths(-1);
@@ -157,6 +160,7 @@ public class ZeroTimeCalendarTest {
         calendar.set(Calendar.MONTH, 11);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         assertEquals(calendar.getTime(), CuT.getCurrentDate());
+        assertEquals(calendar.get(Calendar.DAY_OF_WEEK), CuT.getDayOfWeek());
 
         // Return to the original month
         CuT.addMonths(1);
@@ -164,6 +168,7 @@ public class ZeroTimeCalendarTest {
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         assertEquals(calendar.getTime(), CuT.getCurrentDate());
+        assertEquals(calendar.get(Calendar.DAY_OF_WEEK), CuT.getDayOfWeek());
 
         // Increment by multiple months
         CuT.addMonths(6);
@@ -171,6 +176,7 @@ public class ZeroTimeCalendarTest {
         calendar.set(Calendar.MONTH, 6);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         assertEquals(calendar.getTime(), CuT.getCurrentDate());
+        assertEquals(calendar.get(Calendar.DAY_OF_WEEK), CuT.getDayOfWeek());
     }
 
     /**
@@ -266,5 +272,25 @@ public class ZeroTimeCalendarTest {
         assertEquals(0, calendar.get(Calendar.MINUTE));
         assertEquals(0, calendar.get(Calendar.SECOND));
         assertEquals(0, calendar.get(Calendar.MILLISECOND));
+    }
+
+    /**
+     * Test creating a copy of the existing zero time calendar object.
+     */
+    @Test
+    public void test_copy_calendar() {
+        // Ensure the copy has all the same fields
+        CuT.setTime(2020, 0, 1);
+        ZeroTimeCalendar copy = CuT.copyCalendar();
+        assertEquals(CuT.getDayOfMonth(), copy.getDayOfMonth());
+        assertEquals(CuT.getDayOfWeek(), copy.getDayOfWeek());
+        assertEquals(CuT.getMonth(), copy.getMonth());
+        assertEquals(CuT.getYear(), copy.getYear());
+
+        // A copy should be its own object, so it shouldn't change when the original is modified
+        CuT.addMonths(1);
+        assertEquals(CuT.getDayOfMonth(), copy.getDayOfMonth());
+        assertEquals(CuT.getMonth()-1, copy.getMonth());
+        assertEquals(CuT.getYear(), copy.getYear());
     }
 }
