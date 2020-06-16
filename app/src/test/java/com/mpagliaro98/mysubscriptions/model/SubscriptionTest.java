@@ -1,5 +1,6 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import android.content.Context;
 import android.content.res.Resources;
 import com.mpagliaro98.mysubscriptions.R;
 import org.junit.Before;
@@ -7,6 +8,8 @@ import org.junit.Test;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -252,12 +255,16 @@ public class SubscriptionTest {
         Date startDate = zeroTimeCalendar.getCurrentDate();
         zeroTimeCalendar.setTime(2021, 3, 21);
         Category category = mock(Category.class);
+        Context context = mock(Context.class);
         Resources resources = mock(Resources.class);
-        when(resources.getString(R.string.cost_format)).thenReturn("$%.2f");
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getString(R.string.currency_default)).thenReturn("$");
+        when(resources.getString(R.string.cost_format)).thenReturn("%.2f");
         when(resources.getString(R.string.date_format)).thenReturn("MM/dd/yyyy");
+
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
                 6, category, 7, zeroTimeCalendar);
-        assertEquals("$4.33", CuT.getCostString(resources));
+        assertEquals("$4.33", CuT.getCostString(context));
         assertEquals(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(startDate),
                 CuT.getStartDateString(resources));
         zeroTimeCalendar.setTime(2021, 9, 20);
@@ -267,12 +274,12 @@ public class SubscriptionTest {
         // Test odd cost formatting
         CuT = new Subscription(0, "test", 4, startDate, "test note",
                 6, category, 7, zeroTimeCalendar);
-        assertEquals("$4.00", CuT.getCostString(resources));
+        assertEquals("$4.00", CuT.getCostString(context));
         CuT = new Subscription(0, "test", 4.0213516, startDate, "test note",
                 6, category, 7, zeroTimeCalendar);
-        assertEquals("$4.02", CuT.getCostString(resources));
+        assertEquals("$4.02", CuT.getCostString(context));
         CuT = new Subscription(0, "test", 4.039, startDate, "test note",
                 6, category, 7, zeroTimeCalendar);
-        assertEquals("$4.04", CuT.getCostString(resources));
+        assertEquals("$4.04", CuT.getCostString(context));
     }
 }
