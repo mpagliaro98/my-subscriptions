@@ -2,6 +2,13 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/menu_calendar_sync"
+        android:enabled="true"
+        android:icon="@drawable/ic_date_range_white_24dp"
+        android:title="@string/menu_calendar_sync"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/menu_settings"
         android:enabled="true"
         android:title="@string/menu_settings"

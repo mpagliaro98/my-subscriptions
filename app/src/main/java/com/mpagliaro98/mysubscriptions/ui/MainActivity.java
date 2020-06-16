@@ -212,6 +212,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     .setPositiveButton(R.string.close, null)
                     .show();
         }
+        // When the calendar sync item is pressed, call the sync listener
+        else if (id == R.id.menu_calendar_sync) {
+            if (syncCalendarListener != null) {
+                syncCalendarListener.syncCalendar();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -240,17 +246,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
      */
     public void setSyncCalendarListener(OnSyncCalendarListener syncCalendarListener) {
         this.syncCalendarListener = syncCalendarListener;
-    }
-
-    /**
-     * Called when the button to sync the calendar is pressed. Passes off control to the
-     * sync calendar listener to do the sync.
-     * @param view the current view
-     */
-    public void syncCalendar(View view) {
-        if (syncCalendarListener != null) {
-            syncCalendarListener.syncCalendar();
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
