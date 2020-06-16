@@ -3,6 +3,9 @@ package com.mpagliaro98.mysubscriptions.ui.tabs;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
+
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,9 +25,12 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.AnalyticsManager;
 import com.mpagliaro98.mysubscriptions.model.Category;
+import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -149,35 +155,51 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
      * @param analyticsManager the object using the model to generate analytics
      */
     private void calculateAnalytics(View root, AnalyticsManager analyticsManager) {
+        // Get the currency symbol from settings
+        String currencySymbol;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getContext());
+            currencySymbol = settingsManager.getCurrencySymbol();
+        } catch (IOException e) {
+            Context context = getContext();
+            assert context != null;
+            Resources resources = getContext().getResources();
+            assert resources != null;
+            currencySymbol = resources.getString(R.string.currency_default);
+        }
+
         // Calculate the total due this month
         double totalDueThisMonth = analyticsManager.getTotalDueThisMonth();
         TextView textDueThisMonth = root.findViewById(R.id.analytics_data_thismonth);
-        textDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth));
+        String displayStr = currencySymbol + String.format(Locale.US, getString(R.string.cost_format), totalDueThisMonth);
+        textDueThisMonth.setText(displayStr);
 
         // Calculate the rest due this month
         double restDueThisMonth = analyticsManager.getRestDueThisMonth();
         TextView textRestDueThisMonth = root.findViewById(R.id.analytics_data_restofmonth);
-        textRestDueThisMonth.setText(String.format(Locale.US, getString(R.string.cost_format), restDueThisMonth));
+        displayStr = currencySymbol + String.format(Locale.US, getString(R.string.cost_format), restDueThisMonth);
+        textRestDueThisMonth.setText(displayStr);
 
         // Calculate the total due next month
         double totalDueNextMonth = analyticsManager.getTotalDueNextMonth();
         TextView textDueNextMonth = root.findViewById(R.id.analytics_data_nextmonth);
-        textDueNextMonth.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueNextMonth));
+        displayStr = currencySymbol + String.format(Locale.US, getString(R.string.cost_format), totalDueNextMonth);
+        textDueNextMonth.setText(displayStr);
 
         // Calculate the total due yearly
         double totalDueYearly = analyticsManager.getTotalDueYearly();
         TextView textDueYearly = root.findViewById(R.id.analytics_data_yearly);
-        textDueYearly.setText(String.format(Locale.US, getString(R.string.cost_format), totalDueYearly));
+        displayStr = currencySymbol + String.format(Locale.US, getString(R.string.cost_format), totalDueYearly);
+        textDueYearly.setText(displayStr);
 
         // Find the most expensive yearly subscription
         double costMostExpensive = analyticsManager.getCostMostExpensive();
         String nameMostExpensive = analyticsManager.getNameMostExpensive();
         TextView textMostExpensive = root.findViewById(R.id.analytics_data_mostexpensive);
-        String displayStr;
         if (costMostExpensive == 0) {
             displayStr = getString(R.string.analytics_mostexpensive_none);
         } else {
-            displayStr = nameMostExpensive + ": " +
+            displayStr = nameMostExpensive + ": " + currencySymbol +
                     String.format(Locale.US, getString(R.string.cost_format), costMostExpensive) +
                     " " + getString(R.string.analytics_mostexpensive_per_year);
         }
@@ -270,12 +292,26 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             chartColors.add(getResources().getColor(entry.getKey().getColor()));
         }
 
+        // Get the currency symbol from settings
+        String tempCurrencySymbol;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getContext());
+            tempCurrencySymbol = settingsManager.getCurrencySymbol();
+        } catch (IOException e) {
+            Context context = getContext();
+            assert context != null;
+            Resources resources = getContext().getResources();
+            assert resources != null;
+            tempCurrencySymbol = resources.getString(R.string.currency_default);
+        }
+        final String currencySymbol = tempCurrencySymbol;
+
         // Set all the chart data and legend properties
         PieDataSet pieDataSet = new PieDataSet(chartValues, getString(R.string.analytics_legend_title));
         pieDataSet.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return String.format(Locale.US, getString(R.string.cost_format), value);
+                return currencySymbol + String.format(Locale.US, getString(R.string.cost_format), value);
             }
         });
         pieDataSet.setColors(chartColors);
