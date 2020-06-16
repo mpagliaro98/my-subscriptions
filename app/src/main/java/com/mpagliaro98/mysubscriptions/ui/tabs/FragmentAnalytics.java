@@ -173,9 +173,14 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
         double costMostExpensive = analyticsManager.getCostMostExpensive();
         String nameMostExpensive = analyticsManager.getNameMostExpensive();
         TextView textMostExpensive = root.findViewById(R.id.analytics_data_mostexpensive);
-        String displayStr = nameMostExpensive + ": " +
-                String.format(Locale.US, getString(R.string.cost_format), costMostExpensive) +
-                " " + getString(R.string.analytics_mostexpensive_per_year);
+        String displayStr;
+        if (costMostExpensive == 0) {
+            displayStr = getString(R.string.analytics_mostexpensive_none);
+        } else {
+            displayStr = nameMostExpensive + ": " +
+                    String.format(Locale.US, getString(R.string.cost_format), costMostExpensive) +
+                    " " + getString(R.string.analytics_mostexpensive_per_year);
+        }
         textMostExpensive.setText(displayStr);
 
         // Find the most common recharge frequency
