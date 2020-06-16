@@ -1,9 +1,5 @@
 package com.mpagliaro98.mysubscriptions.model;
 
-import androidx.arch.core.util.Function;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import android.content.Context;
 import android.os.Build;
@@ -29,14 +25,6 @@ import java.util.List;
  */
 public class SharedViewModel extends ViewModel {
 
-    // Test value for keeping a mutable string that can change based on tab
-    private MutableLiveData<String> mName = new MutableLiveData<>();
-    private LiveData<String> mText = Transformations.map(mName, new Function<String, String>() {
-        @Override
-        public String apply(String input) {
-            return "Currently on tab: " + input;
-        }
-    });
     // An underlying hierarchy of lists is kept to handle the subscription list
     // The full list has all subscriptions in it, always ordered by ID
     private ArrayList<Subscription> fullSubscriptionList = new ArrayList<>();
@@ -51,22 +39,6 @@ public class SharedViewModel extends ViewModel {
     //////////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Set the value that goes into the mutable text.
-     * @param name string to add
-     */
-    public void setName(String name) {
-        mName.setValue(name);
-    }
-
-    /**
-     * Get the mutable text.
-     * @return a string live data object
-     */
-    public LiveData<String> getText() {
-        return mText;
-    }
 
     /**
      * Get a subscription object from the list. This will fetch from the list of
@@ -191,13 +163,14 @@ public class SharedViewModel extends ViewModel {
     public int updateSubscriptionDates() {
         return updateSubscriptionDates(new ZeroTimeCalendar());
     }
+
     /**
      * Iterate through every subscription in the model and regenerate the relevant date info
      * for those whose next payment dates have passed.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      * @return the number of subscriptions updated
      */
-    public int updateSubscriptionDates(ZeroTimeCalendar zeroTimeCalendar) {
+    int updateSubscriptionDates(ZeroTimeCalendar zeroTimeCalendar) {
         // Get today's date at 0:00:00 (so it matches with dates in subscriptions)
         Date today = zeroTimeCalendar.getCurrentDate();
 
