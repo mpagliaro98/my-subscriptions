@@ -3,7 +3,6 @@ package com.mpagliaro98.mysubscriptions.model;
 import android.content.Context;
 import android.content.res.Resources;
 import com.mpagliaro98.mysubscriptions.R;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -13,8 +12,6 @@ import java.util.Locale;
 
 /**
  * Subscription value object to store data on an individual subscription.
- * Every field needs a getter and setter so this object can be written to
- * and from files in json form.
  */
 public class Subscription implements Serializable {
 
@@ -62,8 +59,10 @@ public class Subscription implements Serializable {
         this.notifDays = notifDays;
         regenerateSubInfo();
     }
+
     /**
-     * Create and initialize all the values of this subscription.
+     * Create and initialize all the values of this subscription. Includes an option to specify
+     * a calendar for today's date, mostly used for testing.
      * @param id the unique id of this subscription
      * @param name the name of the subscription
      * @param cost how much it costs
@@ -74,9 +73,9 @@ public class Subscription implements Serializable {
      * @param notifDays the number of days before the next payment date a notification will happen
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public Subscription(int id, String name, double cost, Date startDate, String note,
-                        int rechargeFrequency, Category category, int notifDays,
-                        ZeroTimeCalendar zeroTimeCalendar) {
+    Subscription(int id, String name, double cost, Date startDate, String note,
+                 int rechargeFrequency, Category category, int notifDays,
+                 ZeroTimeCalendar zeroTimeCalendar) {
         this.id = id;
         this.name = name;
         this.cost = cost;
