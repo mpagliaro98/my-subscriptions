@@ -162,7 +162,9 @@
     <string name="calendar_sync_name">Subscriptions</string>
     <string name="calendar_sync_security_exception">This app does not have permission to access the calendar, so it could not complete the sync.</string>
     <string name="calendar_sync_name_suffix">is due</string>
-    <string name="calendar_sync_permissions">Calendar permissions are needed to interface with your system calendar (add and remove events).</string>
+    <string name="calendar_sync_permissions_title">Requesting Calendar Permissions</string>
+    <string name="calendar_sync_permissions">Calendar permissions are needed to interface with your system calendar. This app will only add and remove
+                events that it creates itself, and will only access calendar data when the sync calendar button is pressed.</string>
     <string name="calendar_sync_permissions_granted">Calendar permissions successfully granted.</string>
     <string name="calendar_sync_permissions_denied">Calendar permissions were denied.</string>
     <string name="calendar_sync_success">Calendar sync was successful.</string>

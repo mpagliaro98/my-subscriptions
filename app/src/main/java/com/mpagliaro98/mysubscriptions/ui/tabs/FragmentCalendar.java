@@ -370,17 +370,18 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
         // Request the read and write permissions
         if (ActivityCompat.shouldShowRequestPermissionRationale(parentActivity, Manifest.permission.READ_CALENDAR) ||
                 ActivityCompat.shouldShowRequestPermissionRationale(parentActivity, Manifest.permission.WRITE_CALENDAR)) {
-            View view = getView();
-            assert view != null;
-            Snackbar.make(view, R.string.calendar_sync_permissions, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.calendar_sync_permissions_title)
+                    .setMessage(R.string.calendar_sync_permissions)
+                    .setNegativeButton(R.string.close, null)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             ActivityCompat.requestPermissions(parentActivity,
                                     new String[]{Manifest.permission.READ_CALENDAR,
                                     Manifest.permission.WRITE_CALENDAR}, PERMISSION_CALENDAR_REQUEST_CODE);
                         }
-            }).show();
+                    }).show();
         } else {
             ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_CALENDAR,
                     Manifest.permission.WRITE_CALENDAR}, PERMISSION_CALENDAR_REQUEST_CODE);
