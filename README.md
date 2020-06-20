@@ -3,7 +3,7 @@
 
 Author: Michael Pagliaro
 
-![Home Tab Screenshots](https://github.com/mpagliaro98/my-subscriptions/blob/master/app/src/main/res/screenshots/screenshot_dev_multi.png?raw=true)
+![Home Tab Screenshots](https://github.com/mpagliaro98/my-subscriptions/blob/master/app/src/main/res/assets/screenshots/screenshot_dev_multi.png?raw=true)
 
 This is a work-in-progress personal project for Android, which when
 complete will allow the user to input and keep track of online
