@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/create_constr_layout"
+                android:id="@+id/create_constr_layout1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -53,61 +53,8 @@
                     android:inputType="textPersonName"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/create_cost"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:ems="10"
-                    android:hint="@string/create_cost"
-                    android:inputType="numberDecimal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_name" />
-
-                <Spinner
-                    android:id="@+id/create_freq_dropdown"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:entries="@array/array_freq_dropdown"
-                    android:spinnerMode="dropdown"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_cost" />
-
-                <EditText
-                    android:id="@+id/create_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:ems="10"
-                    android:hint="@string/date_format"
-                    android:inputType="date"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_freq_dropdown" />
-
-                <TextView
-                    android:id="@+id/create_next_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_category_dropdown" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:autofillHints="" />
 
                 <TextView
                     android:id="@+id/create_text_cost"
@@ -124,6 +71,20 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent" />
 
+                <EditText
+                    android:id="@+id/create_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:ems="10"
+                    android:hint="@string/create_cost"
+                    android:inputType="numberDecimal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_name"
+                    android:autofillHints="" />
+
                 <TextView
                     android:id="@+id/create_text_freq"
                     android:layout_width="0dp"
@@ -137,6 +98,18 @@
                     app:layout_constraintBottom_toBottomOf="@+id/create_freq_dropdown"
                     app:layout_constraintEnd_toStartOf="@+id/create_freq_dropdown"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <Spinner
+                    android:id="@+id/create_freq_dropdown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:entries="@array/array_freq_dropdown"
+                    android:spinnerMode="dropdown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_cost" />
 
                 <TextView
                     android:id="@+id/create_text_date"
@@ -152,15 +125,31 @@
                     app:layout_constraintEnd_toStartOf="@+id/create_date_picker"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <Spinner
-                    android:id="@+id/create_category_dropdown"
+                <ImageView
+                    android:id="@+id/create_date_picker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="11dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/create_date"
+                    app:layout_constraintEnd_toStartOf="@+id/create_date"
+                    app:srcCompat="@drawable/ic_date_range_grey_24dp"
+                    android:contentDescription="@string/create_date_picker_desc" />
+
+                <EditText
+                    android:id="@+id/create_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
+                    android:ems="10"
+                    android:hint="@string/date_format"
+                    android:inputType="date"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_date" />
+                    app:layout_constraintTop_toBottomOf="@+id/create_freq_dropdown"
+                    android:autofillHints="" />
 
                 <TextView
                     android:id="@+id/create_text_category"
@@ -185,23 +174,39 @@
                     android:layout_marginBottom="2dp"
                     app:layout_constraintBottom_toBottomOf="@+id/create_category_dropdown"
                     app:layout_constraintEnd_toStartOf="@+id/create_category_dropdown"
-                    app:srcCompat="@drawable/circle_element" />
+                    app:srcCompat="@drawable/circle_element"
+                    android:contentDescription="@string/create_color_desc" />
 
-                <ImageView
-                    android:id="@+id/create_date_picker"
+                <Spinner
+                    android:id="@+id/create_category_dropdown"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="11dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_date"
-                    app:layout_constraintEnd_toStartOf="@+id/create_date"
-                    app:srcCompat="@drawable/ic_date_range_grey_24dp" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_date" />
+
+                <TextView
+                    android:id="@+id/create_next_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_category_dropdown" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constrLayout2"
+                android:id="@+id/create_constr_layout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
@@ -213,7 +218,34 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/create_constr_layout">
+                app:layout_constraintTop_toBottomOf="@+id/create_constr_layout1">
+
+                <TextView
+                    android:id="@+id/create_text_notif"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="3dp"
+                    android:text="@string/create_text_notif"
+                    app:layout_constraintBottom_toBottomOf="@+id/create_notif_dropdown"
+                    app:layout_constraintEnd_toStartOf="@+id/create_notif_dropdown"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/create_notif_dropdown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:entries="@array/array_notif_dropdown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/create_note"
@@ -231,34 +263,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_notif_dropdown" />
+                    app:layout_constraintTop_toBottomOf="@+id/create_notif_dropdown"
+                    android:autofillHints="" />
 
-                <Spinner
-                    android:id="@+id/create_notif_dropdown"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:entries="@array/array_notif_dropdown"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/create_text_notif"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="3dp"
-                    android:text="@string/create_text_notif"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_notif_dropdown"
-                    app:layout_constraintEnd_toStartOf="@+id/create_notif_dropdown"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
@@ -274,7 +281,7 @@
                 android:text="@string/create_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constrLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/create_constr_layout2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

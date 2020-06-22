@@ -51,6 +51,8 @@
     <string name="create_title_view">View Subscription</string>
     <string name="create_title_edit">Edit Subscription</string>
     <string name="create_title_create">Create Subscription</string>
+    <string name="create_color_desc">The color of the chosen category.</string>
+    <string name="create_date_picker_desc">Select the date this subscription began.</string>
     <!-- Create page errors -->
     <string name="create_error_name">You must input a name.</string>
     <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
