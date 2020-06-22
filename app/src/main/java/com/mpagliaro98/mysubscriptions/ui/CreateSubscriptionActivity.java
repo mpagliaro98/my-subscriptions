@@ -82,26 +82,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_subscription);
 
-        // Create each category and add them to the category list
-        initializeCategories();
-
         // Put the back button on this activity's title bar
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // Pre-load each field from the page so we can easily modify them
-        TextView name = findViewById(R.id.create_name);
-        TextView cost = findViewById(R.id.create_cost);
-        final TextView date = findViewById(R.id.create_date);
-        ImageView datePicker = findViewById(R.id.create_date_picker);
-        TextView note = findViewById(R.id.create_note);
-        Spinner frequency = findViewById(R.id.create_freq_dropdown);
-        TextView nextDate = findViewById(R.id.create_next_date);
-        Button createButton = findViewById(R.id.create_button_finish);
-        final ImageView catColor = findViewById(R.id.create_category_color);
-        final Spinner category = findViewById(R.id.create_category_dropdown);
-        Spinner notifications = findViewById(R.id.create_notif_dropdown);
 
         // Set the settings-defined currency symbol in the cost text field
         TextView costText = findViewById(R.id.create_text_cost);
@@ -116,56 +100,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                 getString(R.string.create_text_cost2);
         costText.setText(costTextStr);
 
-        // Set the list of items in the category dropdown
-        ArrayAdapter<Category> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, categoryList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        category.setAdapter(adapter);
+        // Initialize the UI for the category dropdown and color
+        initializeCategories();
+        initializeCategoryUI();
 
-        // Create a listener that sets the category's color beside the dropdown
-        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                catColor.setColorFilter(((Category)category.getSelectedItem()).getColor(),
-                        PorterDuff.Mode.SRC_IN);
-            }
+        // Initialize the UI for the date picker
+        initializeDatePickerUI();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        // Create the functionality for the date picker
-        datePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
-                try {
-                    Date startDate = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(date.getText().toString());
-                    assert startDate != null;
-                    zeroTimeCalendar.setTimeToDate(startDate);
-                } catch (ParseException e) {
-                    zeroTimeCalendar.setTimeToDate(new Date());
-                }
-                int day = zeroTimeCalendar.getDayOfMonth();
-                int month = zeroTimeCalendar.getMonth();
-                int year = zeroTimeCalendar.getYear();
-                // Start the date picker display at the date in the start date field if valid, if
-                // not it displays at today's date
-                DatePickerDialog picker = new DatePickerDialog(CreateSubscriptionActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
-                                zeroTimeCalendar.setTime(year, monthOfYear, dayOfMonth);
-                                Date enteredDate = zeroTimeCalendar.getCurrentDate();
-                                date.setText(new SimpleDateFormat(getString(R.string.date_format),
-                                        Locale.US).format(enteredDate));
-                            }
-                        }, year, month, day);
-                picker.show();
-            }
-        });
-
+        // Process incoming data through the intent
         Intent intent = getIntent();
         // This incoming subscription will be null when page type is CREATE
         sub = (Subscription)intent.getSerializableExtra(VIEW_SUB_MESSAGE);
@@ -178,68 +120,15 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // For create, set the page to the create version with editable, empty fields
         if (pageType == PAGE_TYPE.CREATE) {
-            setTitle(R.string.create_title_create);
-            // Auto-fill the date field with the current date
-            date.setText(new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(new Date()));
-            // Make sure the next date field can't be seen when creating
-            nextDate.setVisibility(View.INVISIBLE);
+            pageSetCreateMode();
         }
         // For view, populate the page with un-selectable text fields for each subscription field
         else if (pageType == PAGE_TYPE.VIEW) {
-            assert sub != null;
-            setTitle(R.string.create_title_view);
-            // Set each field to be non-editable
-            name.setLinksClickable(false);
-            name.setCursorVisible(false);
-            name.setFocusableInTouchMode(false);
-            cost.setLinksClickable(false);
-            cost.setCursorVisible(false);
-            cost.setFocusableInTouchMode(false);
-            date.setLinksClickable(false);
-            date.setCursorVisible(false);
-            date.setFocusableInTouchMode(false);
-            datePicker.setVisibility(View.INVISIBLE);
-            note.setLinksClickable(false);
-            note.setCursorVisible(false);
-            note.setFocusableInTouchMode(false);
-            // Set the recharge dropdown to this subscription's value
-            frequency.setEnabled(false);
-            frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
-            // Write the next payment date to the screen
-            String nextDateStr = getString(R.string.create_text_next_date) + " " +
-                    sub.getNextPaymentDateString(getResources());
-            nextDate.setText(nextDateStr);
-            // Set the category dropdown to this subscription's category
-            category.setEnabled(false);
-            category.setSelection(getCategoryDropdownSelection(sub.getCategory()));
-            // Set the notifications dropdown to the proper value
-            notifications.setEnabled(false);
-            notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
-            createButton.setVisibility(View.INVISIBLE);
-
-            // Fill every field with the values of the subscription to view
-            name.setText(sub.getName());
-            cost.setText(sub.getCostString(getApplicationContext()));
-            date.setText(sub.getStartDateString(getResources()));
-            note.setText(sub.getNote());
+            pageSetViewMode();
         }
+        // For edit, populate the page with change-able text fields
         else if (pageType == PAGE_TYPE.EDIT) {
-            assert sub != null;
-            setTitle(R.string.create_title_edit);
-            // Fill every field with the values of the subscription to edit
-            createButton.setText(R.string.create_button_edit);
-            name.setText(sub.getName());
-            cost.setText(String.valueOf(sub.getCost()));
-            date.setText(sub.getStartDateString(getResources()));
-            note.setText(sub.getNote());
-            // Set the recharge dropdown to this subscription's value
-            frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
-            // Set the category dropdown to this subscription's category
-            category.setSelection(getCategoryDropdownSelection(sub.getCategory()));
-            // Set the notifications dropdown to the proper value
-            notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
-            // Make sure the next date field can't be seen when editing
-            nextDate.setVisibility(View.INVISIBLE);
+            pageSetEditMode();
         }
     }
 
@@ -595,5 +484,185 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                 add(new Category(getResources().getColor(R.color.colorCategoryShopping), "Online Shopping"));
                 add(new Category(getResources().getColor(R.color.colorCategoryMisc), "Misc"));
             }};
+    }
+
+    /**
+     * A helper function to initialize parts of the UI concerning category selection. This will
+     * populate the dropdown list with each valid category, then create the listener that will
+     * change the category color depending on the selected category.
+     */
+    private void initializeCategoryUI() {
+        final ImageView catColor = findViewById(R.id.create_category_color);
+        final Spinner category = findViewById(R.id.create_category_dropdown);
+
+        // Set the list of items in the category dropdown
+        ArrayAdapter<Category> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, categoryList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(adapter);
+
+        // Create a listener that sets the category's color beside the dropdown
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                catColor.setColorFilter(((Category)category.getSelectedItem()).getColor(),
+                        PorterDuff.Mode.SRC_IN);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    /**
+     * A helper function to initialize parts of the UI concerning the date picker. This will
+     * create the listener for the date picker, which causes a date selection to appear.
+     */
+    private void initializeDatePickerUI() {
+        final TextView date = findViewById(R.id.create_date);
+        ImageView datePicker = findViewById(R.id.create_date_picker);
+
+        // Create the functionality for the date picker
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
+                try {
+                    Date startDate = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(date.getText().toString());
+                    assert startDate != null;
+                    zeroTimeCalendar.setTimeToDate(startDate);
+                } catch (ParseException e) {
+                    zeroTimeCalendar.setTimeToDate(new Date());
+                }
+                int day = zeroTimeCalendar.getDayOfMonth();
+                int month = zeroTimeCalendar.getMonth();
+                int year = zeroTimeCalendar.getYear();
+                // Start the date picker display at the date in the start date field if valid, if
+                // not it displays at today's date
+                DatePickerDialog picker = new DatePickerDialog(CreateSubscriptionActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
+                                zeroTimeCalendar.setTime(year, monthOfYear, dayOfMonth);
+                                Date enteredDate = zeroTimeCalendar.getCurrentDate();
+                                date.setText(new SimpleDateFormat(getString(R.string.date_format),
+                                        Locale.US).format(enteredDate));
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+    }
+
+    /**
+     * A helper function to modify the fields on the page for how they should appear in
+     * create mode.
+     */
+    private void pageSetCreateMode() {
+        TextView date = findViewById(R.id.create_date);
+        TextView nextDate = findViewById(R.id.create_next_date);
+        setTitle(R.string.create_title_create);
+
+        // Auto-fill the date field with the current date
+        date.setText(new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(new Date()));
+
+        // Make sure the next date field can't be seen when creating
+        nextDate.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * A helper function to modify the fields on the page for how they should appear in
+     * view mode.
+     */
+    private void pageSetViewMode() {
+        TextView name = findViewById(R.id.create_name);
+        TextView cost = findViewById(R.id.create_cost);
+        TextView note = findViewById(R.id.create_note);
+        Spinner frequency = findViewById(R.id.create_freq_dropdown);
+        TextView nextDate = findViewById(R.id.create_next_date);
+        Button createButton = findViewById(R.id.create_button_finish);
+        Spinner notifications = findViewById(R.id.create_notif_dropdown);
+        TextView date = findViewById(R.id.create_date);
+        ImageView datePicker = findViewById(R.id.create_date_picker);
+        Spinner category = findViewById(R.id.create_category_dropdown);
+        assert sub != null;
+        setTitle(R.string.create_title_view);
+
+        // Set each field to be non-editable
+        name.setLinksClickable(false);
+        name.setCursorVisible(false);
+        name.setFocusableInTouchMode(false);
+        cost.setLinksClickable(false);
+        cost.setCursorVisible(false);
+        cost.setFocusableInTouchMode(false);
+        date.setLinksClickable(false);
+        date.setCursorVisible(false);
+        date.setFocusableInTouchMode(false);
+        datePicker.setVisibility(View.INVISIBLE);
+        note.setLinksClickable(false);
+        note.setCursorVisible(false);
+        note.setFocusableInTouchMode(false);
+
+        // Set the recharge dropdown to this subscription's value
+        frequency.setEnabled(false);
+        frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
+
+        // Write the next payment date to the screen
+        String nextDateStr = getString(R.string.create_text_next_date) + " " +
+                sub.getNextPaymentDateString(getResources());
+        nextDate.setText(nextDateStr);
+
+        // Set the category dropdown to this subscription's category
+        category.setEnabled(false);
+        category.setSelection(getCategoryDropdownSelection(sub.getCategory()));
+
+        // Set the notifications dropdown to the proper value
+        notifications.setEnabled(false);
+        notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
+        createButton.setVisibility(View.INVISIBLE);
+
+        // Fill every field with the values of the subscription to view
+        name.setText(sub.getName());
+        cost.setText(sub.getCostString(getApplicationContext()));
+        date.setText(sub.getStartDateString(getResources()));
+        note.setText(sub.getNote());
+    }
+
+    /**
+     * A helper function to modify the fields on the page for how they should appear in
+     * edit mode.
+     */
+    private void pageSetEditMode() {
+        TextView name = findViewById(R.id.create_name);
+        TextView cost = findViewById(R.id.create_cost);
+        TextView note = findViewById(R.id.create_note);
+        Spinner frequency = findViewById(R.id.create_freq_dropdown);
+        TextView nextDate = findViewById(R.id.create_next_date);
+        Button createButton = findViewById(R.id.create_button_finish);
+        Spinner notifications = findViewById(R.id.create_notif_dropdown);
+        TextView date = findViewById(R.id.create_date);
+        Spinner category = findViewById(R.id.create_category_dropdown);
+        assert sub != null;
+        setTitle(R.string.create_title_edit);
+
+        // Fill every field with the values of the subscription to edit
+        createButton.setText(R.string.create_button_edit);
+        name.setText(sub.getName());
+        cost.setText(String.valueOf(sub.getCost()));
+        date.setText(sub.getStartDateString(getResources()));
+        note.setText(sub.getNote());
+
+        // Set the recharge dropdown to this subscription's value
+        frequency.setSelection(getRechargeDropdownSelection(sub.getRechargeFrequency()));
+
+        // Set the category dropdown to this subscription's category
+        category.setSelection(getCategoryDropdownSelection(sub.getCategory()));
+
+        // Set the notifications dropdown to the proper value
+        notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
+
+        // Make sure the next date field can't be seen when editing
+        nextDate.setVisibility(View.INVISIBLE);
     }
 }
