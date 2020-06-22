@@ -233,7 +233,6 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             int marginPx = Math.round((float) 16 * density);
             constraintSet.connect(R.id.analytics_sublayout5, ConstraintSet.BOTTOM,
                     R.id.analytics_constr_layout, ConstraintSet.BOTTOM, marginPx);
-            System.out.println(constraintSet.toString());
             constraintSet.applyTo(parentLayout);
         }
     }
