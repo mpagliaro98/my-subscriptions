@@ -9,9 +9,13 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -568,7 +572,17 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         date.setText(new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(new Date()));
 
         // Make sure the next date field can't be seen when creating
-        nextDate.setVisibility(View.INVISIBLE);
+        ((ViewGroup)nextDate.getParent()).removeView(nextDate);
+        View horizontal = findViewById(R.id.create_horizontal5);
+        ((ViewGroup)horizontal.getParent()).removeView(horizontal);
+        ConstraintLayout parentLayout = findViewById(R.id.create_constr_layout1);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(parentLayout);
+        float density = getResources().getDisplayMetrics().density;
+        int marginPx = Math.round((float) 16 * density);
+        constraintSet.connect(R.id.create_sublayout4, ConstraintSet.BOTTOM,
+                R.id.create_constr_layout1, ConstraintSet.BOTTOM, marginPx);
+        constraintSet.applyTo(parentLayout);
     }
 
     /**
@@ -620,7 +634,17 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Set the notifications dropdown to the proper value
         notifications.setEnabled(false);
         notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
-        createButton.setVisibility(View.INVISIBLE);
+
+        // Remove the button from the page
+        ((ViewGroup)createButton.getParent()).removeView(createButton);
+        ConstraintLayout parentLayout = findViewById(R.id.create_base_constr_layout);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(parentLayout);
+        float density = getResources().getDisplayMetrics().density;
+        int marginPx = Math.round((float) 8 * density);
+        constraintSet.connect(R.id.create_constr_layout2, ConstraintSet.BOTTOM,
+                R.id.create_base_constr_layout, ConstraintSet.BOTTOM, marginPx);
+        constraintSet.applyTo(parentLayout);
 
         // Fill every field with the values of the subscription to view
         name.setText(sub.getName());
@@ -663,6 +687,16 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         notifications.setSelection(getNotifDropdownSelection(sub.getNotifDays()));
 
         // Make sure the next date field can't be seen when editing
-        nextDate.setVisibility(View.INVISIBLE);
+        ((ViewGroup)nextDate.getParent()).removeView(nextDate);
+        View horizontal = findViewById(R.id.create_horizontal5);
+        ((ViewGroup)horizontal.getParent()).removeView(horizontal);
+        ConstraintLayout parentLayout = findViewById(R.id.create_constr_layout1);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(parentLayout);
+        float density = getResources().getDisplayMetrics().density;
+        int marginPx = Math.round((float) 16 * density);
+        constraintSet.connect(R.id.create_sublayout4, ConstraintSet.BOTTOM,
+                R.id.create_constr_layout1, ConstraintSet.BOTTOM, marginPx);
+        constraintSet.applyTo(parentLayout);
     }
 }
