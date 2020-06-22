@@ -56,136 +56,251 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:autofillHints="" />
 
-                <TextView
-                    android:id="@+id/create_text_cost"
+                <View
+                    android:id="@+id/create_horizontal1"
                     android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_name" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/create_sublayout1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="13dp"
-                    android:text="@string/create_text_cost1"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_cost"
-                    app:layout_constraintEnd_toStartOf="@+id/create_cost"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <EditText
-                    android:id="@+id/create_cost"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:ems="10"
-                    android:hint="@string/create_cost"
-                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_name"
-                    android:autofillHints="" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/create_horizontal1">
 
-                <TextView
-                    android:id="@+id/create_text_freq"
+                    <TextView
+                        android:id="@+id/create_text_cost"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/create_text_cost1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_cost"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <EditText
+                        android:id="@+id/create_cost"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:autofillHints=""
+                        android:ems="10"
+                        android:hint="@string/create_cost"
+                        android:inputType="numberDecimal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/create_text_cost"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/create_horizontal2"
                     android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_sublayout1" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/create_sublayout2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="3dp"
-                    android:text="@string/create_text_freq"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_freq_dropdown"
-                    app:layout_constraintEnd_toStartOf="@+id/create_freq_dropdown"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <Spinner
-                    android:id="@+id/create_freq_dropdown"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:entries="@array/array_freq_dropdown"
-                    android:spinnerMode="dropdown"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_cost" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/create_horizontal2">
 
-                <TextView
-                    android:id="@+id/create_text_date"
+                    <TextView
+                        android:id="@+id/create_text_freq"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/create_text_freq"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_freq_dropdown"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <Spinner
+                        android:id="@+id/create_freq_dropdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:entries="@array/array_freq_dropdown"
+                        android:spinnerMode="dropdown"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/create_text_freq"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/create_horizontal3"
                     android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_sublayout2" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/create_sublayout3"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="13dp"
-                    android:text="@string/create_text_date"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_date"
-                    app:layout_constraintEnd_toStartOf="@+id/create_date_picker"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <ImageView
-                    android:id="@+id/create_date_picker"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="11dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_date"
-                    app:layout_constraintEnd_toStartOf="@+id/create_date"
-                    app:srcCompat="@drawable/ic_date_range_grey_24dp"
-                    android:contentDescription="@string/create_date_picker_desc" />
-
-                <EditText
-                    android:id="@+id/create_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:ems="10"
-                    android:hint="@string/date_format"
-                    android:inputType="date"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_freq_dropdown"
-                    android:autofillHints="" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/create_horizontal3">
 
-                <TextView
-                    android:id="@+id/create_text_category"
+                    <TextView
+                        android:id="@+id/create_text_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/create_text_date"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_date_picker"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/create_date_picker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:contentDescription="@string/create_date_picker_desc"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_date"
+                        app:layout_constraintStart_toEndOf="@+id/create_text_date"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_date_range_grey_24dp" />
+
+                    <EditText
+                        android:id="@+id/create_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:autofillHints=""
+                        android:ems="10"
+                        android:hint="@string/date_format"
+                        android:inputType="date"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/create_date_picker"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/create_horizontal4"
                     android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_sublayout3" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/create_sublayout4"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/create_text_category"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_category_dropdown"
-                    app:layout_constraintEnd_toStartOf="@+id/create_category_color"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <ImageView
-                    android:id="@+id/create_category_color"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_category_dropdown"
-                    app:layout_constraintEnd_toStartOf="@+id/create_category_dropdown"
-                    app:srcCompat="@drawable/circle_element"
-                    android:contentDescription="@string/create_color_desc" />
-
-                <Spinner
-                    android:id="@+id/create_category_dropdown"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_date" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/create_horizontal4">
+
+                    <TextView
+                        android:id="@+id/create_text_category"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/create_text_category"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_category_color"/>
+
+                    <ImageView
+                        android:id="@+id/create_category_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:contentDescription="@string/create_color_desc"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_category_dropdown"
+                        app:layout_constraintStart_toEndOf="@+id/create_text_category"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/circle_element" />
+
+                    <Spinner
+                        android:id="@+id/create_category_dropdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/create_category_color"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/create_horizontal5"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_sublayout4" />
 
                 <TextView
                     android:id="@+id/create_next_date"
@@ -201,7 +316,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_category_dropdown" />
+                    app:layout_constraintTop_toBottomOf="@+id/create_horizontal5" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -220,32 +335,55 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/create_constr_layout1">
 
-                <TextView
-                    android:id="@+id/create_text_notif"
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/create_sublayout5"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="3dp"
-                    android:text="@string/create_text_notif"
-                    app:layout_constraintBottom_toBottomOf="@+id/create_notif_dropdown"
-                    app:layout_constraintEnd_toStartOf="@+id/create_notif_dropdown"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Spinner
-                    android:id="@+id/create_notif_dropdown"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
-                    android:entries="@array/array_notif_dropdown"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/create_text_notif"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/create_text_notif"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/create_notif_dropdown"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/create_notif_dropdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:entries="@array/array_notif_dropdown"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/create_text_notif"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/create_horizontal6"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorLightGreyBG"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/create_sublayout5" />
 
                 <EditText
                     android:id="@+id/create_note"
@@ -257,14 +395,14 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
+                    android:autofillHints=""
                     android:ems="10"
                     android:hint="@string/create_note"
                     android:inputType="textMultiLine"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/create_notif_dropdown"
-                    android:autofillHints="" />
+                    app:layout_constraintTop_toBottomOf="@id/create_horizontal6" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
