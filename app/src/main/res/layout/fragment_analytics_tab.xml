@@ -104,7 +104,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/horizontal1"
+                    android:id="@+id/analytics_horizontal1"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -125,7 +125,7 @@
                     android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal1">
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_horizontal1">
 
                     <TextView
                         android:id="@+id/analytics_text_restofmonth"
@@ -157,7 +157,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/horizontal2"
+                    android:id="@+id/analytics_horizontal2"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -178,7 +178,7 @@
                     android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal2">
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_horizontal2">
 
                     <TextView
                         android:id="@+id/analytics_text_nextmonth"
@@ -210,7 +210,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/horizontal3"
+                    android:id="@+id/analytics_horizontal3"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -231,7 +231,7 @@
                     android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal3">
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_horizontal3">
 
                     <TextView
                         android:id="@+id/analytics_text_yearly"
@@ -263,7 +263,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/horizontal4"
+                    android:id="@+id/analytics_horizontal4"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -284,7 +284,7 @@
                     android:layout_marginBottom="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal4">
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_horizontal4">
 
                     <TextView
                         android:id="@+id/analytics_text_mostexpensive"
@@ -316,7 +316,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/horizontal5"
+                    android:id="@+id/analytics_horizontal5"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="16dp"
@@ -338,7 +338,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal5">
+                    app:layout_constraintTop_toBottomOf="@+id/analytics_horizontal5">
 
                     <TextView
                         android:id="@+id/analytics_text_frequentrecharge"

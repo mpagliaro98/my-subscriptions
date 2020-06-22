@@ -223,7 +223,7 @@ public class FragmentAnalytics extends Fragment implements SavedStateCompatible 
             ConstraintLayout subLayout = root.findViewById(R.id.analytics_sublayout6);
             subLayout.removeAllViews();
             ((ViewGroup)subLayout.getParent()).removeView(subLayout);
-            View horizontal = root.findViewById(R.id.horizontal5);
+            View horizontal = root.findViewById(R.id.analytics_horizontal5);
             ((ViewGroup)horizontal.getParent()).removeView(horizontal);
             // Re-wire the constraints in the absence of this section
             ConstraintLayout parentLayout = root.findViewById(R.id.analytics_constr_layout);
