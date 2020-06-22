@@ -99,6 +99,7 @@
     <string name="settings_delete_button">Delete Data</string>
     <string name="settings_delete_message">Would you like to delete all your subscription data?</string>
     <string name="settings_delete_success">Your subscription data was successfully deleted.</string>
+    <string name="settings_time_picker_desc">Select the time notifications fire.</string>
     <!-- Currency symbols -->
     <string name="currency_us">$</string>
     <string name="currency_uk">£</string>
