@@ -55,9 +55,13 @@
     <string name="create_date_picker_desc">Select the date this subscription began.</string>
     <!-- Create page errors -->
     <string name="create_error_name">You must input a name.</string>
+    <string name="create_error_name_length">The name is too long.</string>
     <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
+    <string name="create_error_date_length">The date is too long.</string>
     <string name="create_error_cost">The cost must be a valid number.</string>
+    <string name="create_error_cost_length">The cost is too long.</string>
     <string name="create_error_frequency">The frequency value is invalid.</string>
+    <string name="create_error_note_length">The note is too long.</string>
     <!-- Create page recharge frequency list strings -->
     <string name="array_freq_monthly">Every Month</string>
     <string name="array_freq_bimonthly">Every Two Months</string>

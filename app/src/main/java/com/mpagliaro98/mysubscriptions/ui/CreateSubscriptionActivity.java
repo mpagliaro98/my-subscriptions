@@ -306,10 +306,18 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             displayErrorBar(view, R.string.create_error_name);
             return null;
         }
+        if (name.length() > 50) {
+            displayErrorBar(view, R.string.create_error_name_length);
+            return null;
+        }
 
         // Extract the data from date and validate it. The hour, minute, second, and millisecond
         // of this date field will all be 0. (an assumption needed by the Subscription)
         Date date;
+        if (dateText.getText().toString().length() > 10) {
+            displayErrorBar(view, R.string.create_error_date_length);
+            return null;
+        }
         try {
             date = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
@@ -330,6 +338,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         if (costTemp.startsWith(currencySymbol)) {
             costTemp = costTemp.substring(currencySymbol.length());
         }
+        if (costTemp.length() > 15) {
+            displayErrorBar(view, R.string.create_error_cost_length);
+            return null;
+        }
         try {
             cost = Double.parseDouble(costTemp);
         } catch (NumberFormatException e) {
@@ -337,8 +349,12 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             return null;
         }
 
-        // Extract the data from note, no validation needed
+        // Extract the data from note, check the length matches the limit in the view
         String note = noteText.getText().toString();
+        if (note.length() > 2000) {
+            displayErrorBar(view, R.string.create_error_note_length);
+            return null;
+        }
 
         // Set the number of months based on the selection, display an error if an invalid value is found
         int freqMonths;
