@@ -56,7 +56,7 @@
     <!-- Create page errors -->
     <string name="create_error_name">You must input a name.</string>
     <string name="create_error_name_length">The name is too long.</string>
-    <string name="create_error_date">The date must be formatted as MM/DD/YYYY.</string>
+    <string name="create_error_date">The date must be formatted properly.</string>
     <string name="create_error_date_length">The date is too long.</string>
     <string name="create_error_cost">The cost must be a valid number.</string>
     <string name="create_error_cost_length">The cost is too long.</string>

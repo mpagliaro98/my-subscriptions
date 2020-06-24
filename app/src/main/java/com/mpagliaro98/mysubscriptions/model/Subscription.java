@@ -169,11 +169,16 @@ public class Subscription implements Serializable {
 
     /**
      * Get the start date in a string representation based on how date_format is set.
-     * @param resources the resources containing the date_format string
+     * @param context the current application context
      * @return the start date as a string
      */
-    public String getStartDateString(Resources resources) {
-        return new SimpleDateFormat(resources.getString(R.string.date_format_default), Locale.US).format(startDate);
+    public String getStartDateString(Context context) {
+        try {
+            SettingsManager settingsManager = new SettingsManager(context);
+            return new SimpleDateFormat(settingsManager.getDateFormat(), Locale.US).format(startDate);
+        } catch (IOException e) {
+            return new SimpleDateFormat(context.getResources().getString(R.string.date_format_default), Locale.US).format(startDate);
+        }
     }
 
     /**
@@ -202,11 +207,16 @@ public class Subscription implements Serializable {
 
     /**
      * Get the next payment date in a string representation based on how date_format is set.
-     * @param resources the resources containing the date_format string
+     * @param context the current application context
      * @return the next payment date as a string
      */
-    public String getNextPaymentDateString(Resources resources) {
-        return new SimpleDateFormat(resources.getString(R.string.date_format_default), Locale.US).format(nextPaymentDate);
+    public String getNextPaymentDateString(Context context) {
+        try {
+            SettingsManager settingsManager = new SettingsManager(context);
+            return new SimpleDateFormat(settingsManager.getDateFormat(), Locale.US).format(nextPaymentDate);
+        } catch (IOException e) {
+            return new SimpleDateFormat(context.getResources().getString(R.string.date_format_default), Locale.US).format(nextPaymentDate);
+        }
     }
 
     /**

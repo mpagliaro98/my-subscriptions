@@ -76,7 +76,7 @@ public class SubscriptionView extends LinearLayout {
 
         // Set the text of the next payment date and change the color if it's today
         String nextDateStr = context.getString(R.string.subview_next_date) + " " +
-                subscription.getNextPaymentDateString(context.getResources());
+                subscription.getNextPaymentDateString(context);
         textNextDate.setText(nextDateStr);
         if (subscription.getNextPaymentDate().equals(zeroTimeCalendar.getCurrentDate())) {
             textNextDate.setTextColor(context.getResources().getColor(R.color.colorPaymentToday));

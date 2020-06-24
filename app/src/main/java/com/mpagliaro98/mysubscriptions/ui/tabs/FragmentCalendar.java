@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.CalendarSyncRunnable;
+import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
@@ -34,6 +35,8 @@ import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnSyncCalendarListener;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -354,8 +357,15 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
             }
         });
         TextView dateText = root.findViewById(R.id.calendar_date_text_view);
+        String dateFormat;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getContext());
+            dateFormat = settingsManager.getDateFormat();
+        } catch (IOException e) {
+            dateFormat = getString(R.string.date_format_default);
+        }
         String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
-                new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).format(date)
+                new SimpleDateFormat(dateFormat, Locale.US).format(date)
                 + ":";
         dateText.setText(displayStr);
     }

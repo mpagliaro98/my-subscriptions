@@ -91,18 +91,23 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Set the settings-defined currency symbol in the cost text field
+        // Set the settings-defined currency symbol in the cost text field and date format in date field
         TextView costText = findViewById(R.id.create_text_cost);
+        TextView dateText = findViewById(R.id.create_date);
         String currencySymbol;
+        String dateFormat;
         try {
             SettingsManager settingsManager = new SettingsManager(getApplicationContext());
             currencySymbol = settingsManager.getCurrencySymbol();
+            dateFormat = settingsManager.getDateFormat();
         } catch (IOException e) {
             currencySymbol = getString(R.string.currency_default);
+            dateFormat = getString(R.string.date_format_default);
         }
         String costTextStr = costText.getText() + currencySymbol +
                 getString(R.string.create_text_cost2);
         costText.setText(costTextStr);
+        dateText.setHint(dateFormat);
 
         // Initialize the UI for the category dropdown and color
         initializeCategories();
@@ -314,12 +319,19 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Extract the data from date and validate it. The hour, minute, second, and millisecond
         // of this date field will all be 0. (an assumption needed by the Subscription)
         Date date;
+        String dateFormat;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            dateFormat = settingsManager.getDateFormat();
+        } catch (IOException e) {
+            dateFormat = getString(R.string.date_format_default);
+        }
         if (dateText.getText().toString().length() > 10) {
             displayErrorBar(view, R.string.create_error_date_length);
             return null;
         }
         try {
-            date = new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).parse(dateText.getText().toString());
+            date = new SimpleDateFormat(dateFormat, Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
             displayErrorBar(view, R.string.create_error_date);
             return null;
@@ -551,8 +563,15 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
+                String dateFormat;
                 try {
-                    Date startDate = new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).parse(date.getText().toString());
+                    SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+                    dateFormat = settingsManager.getDateFormat();
+                } catch (IOException e) {
+                    dateFormat = getString(R.string.date_format_default);
+                }
+                try {
+                    Date startDate = new SimpleDateFormat(dateFormat, Locale.US).parse(date.getText().toString());
                     assert startDate != null;
                     zeroTimeCalendar.setTimeToDate(startDate);
                 } catch (ParseException e) {
@@ -570,8 +589,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                                 ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
                                 zeroTimeCalendar.setTime(year, monthOfYear, dayOfMonth);
                                 Date enteredDate = zeroTimeCalendar.getCurrentDate();
-                                date.setText(new SimpleDateFormat(getString(R.string.date_format_default),
-                                        Locale.US).format(enteredDate));
+                                String dateFormat;
+                                try {
+                                    SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+                                    dateFormat = settingsManager.getDateFormat();
+                                } catch (IOException e) {
+                                    dateFormat = getString(R.string.date_format_default);
+                                }
+                                date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(enteredDate));
                             }
                         }, year, month, day);
                 picker.show();
@@ -589,7 +614,14 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         setTitle(R.string.create_title_create);
 
         // Auto-fill the date field with the current date
-        date.setText(new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).format(new Date()));
+        String dateFormat;
+        try {
+            SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            dateFormat = settingsManager.getDateFormat();
+        } catch (IOException e) {
+            dateFormat = getString(R.string.date_format_default);
+        }
+        date.setText(new SimpleDateFormat(dateFormat, Locale.US).format(new Date()));
 
         // Make sure the next date field can't be seen when creating
         ((ViewGroup)nextDate.getParent()).removeView(nextDate);
@@ -644,7 +676,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
 
         // Write the next payment date to the screen
         String nextDateStr = getString(R.string.create_text_next_date) + " " +
-                sub.getNextPaymentDateString(getResources());
+                sub.getNextPaymentDateString(getApplicationContext());
         nextDate.setText(nextDateStr);
 
         // Set the category dropdown to this subscription's category
@@ -669,7 +701,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         // Fill every field with the values of the subscription to view
         name.setText(sub.getName());
         cost.setText(sub.getCostString(getApplicationContext()));
-        date.setText(sub.getStartDateString(getResources()));
+        date.setText(sub.getStartDateString(getApplicationContext()));
         note.setText(sub.getNote());
     }
 
@@ -694,7 +726,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         createButton.setText(R.string.create_button_edit);
         name.setText(sub.getName());
         cost.setText(String.valueOf(sub.getCost()));
-        date.setText(sub.getStartDateString(getResources()));
+        date.setText(sub.getStartDateString(getApplicationContext()));
         note.setText(sub.getNote());
 
         // Set the recharge dropdown to this subscription's value
