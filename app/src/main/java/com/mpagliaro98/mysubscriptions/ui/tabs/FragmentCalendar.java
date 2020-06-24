@@ -355,7 +355,7 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
         });
         TextView dateText = root.findViewById(R.id.calendar_date_text_view);
         String displayStr = getString(R.string.calendar_list_text_prefix) + " " +
-                new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(date)
+                new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).format(date)
                 + ":";
         dateText.setText(displayStr);
     }

@@ -225,7 +225,7 @@
                         android:layout_marginLeft="8dp"
                         android:autofillHints=""
                         android:ems="10"
-                        android:hint="@string/date_format"
+                        android:hint="@string/date_format_default"
                         android:inputType="date"
                         android:maxLength="10"
                         app:layout_constraintBottom_toBottomOf="parent"

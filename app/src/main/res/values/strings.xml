@@ -5,7 +5,7 @@
     <string name="tab_text_calendar">Calendar</string>
     <string name="tab_text_home">Home</string>
     <string name="tab_text_analytics">Analytics</string>
-    <string name="date_format">MM/dd/yyyy</string>
+    <string name="date_format_default">MM/dd/yyyy</string>
     <string name="time_format">HH:mm:ss</string>
     <string name="cost_format">%.2f</string>
     <string name="currency_default">$</string>
@@ -113,6 +113,11 @@
     <string name="currency_eu">€</string>
     <string name="currency_ko">₩</string>
     <string name="currency_jp">¥</string>
+    <!-- Date formats -->
+    <string name="date_format_1">MM/dd/yyyy</string>
+    <string name="date_format_2">dd/MM/yyyy</string>
+    <string name="date_format_3">yyyy/MM/dd</string>
+    <string name="date_format_4">yyyy/dd/MM</string>
 
     <!-- Analytics tab strings -->
     <string name="analytics_thismonth">Total due this month:</string>
@@ -216,5 +221,11 @@
         <item>@string/array_breakdown_three_months</item>
         <item>@string/array_breakdown_six_months</item>
         <item>@string/array_breakdown_one_year</item>
+    </string-array>
+    <string-array name="array_date_format">
+        <item>@string/date_format_1</item>
+        <item>@string/date_format_2</item>
+        <item>@string/date_format_3</item>
+        <item>@string/date_format_4</item>
     </string-array>
 </resources>

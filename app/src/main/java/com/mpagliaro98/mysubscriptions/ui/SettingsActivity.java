@@ -124,7 +124,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             // Save the settings and display a success message if it works
             settingsManager.setSettings(notificationsOn, notifTime, currencySymbol,
-                    getApplicationContext());
+                    getString(R.string.date_format_default), getApplicationContext());
             MainActivity.setRecurringAlarm(getApplicationContext());
             Snackbar successBar = Snackbar.make(findViewById(android.R.id.content),
                     R.string.settings_snackbar_success, Snackbar.LENGTH_LONG);

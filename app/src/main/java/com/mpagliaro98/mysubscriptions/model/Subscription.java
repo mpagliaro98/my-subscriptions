@@ -173,7 +173,7 @@ public class Subscription implements Serializable {
      * @return the start date as a string
      */
     public String getStartDateString(Resources resources) {
-        return new SimpleDateFormat(resources.getString(R.string.date_format), Locale.US).format(startDate);
+        return new SimpleDateFormat(resources.getString(R.string.date_format_default), Locale.US).format(startDate);
     }
 
     /**
@@ -206,7 +206,7 @@ public class Subscription implements Serializable {
      * @return the next payment date as a string
      */
     public String getNextPaymentDateString(Resources resources) {
-        return new SimpleDateFormat(resources.getString(R.string.date_format), Locale.US).format(nextPaymentDate);
+        return new SimpleDateFormat(resources.getString(R.string.date_format_default), Locale.US).format(nextPaymentDate);
     }
 
     /**

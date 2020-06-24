@@ -319,7 +319,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             return null;
         }
         try {
-            date = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(dateText.getText().toString());
+            date = new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).parse(dateText.getText().toString());
         } catch (ParseException e) {
             displayErrorBar(view, R.string.create_error_date);
             return null;
@@ -552,7 +552,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
                 try {
-                    Date startDate = new SimpleDateFormat(getString(R.string.date_format), Locale.US).parse(date.getText().toString());
+                    Date startDate = new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).parse(date.getText().toString());
                     assert startDate != null;
                     zeroTimeCalendar.setTimeToDate(startDate);
                 } catch (ParseException e) {
@@ -570,7 +570,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                                 ZeroTimeCalendar zeroTimeCalendar = new ZeroTimeCalendar();
                                 zeroTimeCalendar.setTime(year, monthOfYear, dayOfMonth);
                                 Date enteredDate = zeroTimeCalendar.getCurrentDate();
-                                date.setText(new SimpleDateFormat(getString(R.string.date_format),
+                                date.setText(new SimpleDateFormat(getString(R.string.date_format_default),
                                         Locale.US).format(enteredDate));
                             }
                         }, year, month, day);
@@ -589,7 +589,7 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         setTitle(R.string.create_title_create);
 
         // Auto-fill the date field with the current date
-        date.setText(new SimpleDateFormat(getString(R.string.date_format), Locale.US).format(new Date()));
+        date.setText(new SimpleDateFormat(getString(R.string.date_format_default), Locale.US).format(new Date()));
 
         // Make sure the next date field can't be seen when creating
         ((ViewGroup)nextDate.getParent()).removeView(nextDate);

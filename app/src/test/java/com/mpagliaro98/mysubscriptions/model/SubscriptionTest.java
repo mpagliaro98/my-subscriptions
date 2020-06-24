@@ -8,7 +8,6 @@ import org.junit.Test;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -260,7 +259,7 @@ public class SubscriptionTest {
         when(context.getResources()).thenReturn(resources);
         when(resources.getString(R.string.currency_default)).thenReturn("$");
         when(resources.getString(R.string.cost_format)).thenReturn("%.2f");
-        when(resources.getString(R.string.date_format)).thenReturn("MM/dd/yyyy");
+        when(resources.getString(R.string.date_format_default)).thenReturn("MM/dd/yyyy");
 
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
                 6, category, 7, zeroTimeCalendar);
