@@ -106,6 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
             Switch notifSwitch = findViewById(R.id.settings_notifications);
             TextView time = findViewById(R.id.settings_result_notiftime);
             Spinner currencyDropdown = findViewById(R.id.settings_currency_dropdown);
+            Spinner dateFormatDropdown = findViewById(R.id.settings_date_format_dropdown);
 
             // Get the values from the UI
             boolean notificationsOn = notifSwitch.isChecked();
@@ -121,10 +122,11 @@ public class SettingsActivity extends AppCompatActivity {
                 notifTime = calendar.getTime();
             }
             String currencySymbol = (String)currencyDropdown.getSelectedItem();
+            String dateFormat = (String)dateFormatDropdown.getSelectedItem();
 
             // Save the settings and display a success message if it works
             settingsManager.setSettings(notificationsOn, notifTime, currencySymbol,
-                    getString(R.string.date_format_default), getApplicationContext());
+                    dateFormat, getApplicationContext());
             MainActivity.setRecurringAlarm(getApplicationContext());
             Snackbar successBar = Snackbar.make(findViewById(android.R.id.content),
                     R.string.settings_snackbar_success, Snackbar.LENGTH_LONG);
@@ -244,6 +246,7 @@ public class SettingsActivity extends AppCompatActivity {
         ImageView timePicker = findViewById(R.id.settings_time_picker);
         final TextView time = findViewById(R.id.settings_result_notiftime);
         Spinner currencyDropdown = findViewById(R.id.settings_currency_dropdown);
+        Spinner dateFormatDropdown = findViewById(R.id.settings_date_format_dropdown);
 
         // Set notifications to be on or off
         notifSwitch.setChecked(settingsManager.getNotificationsOn());
@@ -290,6 +293,14 @@ public class SettingsActivity extends AppCompatActivity {
         for (int i = 0; i < currencyArray.length; i++) {
             if (settingsManager.getCurrencySymbol().equals(currencyArray[i])) {
                 currencyDropdown.setSelection(i);
+            }
+        }
+
+        // Set the initial selection in the dropdown for date formats
+        String[] dateFormatArray = getResources().getStringArray(R.array.array_date_format);
+        for (int i = 0; i < dateFormatArray.length; i++) {
+            if (settingsManager.getDateFormat().equals(dateFormatArray[i])) {
+                dateFormatDropdown.setSelection(i);
             }
         }
     }
