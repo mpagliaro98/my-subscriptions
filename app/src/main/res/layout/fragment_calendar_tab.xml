@@ -7,6 +7,7 @@
     tools:context=".ui.MainActivity">
 
     <LinearLayout
+        android:id="@+id/calendar_linear_layout_base"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
