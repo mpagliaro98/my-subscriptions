@@ -344,6 +344,10 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
         }
         try {
             cost = Double.parseDouble(costTemp);
+            if (cost < 0.01) {
+                displayErrorBar(view, R.string.create_error_cost_zero);
+                return null;
+            }
         } catch (NumberFormatException e) {
             displayErrorBar(view, R.string.create_error_cost);
             return null;

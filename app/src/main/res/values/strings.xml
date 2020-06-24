@@ -60,6 +60,7 @@
     <string name="create_error_date_length">The date is too long.</string>
     <string name="create_error_cost">The cost must be a valid number.</string>
     <string name="create_error_cost_length">The cost is too long.</string>
+    <string name="create_error_cost_zero">The cost must be more than 0.</string>
     <string name="create_error_frequency">The frequency value is invalid.</string>
     <string name="create_error_note_length">The note is too long.</string>
     <!-- Create page recharge frequency list strings -->
