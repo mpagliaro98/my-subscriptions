@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
@@ -17,6 +19,8 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
+import com.mpagliaro98.mysubscriptions.ui.ViewSubscriptionActivity;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -180,9 +184,8 @@ public class NotificationService {
         // If there's multiple subscriptions, launch the homepage, otherwise launch the subscription
         Intent intent;
         if (subscriptions.size() == 1) {
-            intent = CreateSubscriptionActivity.buildGeneralCreateIntent(context,
-                    CreateSubscriptionActivity.PAGE_TYPE.VIEW, subscriptions.get(0),
-                    subscriptions.get(0).getId(), null);
+            intent = ViewSubscriptionActivity.buildGeneralViewIntent(context,
+                    subscriptions.get(0), subscriptions.get(0).getId(), null);
         } else {
             intent = MainActivity.buildGeneralMainIntent(context, null,
                     null, -1, null);

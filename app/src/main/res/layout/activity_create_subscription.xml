@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorLightGreyBG"
-    tools:context=".ui.CreateSubscriptionActivity">
+    tools:context=".ui.SubscriptionActivityAbstract">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -426,7 +426,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
-                android:onClick="createSubscription"
+                android:onClick="submitSubscription"
                 android:text="@string/create_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

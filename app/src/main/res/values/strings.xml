@@ -54,6 +54,7 @@
     <string name="create_color_desc">The color of the chosen category.</string>
     <string name="create_date_picker_desc">Select the date this subscription began.</string>
     <!-- Create page errors -->
+    <string name="create_error_no_button">This button should not be here, so something went wrong.</string>
     <string name="create_error_name">You must input a name.</string>
     <string name="create_error_name_length">The name is too long.</string>
     <string name="create_error_date">The date must be formatted properly.</string>

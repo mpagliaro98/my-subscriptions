@@ -25,6 +25,7 @@ import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
+import com.mpagliaro98.mysubscriptions.ui.ViewSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnDataListenerReceived;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
@@ -237,8 +238,8 @@ public class FragmentHome extends Fragment implements OnDataListenerReceived, Sa
                     Bundle savedState = null;
                     if (getActivity() != null)
                         savedState = ((MainActivity)getActivity()).gatherSavedState();
-                    Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(getContext(),
-                            CreateSubscriptionActivity.PAGE_TYPE.VIEW, sub, sub.getId(), savedState);
+                    Intent intent = ViewSubscriptionActivity.buildGeneralViewIntent(getContext(),
+                            sub, sub.getId(), savedState);
                     startActivity(intent);
                 }
             });

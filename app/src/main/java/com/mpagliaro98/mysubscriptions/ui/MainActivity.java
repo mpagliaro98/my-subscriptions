@@ -121,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Bundle savedState = gatherSavedState();
 
         // Build the intent and start the activity
-        Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(this,
-                CreateSubscriptionActivity.PAGE_TYPE.CREATE, null, -1, savedState);
+        Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(this, savedState);
         startActivity(intent);
     }
 

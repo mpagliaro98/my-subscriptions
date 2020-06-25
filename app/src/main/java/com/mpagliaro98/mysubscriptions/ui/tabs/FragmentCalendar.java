@@ -30,6 +30,7 @@ import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
 import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
+import com.mpagliaro98.mysubscriptions.ui.ViewSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
@@ -308,8 +309,8 @@ public class FragmentCalendar extends Fragment implements SavedStateCompatible, 
                     Bundle savedState = null;
                     if (getActivity() != null)
                         savedState = ((MainActivity)getActivity()).gatherSavedState();
-                    Intent intent = CreateSubscriptionActivity.buildGeneralCreateIntent(getContext(),
-                            CreateSubscriptionActivity.PAGE_TYPE.VIEW, sub, sub.getId(), savedState);
+                    Intent intent = ViewSubscriptionActivity.buildGeneralViewIntent(getContext(),
+                            sub, sub.getId(), savedState);
                     startActivity(intent);
                 }
             });

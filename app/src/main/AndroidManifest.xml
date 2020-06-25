@@ -17,6 +17,10 @@
         <activity
             android:name=".ui.CreateSubscriptionActivity" />
         <activity
+            android:name=".ui.ViewSubscriptionActivity" />
+        <activity
+            android:name=".ui.EditSubscriptionActivity" />
+        <activity
             android:name=".ui.SettingsActivity" />
         <activity
             android:name=".ui.MainActivity"
