@@ -100,7 +100,6 @@ public class CalendarAdapter extends ArrayAdapter<Date> {
                     DisplayMetrics.DENSITY_DEFAULT);
             double gridSizeEstimate = (screenHeightDp * 0.66) - 90;
             int cellHeight = (int)Math.floor(gridSizeEstimate / 6);
-            System.out.println("USING CELL HEIGHT OF " + cellHeight);
             float pxHeight = cellHeight * ((float) getContext().getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
             view.setMinimumHeight((int)Math.ceil(pxHeight));
         }
