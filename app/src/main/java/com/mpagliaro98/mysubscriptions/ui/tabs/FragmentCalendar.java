@@ -28,7 +28,6 @@ import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
-import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.ViewSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionCalendar;
@@ -36,7 +35,6 @@ import com.mpagliaro98.mysubscriptions.ui.components.SubscriptionView;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.CalendarEventHandler;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.OnSyncCalendarListener;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

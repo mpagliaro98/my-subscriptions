@@ -112,6 +112,43 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     /**
+     * Save instance state to a bundle each time this activity and its child fragments is
+     * destroyed. This most commonly happens when the screen is rotated, causing the activity
+     * and all its fragments to be re-created.
+     * @param outState the bundle of saved state that is filled by this method
+     */
+    @Override
+    protected void onSaveInstanceState(@NonNull final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Gather saved state from each child fragment
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (int fragmentIndex = 0; fragmentIndex < fragments.size(); fragmentIndex++) {
+            SavedStateCompatible fragment = (SavedStateCompatible)fragments.get(fragmentIndex);
+            fragment.fillBundleWithSavedState(outState);
+        }
+    }
+
+    /**
+     * Restore the saved instance state to this activity's child fragments that was gathered
+     * in onSaveInstanceState. This is primarily called when the screen is rotated, so this
+     * fixes the issue of fragments being reset and losing any information on them when being
+     * re-created.
+     * @param savedInstanceState the bundle of saved state to apply to the fragments
+     */
+    @Override
+    protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Re-apply the saved state to each child fragment
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (int fragmentIndex = 0; fragmentIndex < fragments.size(); fragmentIndex++) {
+            SavedStateCompatible fragment = (SavedStateCompatible)fragments.get(fragmentIndex);
+            fragment.applySavedState(savedInstanceState, fragments.get(fragmentIndex).getView());
+        }
+    }
+
+    /**
      * Fired when the create button is pressed from any tab. Passes control over
      * to the create subscription activity.
      * @param view the current application view
