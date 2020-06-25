@@ -68,7 +68,7 @@ public abstract class SubscriptionActivityAbstract extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_subscription);
+        setContentView(R.layout.activity_subscription);
 
         // Put the back button on this activity's title bar
         ActionBar actionBar = getSupportActionBar();
