@@ -416,6 +416,7 @@ public abstract class SubscriptionActivityAbstract extends AppCompatActivity {
                 add(new Category(getResources().getColor(R.color.colorCategoryAudioStreaming), "Audio Streaming"));
                 add(new Category(getResources().getColor(R.color.colorCategoryGaming), "Gaming"));
                 add(new Category(getResources().getColor(R.color.colorCategoryShopping), "Online Shopping"));
+                add(new Category(getResources().getColor(R.color.colorCategoryNews), "News"));
                 add(new Category(getResources().getColor(R.color.colorCategoryMisc), "Misc"));
             }};
     }

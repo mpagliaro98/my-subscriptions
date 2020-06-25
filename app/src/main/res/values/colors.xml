@@ -14,5 +14,6 @@
     <color name="colorCategoryAudioStreaming">#D8C952</color>
     <color name="colorCategoryGaming">#6B68FF</color>
     <color name="colorCategoryShopping">#ADFF16</color>
+    <color name="colorCategoryNews">#C09BFF</color>
     <color name="colorCategoryMisc">#7F6262</color>
 </resources>
