@@ -1,13 +1,17 @@
 package com.mpagliaro98.mysubscriptions.ui;
 
 import androidx.annotation.NonNull;
+import android.Manifest;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -16,6 +20,9 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.ActivityCompat;
 import com.google.android.material.snackbar.Snackbar;
 import com.mpagliaro98.mysubscriptions.R;
 import com.mpagliaro98.mysubscriptions.model.SettingsManager;
@@ -210,7 +217,8 @@ public class SettingsActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            settingsManager.deleteSyncedCalendar();
+                            settingsManager.deleteSyncedCalendar(getApplicationContext());
+                            initializeUI(settingsManager);
                             Snackbar.make(findViewById(android.R.id.content),
                                     R.string.settings_deletesync_success, Snackbar.LENGTH_LONG).show();
                         }
@@ -328,6 +336,25 @@ public class SettingsActivity extends AppCompatActivity {
             if (settingsManager.getDateFormat().equals(dateFormatArray[i])) {
                 dateFormatDropdown.setSelection(i);
             }
+        }
+
+        // If calendar permissions aren't granted or a sync calendar doesn't exist, remove the delete sync calendar button
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED ||
+                !settingsManager.syncedCalendarExists(getApplicationContext())) {
+            Button deleteSyncButton = findViewById(R.id.settings_deletesync);
+            ((ViewGroup)deleteSyncButton.getParent()).removeView(deleteSyncButton);
+            // Re-wire the constraints in the absence of this button
+            ConstraintLayout parentLayout = findViewById(R.id.settings_base_constr_layout);
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(parentLayout);
+            float density = getResources().getDisplayMetrics().density;
+            int marginPx = Math.round((float) 8 * density);
+            constraintSet.connect(R.id.settings_save, ConstraintSet.TOP,
+                    R.id.settings_reset, ConstraintSet.BOTTOM, marginPx);
+            constraintSet.applyTo(parentLayout);
         }
     }
 }

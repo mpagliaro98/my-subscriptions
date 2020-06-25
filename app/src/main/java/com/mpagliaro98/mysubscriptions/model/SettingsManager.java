@@ -1,9 +1,12 @@
 package com.mpagliaro98.mysubscriptions.model;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import com.google.gson.Gson;
 import com.mpagliaro98.mysubscriptions.R;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -122,9 +125,44 @@ public class SettingsManager {
     /**
      * Checks that synced calendar data exists on the user's system calendar, and if it does,
      * deletes the calendar.
+     * @param context the current application context
      */
-    public void deleteSyncedCalendar() {
+    public void deleteSyncedCalendar(Context context) {
+        if (syncedCalendarExists(context)) {
+            Uri uri = Uri.parse(CalendarContract.Calendars.CONTENT_URI.toString());
+            uri = uri.buildUpon().appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+                    .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, context.getString(R.string.app_name))
+                    .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, CalendarSyncRunnable.CALENDAR_ACCOUNT_TYPE).build();
+            context.getContentResolver().delete(uri, null, null);
+        }
+    }
 
+    /**
+     * Checks if any synced calendar data exists on the system by running a query to look for
+     * calendar data. If calendar permissions aren't granted, this will default to false.
+     * @param context the current application context
+     * @return true if a sync calendar was created by this app, false otherwise
+     */
+    public boolean syncedCalendarExists(Context context) {
+        // Build the query to find any calendars made by this app
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
+                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
+                + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+        String[] selectionArgs = new String[] {context.getString(R.string.app_name),
+                CalendarSyncRunnable.CALENDAR_ACCOUNT_TYPE, context.getString(R.string.app_name)};
+
+        // Run the query, if it returns anything then a calendar exists
+        try {
+            Cursor cur = cr.query(uri, CalendarSyncRunnable.EVENT_PROJECTION, selection, selectionArgs, null);
+            assert cur != null;
+            int count = cur.getCount();
+            cur.close();
+            return count > 0;
+        } catch (SecurityException e) {
+            return false;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/settings_base_constr_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -55,10 +56,10 @@
                         android:text="@string/settings_text_notifications"
                         android:textColor="@color/solid_black"
                         android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/settings_notifications"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Switch
                         android:id="@+id/settings_notifications"

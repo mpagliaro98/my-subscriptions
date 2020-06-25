@@ -23,9 +23,9 @@ public class CalendarSyncRunnable extends Thread {
     private OnSyncCalendarListener caller;
 
     // The account type used to create the sync calendar
-    private static final String CALENDAR_ACCOUNT_TYPE = "com.mpagliaro98";
+    static final String CALENDAR_ACCOUNT_TYPE = "com.mpagliaro98";
     // Projection array. Creating indices for this array instead of doing dynamic lookups improves performance
-    private static final String[] EVENT_PROJECTION = new String[] {
+    static final String[] EVENT_PROJECTION = new String[] {
             CalendarContract.Calendars._ID,                           // 0
             CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
             CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
