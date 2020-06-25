@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.mpagliaro98.mysubscriptions.R;
@@ -17,10 +15,8 @@ import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.model.Subscription;
 import com.mpagliaro98.mysubscriptions.model.ZeroTimeCalendar;
-import com.mpagliaro98.mysubscriptions.ui.CreateSubscriptionActivity;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.ViewSubscriptionActivity;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +42,7 @@ public class NotificationService {
      * notifications and accessing the subscription file.
      * @param context the current application context
      */
-    public NotificationService(Context context) {
+    NotificationService(Context context) {
         this.context = context;
     }
 
@@ -54,15 +50,16 @@ public class NotificationService {
      * Main method to create notifications for the subscriptions that require them
      * on any given day and update any subscription dates.
      */
-    public void processBackgroundTasks() {
+    void processBackgroundTasks() {
         processBackgroundTasks(new ZeroTimeCalendar());
     }
+
     /**
      * Main method to create notifications for the subscriptions that require them
      * on any given day and update any subscription dates.
      * @param zeroTimeCalendar a calendar of today's date with the time set to 0:00:00
      */
-    public void processBackgroundTasks(ZeroTimeCalendar zeroTimeCalendar) {
+    void processBackgroundTasks(ZeroTimeCalendar zeroTimeCalendar) {
         // Get the notification manager, which will allow us to send notifications
         NotificationManager notificationManager;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

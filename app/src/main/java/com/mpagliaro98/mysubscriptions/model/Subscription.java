@@ -1,7 +1,6 @@
 package com.mpagliaro98.mysubscriptions.model;
 
 import android.content.Context;
-import android.content.res.Resources;
 import com.mpagliaro98.mysubscriptions.R;
 import java.io.IOException;
 import java.io.Serializable;

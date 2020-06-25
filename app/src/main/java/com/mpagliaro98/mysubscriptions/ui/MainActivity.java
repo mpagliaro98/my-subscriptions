@@ -27,7 +27,6 @@ import com.mpagliaro98.mysubscriptions.ui.interfaces.OnSyncCalendarListener;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
 import com.mpagliaro98.mysubscriptions.ui.tabs.FragmentCalendar;
 import com.mpagliaro98.mysubscriptions.ui.tabs.SectionsPagerAdapter;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;

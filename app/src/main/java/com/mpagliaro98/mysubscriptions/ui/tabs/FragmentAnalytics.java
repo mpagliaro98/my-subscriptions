@@ -3,7 +3,6 @@ package com.mpagliaro98.mysubscriptions.ui.tabs;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import com.mpagliaro98.mysubscriptions.model.SettingsManager;
 import com.mpagliaro98.mysubscriptions.model.SharedViewModel;
 import com.mpagliaro98.mysubscriptions.ui.MainActivity;
 import com.mpagliaro98.mysubscriptions.ui.interfaces.SavedStateCompatible;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
