@@ -195,6 +195,32 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the delete synced calendar button is pressed, which will display a dialog
+     * that when confirmed, will delete the data in the user's system calendar that was created
+     * by this app.
+     * @param view the current application view
+     */
+    public void deleteSyncedCalendar(View view) {
+        try {
+            final SettingsManager settingsManager = new SettingsManager(getApplicationContext());
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.settings_deletesync_button))
+                    .setMessage(getString(R.string.settings_deletesync_message))
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            settingsManager.deleteSyncedCalendar();
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    R.string.settings_deletesync_success, Snackbar.LENGTH_LONG).show();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null).show();
+        } catch (IOException e) {
+            showErrorSnackbar(findViewById(android.R.id.content), getString(R.string.settings_snackbar_ioexception));
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     // STATIC METHODS ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////
