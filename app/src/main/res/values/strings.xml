@@ -17,6 +17,15 @@
     <string name="NA">N/A</string>
     <string name="unimplemented">That feature is not yet implemented.</string>
 
+    <!-- Category strings -->
+    <string name="category_videostreaming">Video Streaming</string>
+    <string name="category_audiostreaming">Audio Streaming</string>
+    <string name="category_gaming">Gaming</string>
+    <string name="category_shopping">Online Shopping</string>
+    <string name="category_news">News</string>
+    <string name="category_education">Education</string>
+    <string name="category_misc">Other</string>
+
     <!-- Menu item strings -->
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>

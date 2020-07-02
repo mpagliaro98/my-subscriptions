@@ -412,12 +412,20 @@ public abstract class SubscriptionActivityAbstract extends AppCompatActivity {
     private void initializeCategories() {
         categoryList = new ArrayList<Category>() {
             {
-                add(new Category(getResources().getColor(R.color.colorCategoryVideoStreaming), "Video Streaming"));
-                add(new Category(getResources().getColor(R.color.colorCategoryAudioStreaming), "Audio Streaming"));
-                add(new Category(getResources().getColor(R.color.colorCategoryGaming), "Gaming"));
-                add(new Category(getResources().getColor(R.color.colorCategoryShopping), "Online Shopping"));
-                add(new Category(getResources().getColor(R.color.colorCategoryNews), "News"));
-                add(new Category(getResources().getColor(R.color.colorCategoryMisc), "Misc"));
+                add(new Category(getResources().getColor(R.color.colorCategoryVideoStreaming),
+                        getString(R.string.category_videostreaming)));
+                add(new Category(getResources().getColor(R.color.colorCategoryAudioStreaming),
+                        getString(R.string.category_audiostreaming)));
+                add(new Category(getResources().getColor(R.color.colorCategoryGaming),
+                        getString(R.string.category_gaming)));
+                add(new Category(getResources().getColor(R.color.colorCategoryShopping),
+                        getString(R.string.category_shopping)));
+                add(new Category(getResources().getColor(R.color.colorCategoryNews),
+                        getString(R.string.category_news)));
+                add(new Category(getResources().getColor(R.color.colorCategoryEducation),
+                        getString(R.string.category_education)));
+                add(new Category(getResources().getColor(R.color.colorCategoryMisc),
+                        getString(R.string.category_misc)));
             }};
     }
 
