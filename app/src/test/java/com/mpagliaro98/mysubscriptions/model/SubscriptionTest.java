@@ -258,17 +258,20 @@ public class SubscriptionTest {
         Resources resources = mock(Resources.class);
         when(context.getResources()).thenReturn(resources);
         when(resources.getString(R.string.currency_default)).thenReturn("$");
+        when(context.getString(R.string.currency_default)).thenReturn("$");
         when(resources.getString(R.string.cost_format)).thenReturn("%.2f");
+        when(context.getString(R.string.cost_format)).thenReturn("%.2f");
         when(resources.getString(R.string.date_format_default)).thenReturn("MM/dd/yyyy");
+        when(context.getString(R.string.date_format_default)).thenReturn("MM/dd/yyyy");
 
         CuT = new Subscription(0, "test", 4.33, startDate, "test note",
                 6, category, 7, zeroTimeCalendar);
         assertEquals("$4.33", CuT.getCostString(context));
         assertEquals(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(startDate),
-                CuT.getStartDateString(resources));
+                CuT.getStartDateString(context));
         zeroTimeCalendar.setTime(2021, 9, 20);
         assertEquals(new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(zeroTimeCalendar.getCurrentDate()),
-                CuT.getNextPaymentDateString(resources));
+                CuT.getNextPaymentDateString(context));
 
         // Test odd cost formatting
         CuT = new Subscription(0, "test", 4, startDate, "test note",
