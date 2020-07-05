@@ -5,33 +5,29 @@ Author: Michael Pagliaro
 
 ![Home Tab Screenshots](https://github.com/mpagliaro98/my-subscriptions/blob/master/app/src/main/res/assets/screenshots/screenshot_dev_multi.png?raw=true)
 
-This is a work-in-progress personal project for Android, which when
-complete will allow the user to input and keep track of online
-subscriptions, set notifications and reminders for when payments are
-coming up, and view general analytics on all subscriptions. As this
-is still a work-in-progress, and this is allowing me to learn Android
-app development, this code will likely not be entirely neat and clean
-until a bit later on as I learn and test out new functionality that
-will help realize my vision for this project. Along with that, I am not
-experienced enough with Gradle to provide accurate instructions to
-those wishing to download and run the app in its current state. Once
-the app is complete, I do have plans to have it downloadable for
-anybody to use.
+This is a mobile app personal project for Android, which allows the
+user to input and keep track of online subscriptions/recurring payments,
+set notifications and reminders for when payments are coming up, and
+view general analytics on all subscriptions. The apk for the most recent
+complete version of the project is available on the releases page, which
+can be installed directly to your Android device in order to use the app
+for yourself. All of the code is open source here as well. This app was
+created as an educational experience, and is not intended for commercial
+distribution.
 
-## Planned Features
+## Features
 
 * Home Tab
-    * Add a new subscription (contains fields for name, price, how often it's charged, notes, category, etc)
-    * List all subscriptions on the home page and search/sort through them
-    * Allow editing or deleting of subscriptions
-    * Set notifications to display when payments are coming up
+    * Register your subscriptions (provide cost, payment frequency, category, etc)
+    * List all subscriptions on the home page and search/sort the list of them
+    * Edit and delete your subscription information
+    * Set notifications to remind you when payments are coming up
 * Calendar Tab
-    * Show an interactive calendar of when each upcoming payment is
-    * Allow syncing with other calendar apps
+    * View an interactive calendar of when each upcoming payment is
+    * Sync your payment dates with your device's calendar app for more control
 * Analytics Tab
-    * Display how much is being paid within a certain time-span
-    * Allow sorting of costs by category, time, and others
-    * Show various metrics to display analytics by
+    * Display various analytics showing how much is being spent in various time frames
+    * Create breakdowns of your costs by type of subscription
 
 ## License
 MIT License
